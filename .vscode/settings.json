@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "type_traits": "cpp",
+        "compare": "cpp",
+        "__locale": "cpp",
+        "system_error": "cpp",
+        "__hash_table": "cpp",
+        "__threading_support": "cpp",
+        "bitset": "cpp",
+        "functional": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "thread": "cpp",
+        "variant": "cpp",
+        "vector": "cpp",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "bit": "cpp",
+        "array": "cpp",
+        "fstream": "cpp"
+    }
+}

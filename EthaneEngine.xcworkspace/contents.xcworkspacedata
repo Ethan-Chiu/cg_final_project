@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+	version = "1.0">
+	<FileRef
+		location = "group:Ethane-Editor/Ethane-Editor.xcodeproj">
+	</FileRef>
+	<Group
+		location = "container:"
+		name = "Dependencies">
+		<FileRef
+			location = "group:EthaneEngine/vendor/GLFW/GLFW.xcodeproj">
+		</FileRef>
+		<FileRef
+			location = "group:EthaneEngine/vendor/Glad/Glad.xcodeproj">
+		</FileRef>
+	</Group>
+	<FileRef
+		location = "group:EthaneEngine/EthaneEngine.xcodeproj">
+	</FileRef>
+</Workspace>

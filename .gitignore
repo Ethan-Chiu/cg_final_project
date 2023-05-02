@@ -1,0 +1,24 @@
+# Directories
+
+bin/
+bin-int/
+vendor/
+EthaneEngine/vendor/VulkanSDK
+Ethane-Editor/assets/cache
+scripts/__pycache__ 
+
+# Files
+*.user
+.DS_Store
+
+# Ethane files
+*.log
+Ethane-Editor/*.json
+Sandbox/*.json
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user

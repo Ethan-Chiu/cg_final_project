@@ -1,0 +1,9 @@
+[submodule "EthaneEngine/vendor/spdlog"]
+	path = EthaneEngine/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "EthaneEngine/vendor/GLFW"]
+	path = EthaneEngine/vendor/GLFW
+	url = https://github.com/TheCherno/glfw
+[submodule "EthaneEngine/vendor/glm"]
+	path = EthaneEngine/vendor/glm
+	url = https://github.com/g-truc/glm.git
