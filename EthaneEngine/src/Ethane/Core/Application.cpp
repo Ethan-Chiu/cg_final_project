@@ -55,16 +55,16 @@ namespace Ethane
 	{
 		ETH_PROFILE_FUNCTION();
 
-		// EventDispatcher dispatcher(e);
-		// dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(OnWindowClose));
-		// dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(OnWindowResize));
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(OnWindowResize));
 
-		// for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
-		// {
-		// 	if (e.Handled)
-		// 		break;
-		// 	(*it)->OnEvent(e);
-		// }
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+		{
+			if (e.Handled)
+				break;
+			(*it)->OnEvent(e);
+		}
 	}
 
 	void Application::Run()
@@ -80,22 +80,22 @@ namespace Ethane
 			m_LastFrameTime = time;
 
 			m_Window->PollEvent();
-			// if (!m_Running) break;
+			if (!m_Running) break;
 
-			// if (!m_Minimized)
-			// {
-			// 	if (m_Window->BeginFrame())
-			// 	{
-			// 		{
-			// 			ETH_PROFILE_SCOPE("LayerStack OnUpdate");
+			if (!m_Minimized)
+			{
+				if (m_Window->BeginFrame())
+				{
+					{
+						ETH_PROFILE_SCOPE("LayerStack OnUpdate");
 
-			// 			for (Layer* layer : m_LayerStack)
-			// 				layer->OnUpdate(timestep);
-			// 		}
+						for (Layer* layer : m_LayerStack)
+							layer->OnUpdate(timestep);
+					}
 
-			// 		m_Window->EndFrame();
-			// 	}
-			// }
+					m_Window->EndFrame();
+				}
+			}
 		}
 	}
 
@@ -112,15 +112,15 @@ namespace Ethane
 	{
 		ETH_PROFILE_FUNCTION();
 
-		// if (e.GetWidth() == 0 || e.GetHeight() == 0)
-		// {
-		// 	ETH_CORE_INFO("App minimized");
-		// 	m_Minimized = true;
-		// 	return false;
-		// }
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			ETH_CORE_INFO("App minimized");
+			m_Minimized = true;
+			return false;
+		}
 
-		// m_Minimized = false;
-		// m_Window->OnResize(e.GetWidth(), e.GetHeight());
+		m_Minimized = false;
+		m_Window->OnResize(e.GetWidth(), e.GetHeight());
 		return false;
 	}
 }

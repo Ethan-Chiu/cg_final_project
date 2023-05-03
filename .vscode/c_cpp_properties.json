@@ -4,12 +4,14 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/EthaneEngine/src",
+                "${workspaceFolder}/EthaneEngine/src/Ethane/Platform",
                 "${workspaceFolder}/EthaneEngine/vendor/GLFW/include",
                 "${workspaceFolder}/EthaneEngine/vendor/Glad/include",
                 "${workspaceFolder}/EthaneEngine/vendor/spdlog/include",
                 "${workspaceFolder}/EthaneEngine/vendor/glm",
                 "${workspaceFolder}/EthaneEngine/vendor/stb_image",
                 "${workspaceFolder}/EthaneEngine/vendor/entt/include",
+                "${VULKAN_SDK}/include",
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
             ],
             "defines": [],

@@ -31,13 +31,13 @@ PCH = src/ethpch.h
 PCH_PLACEHOLDER = $(OBJDIR)/$(notdir $(PCH))
 GCH = $(PCH_PLACEHOLDER).gch
 DEFINES += -DCFG_MACOS -D__APPLE__
-INCLUDES += -Isrc -Ivendor/spdlog/include -Ivendor/GLFW/include -Ivendor/Glad/include -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/include
+INCLUDES += -Isrc -Ivendor/spdlog/include -Ivendor/GLFW/include -Ivendor/Glad/include -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/include -I../../../../VulkanSDK/1.3.204.1/macOS/Include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -std=c++17
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-ALL_LDFLAGS += $(LDFLAGS) -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
+ALL_LDFLAGS += $(LDFLAGS) -L.. -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -50,21 +50,21 @@ ifeq ($(config),debug)
 TARGETDIR = ../bin/Debug-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Debug-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
+LIBS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit -lvulkan
 LDDEPS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a
 
 else ifeq ($(config),release)
 TARGETDIR = ../bin/Release-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Release-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
+LIBS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit -lvulkan
 LDDEPS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a
 
 else ifeq ($(config),dist)
 TARGETDIR = ../bin/Dist-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Dist-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
+LIBS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit -lvulkan
 LDDEPS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a
 
 endif
@@ -80,22 +80,28 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/Application.o
+GENERATED += $(OBJDIR)/GraphicsContext.o
 GENERATED += $(OBJDIR)/Layer.o
 GENERATED += $(OBJDIR)/LayerStack.o
 GENERATED += $(OBJDIR)/Log.o
 GENERATED += $(OBJDIR)/MacosWindow.o
 GENERATED += $(OBJDIR)/Math.o
+GENERATED += $(OBJDIR)/RendererAPI.o
 GENERATED += $(OBJDIR)/UUID.o
+GENERATED += $(OBJDIR)/VulkanContext.o
 GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/ethpch.o
 GENERATED += $(OBJDIR)/stb_image.o
 OBJECTS += $(OBJDIR)/Application.o
+OBJECTS += $(OBJDIR)/GraphicsContext.o
 OBJECTS += $(OBJDIR)/Layer.o
 OBJECTS += $(OBJDIR)/LayerStack.o
 OBJECTS += $(OBJDIR)/Log.o
 OBJECTS += $(OBJDIR)/MacosWindow.o
 OBJECTS += $(OBJDIR)/Math.o
+OBJECTS += $(OBJDIR)/RendererAPI.o
 OBJECTS += $(OBJDIR)/UUID.o
+OBJECTS += $(OBJDIR)/VulkanContext.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/ethpch.o
 OBJECTS += $(OBJDIR)/stb_image.o
@@ -184,6 +190,15 @@ $(OBJDIR)/Math.o: src/Ethane/Math/Math.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/MacosWindow.o: src/Ethane/Platform/MacOS/MacosWindow.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/GraphicsContext.o: src/Ethane/Renderer/GraphicsContext.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/RendererAPI.o: src/Ethane/Renderer/RendererAPI.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanContext.o: src/Ethane/Renderer/Vulkan/VulkanContext.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ethpch.o: src/ethpch.cpp

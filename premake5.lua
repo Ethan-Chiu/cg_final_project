@@ -66,15 +66,16 @@ project "EthaneEngine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		-- "%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.VulkanSDK}",
 	}
 
+	libdirs {"%{Library.VulkanSDK}"}
+	
 	links
 	{
 		"GLFW",
 		"Glad",
-		-- "%{Library.Vulkan}",
-		-- "%{Library.VulkanUtils}",
+		"vulkan"
 	}
 
 	filter "files:EthaneEngine/vendor/ImGuizmo/**.cpp"
