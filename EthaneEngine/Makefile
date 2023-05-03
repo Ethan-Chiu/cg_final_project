@@ -31,13 +31,13 @@ PCH = src/ethpch.h
 PCH_PLACEHOLDER = $(OBJDIR)/$(notdir $(PCH))
 GCH = $(PCH_PLACEHOLDER).gch
 DEFINES += -DCFG_MACOS -D__APPLE__
-INCLUDES += -Isrc -Ivendor/spdlog/include -Ivendor/GLFW/include -Ivendor/Glad/include -Ivendor/glm -Ivendor/stb_image -Ivendor/entt/include -I../../../../VulkanSDK/1.3.204.1/macOS/Include
+INCLUDES += -Isrc -isystem vendor/spdlog/include -isystem vendor/GLFW/include -isystem vendor/Glad/include -isystem vendor/glm -isystem vendor/stb_image -isystem vendor/entt/include -isystem ../../../../VulkanSDK/1.3.204.1/macOS/Include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -std=c++17
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-ALL_LDFLAGS += $(LDFLAGS) -L.. -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
+ALL_LDFLAGS += $(LDFLAGS) -L../../../../VulkanSDK/1.3.204.1/macOS/Lib -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -90,6 +90,9 @@ GENERATED += $(OBJDIR)/RendererAPI.o
 GENERATED += $(OBJDIR)/UUID.o
 GENERATED += $(OBJDIR)/VulkanContext.o
 GENERATED += $(OBJDIR)/Window.o
+GENERATED += $(OBJDIR)/WindowsInput.o
+GENERATED += $(OBJDIR)/WindowsPlatformUtils.o
+GENERATED += $(OBJDIR)/WindowsWindow.o
 GENERATED += $(OBJDIR)/ethpch.o
 GENERATED += $(OBJDIR)/stb_image.o
 OBJECTS += $(OBJDIR)/Application.o
@@ -103,6 +106,9 @@ OBJECTS += $(OBJDIR)/RendererAPI.o
 OBJECTS += $(OBJDIR)/UUID.o
 OBJECTS += $(OBJDIR)/VulkanContext.o
 OBJECTS += $(OBJDIR)/Window.o
+OBJECTS += $(OBJDIR)/WindowsInput.o
+OBJECTS += $(OBJDIR)/WindowsPlatformUtils.o
+OBJECTS += $(OBJDIR)/WindowsWindow.o
 OBJECTS += $(OBJDIR)/ethpch.o
 OBJECTS += $(OBJDIR)/stb_image.o
 
@@ -190,6 +196,15 @@ $(OBJDIR)/Math.o: src/Ethane/Math/Math.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/MacosWindow.o: src/Ethane/Platform/MacOS/MacosWindow.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/WindowsInput.o: src/Ethane/Platform/Windows/WindowsInput.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/WindowsPlatformUtils.o: src/Ethane/Platform/Windows/WindowsPlatformUtils.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/WindowsWindow.o: src/Ethane/Platform/Windows/WindowsWindow.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GraphicsContext.o: src/Ethane/Renderer/GraphicsContext.cpp

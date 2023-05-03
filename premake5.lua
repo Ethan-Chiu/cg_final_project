@@ -24,12 +24,17 @@ group "Dependencies"
 	include "EthaneEngine/vendor/Glad"
 
 group ""
+    project "EthaneEngine"
+
+group ""
+    project "Ethane-Editor"
 
 
 -------------------------------------------------------------------------------
 -- Ethane Engine ( main library )
 -------------------------------------------------------------------------------
 project "EthaneEngine"
+
 	location "EthaneEngine"
 	kind "StaticLib"
 	language "C++"
@@ -38,11 +43,6 @@ project "EthaneEngine"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
-
-	filter "action:xcode4"
-		pchheader "src/ethpch.h"
-	filter "action:not xcode4"
-		pchheader "ethpch.h"
 
 	pchsource "%{prj.name}/src/ethpch.cpp"
 
@@ -54,22 +54,26 @@ project "EthaneEngine"
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
-		"%{prj.name}/vendor/entt/include/**.hpp",
+		"%{prj.name}/vendor/entt/include/**.hpp"
 	}
+
+    externalincludedirs
+    {
+        "%{IncludeDir.spdlog}",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.VulkanSDK}",
+    }
 
 	includedirs
 	{
 		"%{wks.location}/EthaneEngine/src",
-		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}",
-		"%{IncludeDir.VulkanSDK}",
 	}
 
-	libdirs {"%{Library.VulkanSDK}"}
+	libdirs {"%{LibraryDir.VulkanSDK}"}
 	
 	links
 	{
@@ -77,6 +81,11 @@ project "EthaneEngine"
 		"Glad",
 		"vulkan"
 	}
+ 
+    filter "action:xcode4"
+        pchheader "src/ethpch.h"
+    filter "action:not xcode4"
+        pchheader "ethpch.h"
 
 	filter "files:EthaneEngine/vendor/ImGuizmo/**.cpp"
 	flags { "NoPCH" }
@@ -96,11 +105,6 @@ project "EthaneEngine"
 			"__APPLE__"
 		}
 		kind "SharedLib"
-		
-		removefiles
-		{
-			"%{prj.name}/src/Ethane/Platform/Windows/**"
-		}
 
 		links {
 			"OpenGL.framework",
@@ -141,10 +145,6 @@ project "Ethane-Editor"
 
 	includedirs
 	{
-		"%{wks.location}/EthaneEngine/src",
-		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}",
 	}
 
 	links

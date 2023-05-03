@@ -218,12 +218,6 @@
 					../EthaneEngine/vendor/entt/include,
 					"$(inherited)",
 				);
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/src,
-					../EthaneEngine/vendor/spdlog/include,
-					../EthaneEngine/vendor/glm,
-					../EthaneEngine/vendor/entt/include,
-				);
 			};
 			name = Release;
 		};
@@ -283,12 +277,6 @@
 					../EthaneEngine/vendor/entt/include,
 					"$(inherited)",
 				);
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/src,
-					../EthaneEngine/vendor/spdlog/include,
-					../EthaneEngine/vendor/glm,
-					../EthaneEngine/vendor/entt/include,
-				);
 			};
 			name = Dist;
 		};
@@ -335,12 +323,6 @@
 					../EthaneEngine/vendor/stb_image,
 					../EthaneEngine/vendor/entt/include,
 					"$(inherited)",
-				);
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/src,
-					../EthaneEngine/vendor/spdlog/include,
-					../EthaneEngine/vendor/glm,
-					../EthaneEngine/vendor/entt/include,
 				);
 			};
 			name = Debug;
