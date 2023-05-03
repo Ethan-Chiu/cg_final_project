@@ -22,5 +22,21 @@
         "bit": "cpp",
         "array": "cpp",
         "fstream": "cpp"
-    }
+    },
+    "makefile.dryrunSwitches": [
+        "--always-make",
+        "--keep-going",
+        "--print-directory",
+    ],
+    "makefile.loggingLevel": "Debug",
+    "makefile.extensionOutputFolder": ".vscode",
+    "makefile.extensionLog": "extension.log",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/ethan/ethans_folder/Program_dev/cg_final_project/bin/Debug-macosx-x86_64/Ethane-Editor/",
+            "binaryPath": "/Users/ethan/ethans_folder/Program_dev/cg_final_project/bin/Debug-macosx-x86_64/Ethane-Editor/Ethane-Editor",
+            "binaryArgs": []
+        }
+    ],
+    "makefile.makefilePath": "./Makefile"
 }

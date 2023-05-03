@@ -39,7 +39,11 @@ project "EthaneEngine"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "ethpch.h"
+	filter "action:xcode4"
+		pchheader "src/ethpch.h"
+	filter "action:not xcode4"
+		pchheader "ethpch.h"
+
 	pchsource "%{prj.name}/src/ethpch.cpp"
 
 	files
@@ -50,14 +54,13 @@ project "EthaneEngine"
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
-
 		"%{prj.name}/vendor/entt/include/**.hpp",
 	}
 
 	includedirs
 	{
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
+		"%{wks.location}/EthaneEngine/src",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
@@ -101,9 +104,7 @@ project "EthaneEngine"
 		links {
 			"OpenGL.framework",
 			"Cocoa.framework",
-			"OpenGL.framework",
 			"IOKit.framework",
-			"CoreFoundation.framework"
 		}
 
 -------------------------------------------------------------------------------
@@ -126,11 +127,21 @@ project "Ethane-Editor"
 		"%{prj.name}/src/**.cpp"
 	}
 
+	externalincludedirs 
+    { 
+		"%{wks.location}/EthaneEngine/src",
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}",
+    }
+
 	includedirs
 	{
-		"EthaneEngine/vendor/spdlog/include",
-		"EthaneEngine/src",
-		"EthaneEngine/vendor",
+		"%{wks.location}/EthaneEngine/src",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 	}

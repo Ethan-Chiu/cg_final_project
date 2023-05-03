@@ -1,3 +1,5 @@
+#ifdef ETH_PLATFORM_WINDOWS
+
 #include "ethpch.h"
 #include "Ethane/Utils/PlatformUtils.h"
 #include "Ethane/Core/Application.h"
@@ -48,3 +50,5 @@ namespace Ethane {
 	}
 
 }
+
+#endif

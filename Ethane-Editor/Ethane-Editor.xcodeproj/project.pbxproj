@@ -208,10 +208,19 @@
 				OBJROOT = "../bin-int/Release-macosx-x86_64/Ethane-Editor";
 				ONLY_ACTIVE_ARCH = NO;
 				SYMROOT = "../bin/Release-macosx-x86_64/Ethane-Editor";
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/vendor/spdlog/include,
+				SYSTEM_HEADER_SEARCH_PATHS = (
 					../EthaneEngine/src,
-					../EthaneEngine/vendor,
+					../EthaneEngine/vendor/spdlog/include,
+					../EthaneEngine/vendor/GLFW/include,
+					../EthaneEngine/vendor/Glad/include,
+					../EthaneEngine/vendor/glm,
+					../EthaneEngine/vendor/stb_image,
+					../EthaneEngine/vendor/entt/include,
+					"$(inherited)",
+				);
+				USER_HEADER_SEARCH_PATHS = (
+					../EthaneEngine/src,
+					../EthaneEngine/vendor/spdlog/include,
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/entt/include,
 				);
@@ -264,10 +273,19 @@
 				OBJROOT = "../bin-int/Dist-macosx-x86_64/Ethane-Editor";
 				ONLY_ACTIVE_ARCH = YES;
 				SYMROOT = "../bin/Dist-macosx-x86_64/Ethane-Editor";
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/vendor/spdlog/include,
+				SYSTEM_HEADER_SEARCH_PATHS = (
 					../EthaneEngine/src,
-					../EthaneEngine/vendor,
+					../EthaneEngine/vendor/spdlog/include,
+					../EthaneEngine/vendor/GLFW/include,
+					../EthaneEngine/vendor/Glad/include,
+					../EthaneEngine/vendor/glm,
+					../EthaneEngine/vendor/stb_image,
+					../EthaneEngine/vendor/entt/include,
+					"$(inherited)",
+				);
+				USER_HEADER_SEARCH_PATHS = (
+					../EthaneEngine/src,
+					../EthaneEngine/vendor/spdlog/include,
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/entt/include,
 				);
@@ -308,10 +326,19 @@
 				OBJROOT = "../bin-int/Debug-macosx-x86_64/Ethane-Editor";
 				ONLY_ACTIVE_ARCH = YES;
 				SYMROOT = "../bin/Debug-macosx-x86_64/Ethane-Editor";
-				USER_HEADER_SEARCH_PATHS = (
-					../EthaneEngine/vendor/spdlog/include,
+				SYSTEM_HEADER_SEARCH_PATHS = (
 					../EthaneEngine/src,
-					../EthaneEngine/vendor,
+					../EthaneEngine/vendor/spdlog/include,
+					../EthaneEngine/vendor/GLFW/include,
+					../EthaneEngine/vendor/Glad/include,
+					../EthaneEngine/vendor/glm,
+					../EthaneEngine/vendor/stb_image,
+					../EthaneEngine/vendor/entt/include,
+					"$(inherited)",
+				);
+				USER_HEADER_SEARCH_PATHS = (
+					../EthaneEngine/src,
+					../EthaneEngine/vendor/spdlog/include,
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/entt/include,
 				);

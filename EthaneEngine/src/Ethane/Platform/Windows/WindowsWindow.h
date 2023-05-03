@@ -1,3 +1,5 @@
+#ifdef ETH_PLATFORM_WINDOWS
+
 #pragma once
 
 #include "Ethane/Core/Window.h"
@@ -50,3 +52,5 @@ namespace Ethane {
 
 	};
 }
+
+#endif

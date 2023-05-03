@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Ethane/Core/Base.h"
 #include "Ethane/Core/Log.h"
 #include <filesystem>
 

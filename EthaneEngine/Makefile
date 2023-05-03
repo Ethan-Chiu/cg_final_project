@@ -50,21 +50,21 @@ ifeq ($(config),debug)
 TARGETDIR = ../bin/Debug-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Debug-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation
+LIBS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
 LDDEPS += vendor/GLFW/bin/Debug-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Debug-macosx-x86_64/Glad/libGlad.a
 
 else ifeq ($(config),release)
 TARGETDIR = ../bin/Release-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Release-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation
+LIBS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
 LDDEPS += vendor/GLFW/bin/Release-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Release-macosx-x86_64/Glad/libGlad.a
 
 else ifeq ($(config),dist)
 TARGETDIR = ../bin/Dist-macosx-x86_64/EthaneEngine
 TARGET = $(TARGETDIR)/libEthaneEngine.dylib
 OBJDIR = ../bin-int/Dist-macosx-x86_64/EthaneEngine
-LIBS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a -framework Cocoa -framework OpenGL -framework IOKit -framework CoreFoundation
+LIBS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a -framework OpenGL -framework Cocoa -framework IOKit
 LDDEPS += vendor/GLFW/bin/Dist-macosx-x86_64/GLFW/libGLFW.a vendor/Glad/bin/Dist-macosx-x86_64/Glad/libGlad.a
 
 endif

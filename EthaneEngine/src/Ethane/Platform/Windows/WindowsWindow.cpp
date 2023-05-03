@@ -1,3 +1,5 @@
+#ifdef ETH_PLATFORM_WINDOWS
+
 #include "ethpch.h"
 
 #include "WindowsWindow.h"
@@ -203,3 +205,5 @@ namespace Ethane {
 	}
 
 }
+
+#endif

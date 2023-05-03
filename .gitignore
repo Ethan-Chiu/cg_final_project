@@ -10,6 +10,7 @@ scripts/__pycache__
 # Files
 *.user
 .DS_Store
+EthaneProfile-Startup.json
 
 # Ethane files
 *.log

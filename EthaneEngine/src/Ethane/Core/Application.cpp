@@ -1,7 +1,6 @@
 #include "ethpch.h"
 #include "Application.h"
 #include "Ethane/Core/Log.h"
-#include "Input.h"
 
 #include <GLFW/glfw3.h>
 
@@ -76,11 +75,11 @@ namespace Ethane
 		{
 			ETH_PROFILE_SCOPE("RunLoop");
 
-			// float time = glfwGetTime(); //plateform GetTime()
-			// Timestep timestep = time - m_LastFrameTime;
-			// m_LastFrameTime = time;
+			float time = glfwGetTime(); //plateform GetTime()
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 
-			// m_Window->PollEvent();
+			m_Window->PollEvent();
 			// if (!m_Running) break;
 
 			// if (!m_Minimized)

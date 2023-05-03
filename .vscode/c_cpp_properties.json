@@ -3,8 +3,14 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/EthaneEngine/vendor/glm"
+                "${workspaceFolder}/EthaneEngine/src",
+                "${workspaceFolder}/EthaneEngine/vendor/GLFW/include",
+                "${workspaceFolder}/EthaneEngine/vendor/Glad/include",
+                "${workspaceFolder}/EthaneEngine/vendor/spdlog/include",
+                "${workspaceFolder}/EthaneEngine/vendor/glm",
+                "${workspaceFolder}/EthaneEngine/vendor/stb_image",
+                "${workspaceFolder}/EthaneEngine/vendor/entt/include",
+                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -14,6 +20,8 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "macos-clang-x64"
+            // "configurationProvider": "ms-vscode.makefile-tools",
+            // "mergeConfigurations": true
         }
     ],
     "version": 4
