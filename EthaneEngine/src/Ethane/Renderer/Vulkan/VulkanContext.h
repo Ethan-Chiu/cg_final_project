@@ -103,10 +103,28 @@ namespace Ethane {
 		// getter
 		static VkInstance GetInstance() { return s_VulkanInstance; }
 
+    private:
+        bool InitInstance(const ContextCreateInfo& info);
+        void InitDebugUtils();
+        VkResult CreateSurface();
+//        bool InitDevice(const ContextCreateInfo& info, std::vector<uint32_t> compatibleDevices);
+
+        std::vector<uint32_t> GetCompatibleDevices(const ContextCreateInfo& info);
+        VkResult FillFilteredNameArray(std::vector<std::string>& used,
+            const std::vector<VkLayerProperties>& properties,
+            const ContextCreateInfo::EntryArray& requested);
+        VkResult FillFilteredNameArray(std::vector<std::string>& used,
+            const std::vector<VkExtensionProperties>& properties,
+            const ContextCreateInfo::EntryArray& requested,
+            std::vector<void*>& featureStructs);
+        bool HasMandatoryExtensions(VkPhysicalDevice physicalDevice, const ContextCreateInfo& info, bool bVerbose);
+        bool CheckEntryArray(const std::vector<VkExtensionProperties>& properties, const ContextCreateInfo::EntryArray& requested, bool bVerbose);
+//        void InitPhysicalFeatures(PhysicalDeviceInfo& info, VkPhysicalDevice physicalDevice, uint32_t versionMajor, uint32_t versionMinor);
+        
 	private:
 		GLFWwindow* m_WindowHandle;
 
-		inline static VkInstance s_VulkanInstance;
+		inline static VkInstance s_VulkanInstance = nullptr;
 		VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
 
 		// Instance Extension
