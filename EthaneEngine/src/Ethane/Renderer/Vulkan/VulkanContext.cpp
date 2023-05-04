@@ -148,10 +148,10 @@ namespace Ethane {
 
         //--------------------------------------------------------------------------------------------------
         // Get compatible devices
-//        auto compatibleDevices = GetCompatibleDevices(contextCreateInfo);
-//        if (compatibleDevices.empty()) {
-//            ETH_CORE_ERROR("No compatible device found");
-//        }
+        auto compatibleDevices = GetCompatibleDevices(contextCreateInfo);
+        if (compatibleDevices.empty()) {
+            ETH_CORE_ERROR("No compatible device found");
+        }
 
         //--------------------------------------------------------------------------------------------------
         // Physical device & logical device

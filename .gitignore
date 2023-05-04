@@ -2,7 +2,7 @@
 
 bin/
 bin-int/
-vendor/
+./vendor/
 EthaneEngine/vendor/VulkanSDK
 Ethane-Editor/assets/cache
 scripts/__pycache__ 
