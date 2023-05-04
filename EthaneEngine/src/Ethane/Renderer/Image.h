@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ethane/Core/Base.h"
+#include "GraphicsContext.h"
 
 namespace Ethane {
 
@@ -61,7 +62,7 @@ namespace Ethane {
 	class Image2D : public Image
 	{
 	public:
-		static Ref<Image2D> Create(ImageSpecification specification, void* buffer = nullptr);
+		static Ref<Image2D> Create(const GraphicsContext* ctx, ImageSpecification specification, void* buffer = nullptr);
 	};
 
 	namespace Utils {
