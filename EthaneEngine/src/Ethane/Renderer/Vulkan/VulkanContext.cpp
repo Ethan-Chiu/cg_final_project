@@ -161,9 +161,9 @@ namespace Ethane {
 
         //--------------------------------------------------------------------------------------------------
         // Swapchain cerate
-//        uint32_t width = 1280, height = 720;
-//        m_SwapChain = VulkanSwapChain::Create(m_Surface, m_Device, width, height, false);
-//        m_SwapChain->Init();
+        uint32_t width = 400, height = 300;
+        m_SwapChain = VulkanSwapChain::Create(m_Surface, m_Device.get(), width, height, false);
+        m_SwapChain->Init();
 	}
 
 

@@ -41,7 +41,7 @@ public:
 
 		static Scope<VulkanPhysicalDevice> Init(const std::vector<uint32_t>& compatibleDeviceIndices, VkSurfaceKHR surface);
 
-		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device) const;
 
 		// Getter
 		VkPhysicalDevice GetVulkanPhysicalDevice() const { return m_PhysicalDevice; }
@@ -83,8 +83,8 @@ public:
 		VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
 		VkQueue GetComputeQueue() const { return m_ComputeQueue; }
 
-		VkCommandPool GetGraphicsCommandPool() { return m_GraphicsCommandPool; }
-		VkCommandPool GetComputeCommandPool() { return m_ComputeCommandPool; }
+		VkCommandPool GetGraphicsCommandPool() const { return m_GraphicsCommandPool; }
+		VkCommandPool GetComputeCommandPool() const { return m_ComputeCommandPool; }
 	private:
 		void QueueCreateInfo();
 

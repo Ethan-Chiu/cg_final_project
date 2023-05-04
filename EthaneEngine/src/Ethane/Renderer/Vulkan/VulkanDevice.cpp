@@ -181,7 +181,7 @@ namespace Ethane {
 		return indices;
 	}
 
-	SwapChainSupportDetails VulkanPhysicalDevice::QuerySwapChainSupport(VkPhysicalDevice device)
+	SwapChainSupportDetails VulkanPhysicalDevice::QuerySwapChainSupport(VkPhysicalDevice device) const
 	{
 		SwapChainSupportDetails details;
 

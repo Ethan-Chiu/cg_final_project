@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 
 #include "VulkanDevice.h"
-//#include "VulkanSwapChain.h"
+#include "VulkanSwapChain.h"
 
 
 struct GLFWwindow;
@@ -147,7 +147,7 @@ namespace Ethane {
         Scope<VulkanPhysicalDevice> m_PhysicalDevice;
         Scope<VulkanDevice> m_Device;
 
-//        Ref<VulkanSwapChain> m_SwapChain;
+        Scope<VulkanSwapChain> m_SwapChain;
 	};
 
 }
