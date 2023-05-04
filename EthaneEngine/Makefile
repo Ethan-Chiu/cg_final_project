@@ -81,6 +81,7 @@ OBJECTS :=
 
 GENERATED += $(OBJDIR)/Application.o
 GENERATED += $(OBJDIR)/GraphicsContext.o
+GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/Layer.o
 GENERATED += $(OBJDIR)/LayerStack.o
 GENERATED += $(OBJDIR)/Log.o
@@ -89,6 +90,9 @@ GENERATED += $(OBJDIR)/Math.o
 GENERATED += $(OBJDIR)/RendererAPI.o
 GENERATED += $(OBJDIR)/UUID.o
 GENERATED += $(OBJDIR)/VulkanContext.o
+GENERATED += $(OBJDIR)/VulkanDevice.o
+GENERATED += $(OBJDIR)/VulkanImage.o
+GENERATED += $(OBJDIR)/VulkanSwapChain.o
 GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/WindowsInput.o
 GENERATED += $(OBJDIR)/WindowsPlatformUtils.o
@@ -97,6 +101,7 @@ GENERATED += $(OBJDIR)/ethpch.o
 GENERATED += $(OBJDIR)/stb_image.o
 OBJECTS += $(OBJDIR)/Application.o
 OBJECTS += $(OBJDIR)/GraphicsContext.o
+OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/Layer.o
 OBJECTS += $(OBJDIR)/LayerStack.o
 OBJECTS += $(OBJDIR)/Log.o
@@ -105,6 +110,9 @@ OBJECTS += $(OBJDIR)/Math.o
 OBJECTS += $(OBJDIR)/RendererAPI.o
 OBJECTS += $(OBJDIR)/UUID.o
 OBJECTS += $(OBJDIR)/VulkanContext.o
+OBJECTS += $(OBJDIR)/VulkanDevice.o
+OBJECTS += $(OBJDIR)/VulkanImage.o
+OBJECTS += $(OBJDIR)/VulkanSwapChain.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/WindowsInput.o
 OBJECTS += $(OBJDIR)/WindowsPlatformUtils.o
@@ -210,10 +218,22 @@ $(OBJDIR)/WindowsWindow.o: src/Ethane/Platform/Windows/WindowsWindow.cpp
 $(OBJDIR)/GraphicsContext.o: src/Ethane/Renderer/GraphicsContext.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Image.o: src/Ethane/Renderer/Image.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/RendererAPI.o: src/Ethane/Renderer/RendererAPI.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanContext.o: src/Ethane/Renderer/Vulkan/VulkanContext.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanDevice.o: src/Ethane/Renderer/Vulkan/VulkanDevice.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanImage.o: src/Ethane/Renderer/Vulkan/VulkanImage.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanSwapChain.o: src/Ethane/Renderer/Vulkan/VulkanSwapChain.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ethpch.o: src/ethpch.cpp

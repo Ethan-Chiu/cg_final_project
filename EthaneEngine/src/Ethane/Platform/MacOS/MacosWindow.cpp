@@ -153,19 +153,18 @@ namespace Ethane {
 		ETH_PROFILE_FUNCTION();
 
 		glfwDestroyWindow(m_Window);
-		// m_Context->Shutdown();
+		 m_Context->Shutdown();
 	}
 
 	bool MacosWindow::BeginFrame()
 	{
-		// return m_Context->BeginFrame();
-		return true;
+        return m_Context->BeginFrame();
 	}
 
 	void MacosWindow::EndFrame()
 	{
 		ETH_PROFILE_FUNCTION();
-		// m_Context->SwapBuffers();
+        m_Context->SwapBuffers();
 	}
 
 	void MacosWindow::PollEvent()

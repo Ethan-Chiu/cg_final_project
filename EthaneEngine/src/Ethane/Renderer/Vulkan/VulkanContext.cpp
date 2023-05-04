@@ -122,10 +122,10 @@ namespace Ethane {
         }
         // RayTracing: Activate the ray tracing extension
         VkPhysicalDeviceAccelerationStructureFeaturesKHR accelFeature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR };
-        contextCreateInfo.AddDeviceExtension(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, false, &accelFeature);  // To build acceleration structures
+        contextCreateInfo.AddDeviceExtension(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, true, &accelFeature);  // To build acceleration structures
         VkPhysicalDeviceRayTracingPipelineFeaturesKHR rtPipelineFeature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR };
-        contextCreateInfo.AddDeviceExtension(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME, false, &rtPipelineFeature);  // To use vkCmdTraceRaysKHR
-        contextCreateInfo.AddDeviceExtension(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);  // Required by ray tracing pipeline
+        contextCreateInfo.AddDeviceExtension(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME, true, &rtPipelineFeature);  // To use vkCmdTraceRaysKHR
+        contextCreateInfo.AddDeviceExtension(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME, true);  // Required by ray tracing pipeline
 
         // NOTE: use this to enable validation features
         VkValidationFeatureEnableEXT enables[] = { VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT };
@@ -155,9 +155,9 @@ namespace Ethane {
 
         //--------------------------------------------------------------------------------------------------
         // Physical device & logical device
-//        if (!InitDevice(contextCreateInfo, compatibleDevices)) {
-//            ETH_CORE_ERROR("Device initialization failed");
-//        }
+        if (!InitDevice(contextCreateInfo, compatibleDevices)) {
+            ETH_CORE_ERROR("Device initialization failed");
+        }
 
         //--------------------------------------------------------------------------------------------------
         // Swapchain cerate
@@ -302,7 +302,98 @@ namespace Ethane {
         return glfwCreateWindowSurface(s_VulkanInstance, m_WindowHandle, nullptr, &m_Surface);
     }
 
+    //--------------------------------------------------------------------------------------------------
+    // Initialize device
+    //
+    bool VulkanContext::InitDevice(const ContextCreateInfo& info, std::vector<uint32_t> compatibleDevices)
+    {
+        ETH_CORE_ASSERT(s_VulkanInstance != nullptr);
 
+        m_PhysicalDevice = VulkanPhysicalDevice::Init(compatibleDevices, m_Surface);
+        VkPhysicalDevice physicalDevice = m_PhysicalDevice->GetVulkanPhysicalDevice();
+
+        // extensions
+        uint32_t extCount = 0;
+        std::vector<VkExtensionProperties> extensionProperties;
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, nullptr);
+        if (extCount > 0)
+        {
+            extensionProperties.resize(extCount);
+            if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, &extensionProperties.front()) == VK_SUCCESS)
+            {
+                ETH_CORE_TRACE("Selected physical device has {0} extensions", extCount);
+                for (const auto& ext : extensionProperties)
+                {
+                    m_SupportedDeviceExtensions.emplace(ext.extensionName);
+                    ETH_CORE_INFO("  {0}", ext.extensionName);
+                }
+            }
+        }
+        // devices features
+        InitPhysicalFeatures(m_PhysicalInfo, physicalDevice, info.ApiMajor, info.ApiMinor);
+
+        VkPhysicalDeviceFeatures2 features2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
+        features2.features = m_PhysicalInfo.features10;
+        features2.pNext = &m_PhysicalInfo.features11;
+        m_PhysicalInfo.features11.pNext = &m_PhysicalInfo.features12;
+        m_PhysicalInfo.features12.pNext = nullptr;
+
+        std::vector<void*> featureStructs;
+        if (FillFilteredNameArray(m_UsedDeviceExtensions, extensionProperties, info.DeviceExtensions, featureStructs) != VK_SUCCESS)
+        {
+            // deinit();
+            ETH_CORE_ERROR("Device extensions not satisfied");
+            return false;
+        }
+
+        if (info.VerboseUsed)
+        {
+            ETH_CORE_INFO("________________________");
+            ETH_CORE_INFO("Used Device Extensions: ");
+            for (const auto& it : m_UsedDeviceExtensions)
+            {
+                ETH_CORE_INFO("  {0}", it.c_str());
+            }
+        }
+
+        struct ExtensionHeader  // Helper struct to link extensions together
+        {
+            VkStructureType sType;
+            void* pNext;
+        };
+
+        // use the features2 chain to append extensions
+        if (!featureStructs.empty())
+        {
+            // build up chain of all used extension features
+            for (size_t i = 0; i < featureStructs.size(); i++)
+            {
+                auto* header = reinterpret_cast<ExtensionHeader*>(featureStructs[i]);
+                header->pNext = i < featureStructs.size() - 1 ? featureStructs[i + 1] : nullptr;
+            }
+
+            // append to the end of current feature2 struct
+            ExtensionHeader* lastCoreFeature = (ExtensionHeader*)&features2;
+            while (lastCoreFeature->pNext != nullptr)
+            {
+                lastCoreFeature = (ExtensionHeader*)lastCoreFeature->pNext;
+            }
+            lastCoreFeature->pNext = featureStructs[0];
+
+            // query support
+            vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
+        }
+
+        // disable some features
+        if (info.DisableRobustBufferAccess)
+        {
+            features2.features.robustBufferAccess = VK_FALSE;
+        }
+
+        m_Device = VulkanDevice::Create(m_PhysicalDevice.get(), m_UsedDeviceExtensions, features2);
+
+        return true;
+    }
 
     //--------------------------------------------------------------------------------------------------
     // Utility function
@@ -507,5 +598,34 @@ namespace Ethane {
         }
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    //
+    void VulkanContext::InitPhysicalFeatures(PhysicalDeviceInfo& info, VkPhysicalDevice physicalDevice, uint32_t versionMajor, uint32_t versionMinor)
+    {
+        VkPhysicalDeviceFeatures2   features2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
+        VkPhysicalDeviceProperties2 properties2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
+
+        if (versionMajor == 1 && versionMinor >= 2)
+        {
+            features2.pNext = &info.features11;
+            info.features11.pNext = &info.features12;
+            info.features12.pNext = nullptr;
+
+            info.properties12.driverID = VK_DRIVER_ID_NVIDIA_PROPRIETARY;
+            info.properties12.supportedDepthResolveModes = VK_RESOLVE_MODE_MAX_BIT;
+            info.properties12.supportedStencilResolveModes = VK_RESOLVE_MODE_MAX_BIT;
+
+            properties2.pNext = &info.properties11;
+            info.properties11.pNext = &info.properties12;
+            info.properties12.pNext = nullptr;
+        }
+
+        vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
+        vkGetPhysicalDeviceProperties2(physicalDevice, &properties2);
+
+        info.features10 = features2.features;
+        info.properties10 = properties2.properties;
     }
 }

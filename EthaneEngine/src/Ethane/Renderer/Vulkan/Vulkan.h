@@ -46,6 +46,8 @@ namespace Ethane::Utils {
 		case VK_OPERATION_DEFERRED_KHR: return "VK_OPERATION_DEFERRED_KHR";
 		case VK_OPERATION_NOT_DEFERRED_KHR: return "VK_OPERATION_NOT_DEFERRED_KHR";
 		case VK_PIPELINE_COMPILE_REQUIRED_EXT: return "VK_PIPELINE_COMPILE_REQUIRED_EXT";
+        case VK_RESULT_MAX_ENUM:
+        default: ETH_CORE_ASSERT(false); return nullptr;
 		}
 		ETH_CORE_ASSERT(false);
 		return nullptr;
