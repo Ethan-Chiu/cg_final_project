@@ -79,7 +79,6 @@ project "EthaneEngine"
 	{
 		"GLFW",
 		"Glad",
-		"vulkan"
 	}
  
     filter "action:xcode4"
@@ -110,8 +109,30 @@ project "EthaneEngine"
 			"OpenGL.framework",
 			"Cocoa.framework",
 			"IOKit.framework",
+            "vulkan",
+            "shaderc_shared",
+            "shaderc_util",
+            "spirv-cross-core",
+            "spirv-cross-glsl",
+            "SPIRV-Tools",
 		}
+  
+    filter "configurations:Debug"
+        defines "ETH_DEBUG"
+        runtime "Debug"
+        symbols "on"
 
+    filter "configurations:Release"
+        defines "ETH_RELEASE"
+        runtime "Release"
+        optimize "on"
+        
+    filter "configurations:Dist"
+        defines "ETH_DIST"
+        runtime "Release"
+        symbols "on"
+        
+        
 -------------------------------------------------------------------------------
 -- Ethane Editor
 -------------------------------------------------------------------------------
@@ -155,6 +176,11 @@ project "Ethane-Editor"
 	filter "system:windows"
 		systemversion "latest"
 		
+    filter "system:macosx"
+        defines {
+            "ETH_DEBUG"
+        }
+  
 	filter "configurations:Debug"
 		defines "ETH_DEBUG"
 		runtime "Debug"

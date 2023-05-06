@@ -1,13 +1,14 @@
 #include "ethpch.h"
-#include "RenderPass.h"
+#include "Pipeline.h"
 
 #include "RendererAPI.h"
 
 #include "Vulkan/VulkanContext.h"
-#include "Vulkan/VulkanRenderPass.h"
+#include "Vulkan/VulkanPipeline.h"
 
 namespace Ethane {
-	Ref<RenderPass> RenderPass::Create()
+
+	Ref<Pipeline> Pipeline::Create(const GraphicsContext* ctx, const PipelineSpecification& spec)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -15,7 +16,7 @@ namespace Ethane {
 			ETH_CORE_ASSERT(false, "endererAPI::None is currently not supported!");
 			return nullptr;
 		case RendererAPI::API::Vulkan:
-			return CreateRef<VulkanRenderPass>();
+			return CreateRef<VulkanPipeline>(static_cast<const VulkanContext*>(ctx), spec);
 		}
 
 		ETH_CORE_ASSERT(false, "Unknpwn RendererAPI");

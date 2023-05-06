@@ -28,7 +28,8 @@ namespace Ethane {
 		void SetVSync(bool enable) override;
 		bool IsVSync() const override;
 
-		inline virtual void* GetNativeWindow() const override { return m_Window; };
+		inline virtual void* GetNativeWindow() const override { return m_Window; }
+        virtual const GraphicsContext* GetGraphicsContext() const override { return m_Context.get(); }
 	
 	private:
 		virtual void Init(const WindowProps& props);

@@ -110,10 +110,10 @@ namespace Ethane {
             contextCreateInfo.AddInstanceExtension(glfw_extensions[i]);
         }
         contextCreateInfo.AddDeviceExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-        contextCreateInfo.AddDeviceExtension(VK_EXT_DEBUG_MARKER_EXTENSION_NAME, true);
+        contextCreateInfo.AddDeviceExtension("VK_KHR_portability_subset", true);
         if (s_Validation)
         {
-            contextCreateInfo.AddInstanceExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+            contextCreateInfo.AddInstanceExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, true);
             contextCreateInfo.AddInstanceExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
             const char* validationLayerName = "VK_LAYER_KHRONOS_validation";
             contextCreateInfo.AddInstanceLayer(validationLayerName);
@@ -126,7 +126,7 @@ namespace Ethane {
         VkPhysicalDeviceRayTracingPipelineFeaturesKHR rtPipelineFeature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR };
         contextCreateInfo.AddDeviceExtension(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME, true, &rtPipelineFeature);  // To use vkCmdTraceRaysKHR
         contextCreateInfo.AddDeviceExtension(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME, true);  // Required by ray tracing pipeline
-
+        
         // NOTE: use this to enable validation features
         VkValidationFeatureEnableEXT enables[] = { VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT };
         VkValidationFeaturesEXT features = { VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT };

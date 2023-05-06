@@ -3,6 +3,7 @@
 
 #include "RendererAPI.h"
 
+#include "Vulkan/VulkanContext.h"
 #include "Vulkan/VulkanImage.h"
 
 namespace Ethane{
@@ -12,7 +13,6 @@ namespace Ethane{
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::API::None: return nullptr;
-		// case RendererAPI::API::OpenGL: return Ref<OpenGLImage2D>::Create(specification, data);
             case RendererAPI::API::Vulkan: return CreateRef<VulkanImage2D>(static_cast<const VulkanContext*>(ctx), specification);
 		}
 		ETH_CORE_ASSERT(false, "Unknown RendererAPI");

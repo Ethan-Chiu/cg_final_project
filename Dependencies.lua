@@ -6,16 +6,16 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "%{wks.location}/EthaneEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/EthaneEngine/vendor/Glad/include"
 IncludeDir["spdlog"] = "%{wks.location}/EthaneEngine/vendor/spdlog/include"
-IncludeDir["ImGui"] = "%{wks.location}/EthaneEngine/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/EthaneEngine/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/EthaneEngine/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/EthaneEngine/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/EthaneEngine/vendor/yaml-cpp/include"
-IncludeDir["ImGuizmo"] = "%{wks.location}/EthaneEngine/vendor/ImGuizmo"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 -- IncludeDir["shaderc"] = "%{wks.location}/EthaneEngine/vendor/shaderc/include"
 -- IncludeDir["SPIRV_Cross"] = "%{wks.location}/EthaneEngine/vendor/SPIRV-Cross"
 IncludeDir["Assimp"] = "%{wks.location}/EthaneEngine/vendor/assimp/include"
+IncludeDir["ImGui"] = "%{wks.location}/EthaneEngine/vendor/imgui"
+IncludeDir["ImGuizmo"] = "%{wks.location}/EthaneEngine/vendor/ImGuizmo"
 
 LibraryDir = {}
 

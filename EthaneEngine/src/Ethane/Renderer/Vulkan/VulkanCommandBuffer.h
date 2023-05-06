@@ -35,7 +35,7 @@ namespace Ethane {
         void AllocateAndBeginSingleUse(QueueFamilyTypes type);
         void EndSingleUse(QueueFamilyTypes type);
 
-        VkCommandBuffer GetHandle() { return m_CommandBuffer; };
+        VkCommandBuffer GetHandle() const { return m_CommandBuffer; };
 
     private:
         const VulkanDevice* m_Device = nullptr;

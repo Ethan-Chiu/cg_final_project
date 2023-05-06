@@ -3,6 +3,7 @@
 #include "ethpch.h"
 #include "Ethane/Core/Base.h"
 #include "Ethane/Events/Event.h"
+#include "Ethane/Renderer/GraphicsContext.h"
 
 namespace Ethane {
 
@@ -42,6 +43,7 @@ namespace Ethane {
 		virtual bool IsVSync() const = 0;
 
 		virtual void* GetNativeWindow() const = 0;
+        virtual const GraphicsContext* GetGraphicsContext() const = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 	};

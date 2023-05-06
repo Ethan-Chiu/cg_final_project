@@ -54,7 +54,7 @@ else ifeq ($(config),release)
 TARGETDIR = ../bin/Release-macosx-x86_64/Ethane-Editor
 TARGET = $(TARGETDIR)/Ethane-Editor
 OBJDIR = ../bin-int/Release-macosx-x86_64/Ethane-Editor
-DEFINES += -DETH_RELEASE
+DEFINES += -DETH_DEBUG -DETH_RELEASE
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
 LIBS += ../bin/Release-macosx-x86_64/EthaneEngine/libEthaneEngine.dylib
@@ -64,7 +64,7 @@ else ifeq ($(config),dist)
 TARGETDIR = ../bin/Dist-macosx-x86_64/Ethane-Editor
 TARGET = $(TARGETDIR)/Ethane-Editor
 OBJDIR = ../bin-int/Dist-macosx-x86_64/Ethane-Editor
-DEFINES += -DETH_DIST
+DEFINES += -DETH_DEBUG -DETH_DIST
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
 LIBS += ../bin/Dist-macosx-x86_64/EthaneEngine/libEthaneEngine.dylib
