@@ -4,6 +4,8 @@
 #include "Vulkan.h"
 #include <GLFW/glfw3.h>
 
+#include "VulkanSwapChain.h"
+
 namespace Ethane {
 
 	//--------------------------------------------------------------------------------------------------
@@ -94,6 +96,10 @@ namespace Ethane {
 		ETH_CORE_ASSERT(windowHandle, "Window handle is null");
 	}
 
+    VulkanContext::~VulkanContext()
+    {
+    }
+
 	void VulkanContext::Init()
 	{
 		ETH_CORE_ASSERT(glfwVulkanSupported(), "GLFW vulkan support error");
@@ -169,7 +175,47 @@ namespace Ethane {
 
 	void VulkanContext::Shutdown()
 	{
+        vkDeviceWaitIdle(m_Device->GetVulkanDevice());
+
+        m_SwapChain->Destroy();
+
+        m_Device->Destroy();
+        m_Device = nullptr;
+
+        m_PhysicalDevice->Destroy();
+        m_PhysicalDevice = nullptr;
+
+        ETH_CORE_INFO("Destroying Vulkan debugger...");
+        if (m_DebugMessenger != VK_NULL_HANDLE) {
+            auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(s_VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
+            vkDestroyDebugUtilsMessengerEXT(s_VulkanInstance, m_DebugMessenger, nullptr);
+        }
+
+        ETH_CORE_INFO("Destroying Vulkan surface...");
+        vkDestroySurfaceKHR(s_VulkanInstance, m_SwapChain->GetSurface(), nullptr);
+
+        ETH_CORE_INFO("Destroying Vulkan instance...");
+        vkDestroyInstance(s_VulkanInstance, nullptr);
+        s_VulkanInstance = nullptr;
 	}
+
+    bool VulkanContext::BeginFrame()
+    {
+        if (!m_SwapChain->BeginFrame())
+            return false;
+        return true;
+    }
+
+    void VulkanContext::SwapBuffers()
+    {
+        ETH_PROFILE_FUNCTION();
+        m_SwapChain->EndFrame();
+    }
+
+    void VulkanContext::OnResize(uint32_t width, uint32_t height)
+    {
+        m_SwapChain->OnResize(width, height);
+    }
 
     //--------------------------------------------------------------------------------------------------
     // Create the Vulkan instance

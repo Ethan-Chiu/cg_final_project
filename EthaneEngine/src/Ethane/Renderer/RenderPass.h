@@ -8,7 +8,5 @@ namespace Ethane {
 	{
 	public:
 		virtual ~RenderPass() = default;
-
-		static Ref<RenderPass> Create();
 	};
 }

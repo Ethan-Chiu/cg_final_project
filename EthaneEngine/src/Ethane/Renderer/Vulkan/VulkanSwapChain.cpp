@@ -1,11 +1,11 @@
 #include "ethpch.h"
+#include "Ethane/Core/timer.h"
 
 #define GLM_FORECE_DEPT_ZERO_TO_ONE // TODO: move
 #include <GLFW/glfw3.h>
 
 #include "VulkanSwapChain.h"
-
-#include "Ethane/Core/timer.h"
+#include "VulkanRenderPass.h"
 
 
 namespace Ethane {
@@ -174,8 +174,10 @@ namespace Ethane {
 //            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_IMAGE_ASPECT_DEPTH_BIT, true);
 
         // Render pass
-        m_RenderPass.Create(device, false, m_ImageFormat, m_DepthFormat);
-
+        std::vector<ImageFormat> attachmentFormat = {ImageUtils::VulkanImageFormatToImageFormat(m_ImageFormat)};
+        m_RenderPass = VulkanRenderPass::Create(device, attachmentFormat, ImageFormat::None, true, true);
+        ETH_CORE_TRACE("Swapchain renderpass created");
+        
         // Framebuffers
         m_Framebuffers.resize(m_ImageViews.size());
 
@@ -185,7 +187,7 @@ namespace Ethane {
         };
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = m_RenderPass.GetHandle();
+        framebufferInfo.renderPass = m_RenderPass->GetHandle();
         framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
         framebufferInfo.pAttachments = attachments.data();
         framebufferInfo.width = m_Extent.width;
@@ -298,11 +300,10 @@ namespace Ethane {
     void VulkanSwapChain::CreateCommandBuffers()
     {
         if (m_GraphicsCommandBuffers.empty()) {
-            // TODO: find better solution
-            m_GraphicsCommandBuffers.resize(m_ImageCount, VulkanCommandBuffer(m_Device));
+            m_GraphicsCommandBuffers.resize(m_MaxFramesInFlight, VulkanCommandBuffer(m_Device));
         }
 
-        for (uint32_t i = 0; i < m_ImageCount; ++i) {
+        for (uint32_t i = 0; i < m_MaxFramesInFlight; ++i) {
             if (m_GraphicsCommandBuffers[i].GetHandle()) {
                 m_GraphicsCommandBuffers[i].Free(m_Device->GetGraphicsCommandPool());
             }
@@ -404,7 +405,7 @@ namespace Ethane {
 #endif
 
         VkRenderPassBeginInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-        renderPassInfo.renderPass = m_RenderPass.GetHandle();
+        renderPassInfo.renderPass = m_RenderPass->GetHandle();
         renderPassInfo.framebuffer = m_Framebuffers[m_CurrentImageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = m_Extent;
@@ -515,7 +516,7 @@ namespace Ethane {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
 
-        m_RenderPass.Destroy();
+        m_RenderPass->Destroy();
 
 //        m_DepthAttachment->Destroy();
 
@@ -533,9 +534,9 @@ namespace Ethane {
         vkDeviceWaitIdle(device);
 
         ETH_CORE_INFO("Destroying Vulkan command buffers...");
-        for (uint32_t i = 0; i < m_ImageCount; ++i) {
-            if (m_GraphicsCommandBuffers[i].GetHandle()) {
-                m_GraphicsCommandBuffers[i].Free(m_Device->GetGraphicsCommandPool());
+        for (auto& commandBuffer : m_GraphicsCommandBuffers) {
+            if (commandBuffer.GetHandle()) {
+                commandBuffer.Free(m_Device->GetGraphicsCommandPool());
             }
         }
         m_GraphicsCommandBuffers.clear();

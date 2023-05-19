@@ -15,8 +15,8 @@ namespace Ethane {
 		RGBA32F,
 		RG16F,
 		RG32F,
-
 		SRGB,
+        BGRA,
 
 		DEPTH32F,
 		DEPTH24STENCIL8,

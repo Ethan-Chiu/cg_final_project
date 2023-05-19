@@ -12,56 +12,17 @@ namespace Ethane {
 		ETH_CORE_ASSERT(m_Specification.Width > 0 && m_Specification.Height > 0);
 		ETH_CORE_TRACE("VulkanImage2D::Invalidate ({0})", m_Specification.DebugName);
 
-		auto device = m_Context->GetDevice()->GetVulkanDevice();
-
-		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT;
-		if (m_Specification.Usage == ImageUsage::Attachment)
-		{
-			if (Utils::IsDepthFormat(m_Specification.Format))
-				usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-			else
-				usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		}
-		else if (m_Specification.Usage == ImageUsage::Texture)
-		{
-			usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-		}
-		else if (m_Specification.Usage == ImageUsage::Storage)
-		{
-			usage |= VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-		}
-
-		VkFormat vulkanFormat = Utils::VulkanImageFormat(m_Specification.Format);
-
-		// Create Image
-		CreateVulkanImage(device,
-			m_Specification.Width,
-			m_Specification.Height,
-			m_Specification.Mips,
-			m_Specification.Layers,
-			vulkanFormat,
-			VK_IMAGE_TILING_OPTIMAL,
-			usage,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-
-		VkImageAspectFlags aspectMask = Utils::IsDepthFormat(m_Specification.Format) ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
-		if (m_Specification.Format == ImageFormat::DEPTH24STENCIL8)
-			aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
-
-		// Create Image view
-		CreateImageView(device, vulkanFormat, aspectMask);
-
+        CreateImage();
 	}
 
 	VulkanImage2D::VulkanImage2D(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
 		VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag, VkImageAspectFlags aspectFlag, bool createView)
         :m_Context(context)
 	{
-		auto device = m_Context->GetDevice()->GetVulkanDevice();
-		CreateVulkanImage(device, width, height, mip, layers, format, tiling, usage, memoryFlag);
+		auto device = m_Context->GetDevice();
+		ImageUtils::CreateVulkanImage(device, width, height, mip, layers, format, tiling, usage, memoryFlag, m_Info, m_ImageMemory);
 		if (createView) {
-			CreateImageView(device, format, aspectFlag);
+            ImageUtils::CreateImageView(device->GetVulkanDevice(), format, aspectFlag, mip, layers, m_Info);
 		}
 	}
 
@@ -78,55 +39,6 @@ namespace Ethane {
 			Destroy();
 		}
 	}
-
-	void VulkanImage2D::CreateVulkanImage(VkDevice device, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
-		VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag)
-	{
-		// Create Image
-		VkImageCreateInfo imageInfo{ VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = width;
-		imageInfo.extent.height = height;
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = mip;
-		imageInfo.arrayLayers = 1;
-		imageInfo.format = format;
-		imageInfo.tiling = tiling;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.usage = usage;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		imageInfo.flags = 0; // Optional
-		VK_CHECK_RESULT(vkCreateImage(device, &imageInfo, nullptr, &m_Info.Image));
-
-		//Allocate image memory
-		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(device, m_Info.Image, &memRequirements);
-
-		VkMemoryAllocateInfo allocInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = Utils::FindMemoryType(m_Context->GetPhysicalDevice()->GetVulkanPhysicalDevice(), memRequirements.memoryTypeBits, memoryFlag);
-		VK_CHECK_RESULT(vkAllocateMemory(device, &allocInfo, nullptr, &m_ImageMemory));
-
-		// Bind the memory
-		VK_CHECK_RESULT(vkBindImageMemory(device, m_Info.Image, m_ImageMemory, 0));
-	}
-
-	void VulkanImage2D::CreateImageView(VkDevice device, VkFormat format, VkImageAspectFlags aspectMask)
-	{
-		VkImageViewCreateInfo viewInfo{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
-		viewInfo.image = m_Info.Image;
-		viewInfo.viewType = m_Specification.Layers > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = format;
-		viewInfo.subresourceRange.aspectMask = aspectMask;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = m_Specification.Mips;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = m_Specification.Layers;
-		viewInfo.flags = 0;
-		VK_CHECK_RESULT(vkCreateImageView(device, &viewInfo, nullptr, &m_Info.ImageView));
-	}
-
 
 	void VulkanImage2D::Destroy()
 	{
@@ -151,6 +63,59 @@ namespace Ethane {
 		m_Info.Image = nullptr;
 		m_Info.ImageView = nullptr;
 	}
+
+    void VulkanImage2D::Resize(uint32_t width, uint32_t height)
+    {
+        Destroy();
+        m_Specification.Width = width;
+        m_Specification.Height = height;
+        CreateImage();
+    }
+
+    void VulkanImage2D::CreateImage()
+    {
+        auto device = m_Context->GetDevice();
+
+        VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT;
+        if (m_Specification.Usage == ImageUsage::Attachment)
+        {
+            if (Utils::IsDepthFormat(m_Specification.Format))
+                usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+            else
+                usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        }
+        else if (m_Specification.Usage == ImageUsage::Texture)
+        {
+            usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        }
+        else if (m_Specification.Usage == ImageUsage::Storage)
+        {
+            usage |= VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        }
+
+        VkFormat vulkanFormat = ImageUtils::VulkanImageFormat(m_Specification.Format);
+
+        // Create Image
+        ImageUtils::CreateVulkanImage(device,
+            m_Specification.Width,
+            m_Specification.Height,
+            m_Specification.Mips,
+            m_Specification.Layers,
+            vulkanFormat,
+            VK_IMAGE_TILING_OPTIMAL,
+            usage,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            m_Info,
+            m_ImageMemory);
+
+
+        VkImageAspectFlags aspectMask = Utils::IsDepthFormat(m_Specification.Format) ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+        if (m_Specification.Format == ImageFormat::DEPTH24STENCIL8)
+            aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+
+        // Create Image view
+        ImageUtils::CreateImageView(device->GetVulkanDevice(), vulkanFormat, aspectMask, m_Specification.Mips, m_Specification.Layers, m_Info);
+    }
 
 	void VulkanImage2D::CopyFromBuffer(VkCommandBuffer cmdBuffer, VkBuffer buffer)
 	{

@@ -3,6 +3,7 @@
 #include "Ethane/Core/Log.h"
 
 #include <GLFW/glfw3.h>
+#include "Ethane/Renderer/Renderer.h"
 
 
 namespace Ethane
@@ -23,6 +24,8 @@ namespace Ethane
 		m_Window = Window::Create(WindowProps(name, 400, 300));
 		m_Window->SetEventCallback(BIND_EVENT_FUNCTION(OnEvent));
 		m_Window->SetVSync(false);
+        
+        Renderer::Init(m_Window->GetGraphicsContext());
 	}
 
 	Application::~Application()
@@ -86,6 +89,7 @@ namespace Ethane
 			{
 				if (m_Window->BeginFrame())
 				{
+                    Renderer::BeginFrame();
 					{
 						ETH_PROFILE_SCOPE("LayerStack OnUpdate");
 
@@ -93,6 +97,7 @@ namespace Ethane
 							layer->OnUpdate(timestep);
 					}
 
+                    Renderer::EndFrame();
 					m_Window->EndFrame();
 				}
 			}
@@ -103,6 +108,8 @@ namespace Ethane
 	{
 		Close();
 
+        Renderer::Shutdown();
+        
 		m_Window->Shutdown();
 
 		return true;

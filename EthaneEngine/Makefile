@@ -86,6 +86,8 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/Application.o
+GENERATED += $(OBJDIR)/EditorCamera.o
+GENERATED += $(OBJDIR)/Framebuffer.o
 GENERATED += $(OBJDIR)/GraphicsContext.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/IndexBuffer.o
@@ -96,6 +98,7 @@ GENERATED += $(OBJDIR)/MacosWindow.o
 GENERATED += $(OBJDIR)/Math.o
 GENERATED += $(OBJDIR)/Pipeline.o
 GENERATED += $(OBJDIR)/RenderPass.o
+GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/RendererAPI.o
 GENERATED += $(OBJDIR)/Shader.o
 GENERATED += $(OBJDIR)/UUID.o
@@ -104,14 +107,20 @@ GENERATED += $(OBJDIR)/VulkanBuffer.o
 GENERATED += $(OBJDIR)/VulkanCommandBuffer.o
 GENERATED += $(OBJDIR)/VulkanContext.o
 GENERATED += $(OBJDIR)/VulkanDevice.o
+GENERATED += $(OBJDIR)/VulkanFramebuffer.o
 GENERATED += $(OBJDIR)/VulkanImage.o
+GENERATED += $(OBJDIR)/VulkanImageUtils.o
 GENERATED += $(OBJDIR)/VulkanIndexBuffer.o
 GENERATED += $(OBJDIR)/VulkanPipeline.o
+GENERATED += $(OBJDIR)/VulkanRenderCommandBuffer.o
 GENERATED += $(OBJDIR)/VulkanRenderPass.o
+GENERATED += $(OBJDIR)/VulkanRenderTargetImage.o
+GENERATED += $(OBJDIR)/VulkanRendererAPI.o
 GENERATED += $(OBJDIR)/VulkanShader.o
 GENERATED += $(OBJDIR)/VulkanShaderCompiler.o
 GENERATED += $(OBJDIR)/VulkanShaderSystem.o
 GENERATED += $(OBJDIR)/VulkanSwapChain.o
+GENERATED += $(OBJDIR)/VulkanTexture.o
 GENERATED += $(OBJDIR)/VulkanVertexBuffer.o
 GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/WindowsInput.o
@@ -120,6 +129,8 @@ GENERATED += $(OBJDIR)/WindowsWindow.o
 GENERATED += $(OBJDIR)/ethpch.o
 GENERATED += $(OBJDIR)/stb_image.o
 OBJECTS += $(OBJDIR)/Application.o
+OBJECTS += $(OBJDIR)/EditorCamera.o
+OBJECTS += $(OBJDIR)/Framebuffer.o
 OBJECTS += $(OBJDIR)/GraphicsContext.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/IndexBuffer.o
@@ -130,6 +141,7 @@ OBJECTS += $(OBJDIR)/MacosWindow.o
 OBJECTS += $(OBJDIR)/Math.o
 OBJECTS += $(OBJDIR)/Pipeline.o
 OBJECTS += $(OBJDIR)/RenderPass.o
+OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/RendererAPI.o
 OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/UUID.o
@@ -138,14 +150,20 @@ OBJECTS += $(OBJDIR)/VulkanBuffer.o
 OBJECTS += $(OBJDIR)/VulkanCommandBuffer.o
 OBJECTS += $(OBJDIR)/VulkanContext.o
 OBJECTS += $(OBJDIR)/VulkanDevice.o
+OBJECTS += $(OBJDIR)/VulkanFramebuffer.o
 OBJECTS += $(OBJDIR)/VulkanImage.o
+OBJECTS += $(OBJDIR)/VulkanImageUtils.o
 OBJECTS += $(OBJDIR)/VulkanIndexBuffer.o
 OBJECTS += $(OBJDIR)/VulkanPipeline.o
+OBJECTS += $(OBJDIR)/VulkanRenderCommandBuffer.o
 OBJECTS += $(OBJDIR)/VulkanRenderPass.o
+OBJECTS += $(OBJDIR)/VulkanRenderTargetImage.o
+OBJECTS += $(OBJDIR)/VulkanRendererAPI.o
 OBJECTS += $(OBJDIR)/VulkanShader.o
 OBJECTS += $(OBJDIR)/VulkanShaderCompiler.o
 OBJECTS += $(OBJDIR)/VulkanShaderSystem.o
 OBJECTS += $(OBJDIR)/VulkanSwapChain.o
+OBJECTS += $(OBJDIR)/VulkanTexture.o
 OBJECTS += $(OBJDIR)/VulkanVertexBuffer.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/WindowsInput.o
@@ -249,6 +267,12 @@ $(OBJDIR)/WindowsPlatformUtils.o: src/Ethane/Platform/Windows/WindowsPlatformUti
 $(OBJDIR)/WindowsWindow.o: src/Ethane/Platform/Windows/WindowsWindow.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EditorCamera.o: src/Ethane/Renderer/EditorCamera.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Framebuffer.o: src/Ethane/Renderer/Framebuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GraphicsContext.o: src/Ethane/Renderer/GraphicsContext.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -262,6 +286,9 @@ $(OBJDIR)/Pipeline.o: src/Ethane/Renderer/Pipeline.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/RenderPass.o: src/Ethane/Renderer/RenderPass.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Renderer.o: src/Ethane/Renderer/Renderer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/RendererAPI.o: src/Ethane/Renderer/RendererAPI.cpp
@@ -291,7 +318,13 @@ $(OBJDIR)/VulkanContext.o: src/Ethane/Renderer/Vulkan/VulkanContext.cpp
 $(OBJDIR)/VulkanDevice.o: src/Ethane/Renderer/Vulkan/VulkanDevice.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanFramebuffer.o: src/Ethane/Renderer/Vulkan/VulkanFramebuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanImage.o: src/Ethane/Renderer/Vulkan/VulkanImage.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanImageUtils.o: src/Ethane/Renderer/Vulkan/VulkanImageUtils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanIndexBuffer.o: src/Ethane/Renderer/Vulkan/VulkanIndexBuffer.cpp
@@ -300,13 +333,25 @@ $(OBJDIR)/VulkanIndexBuffer.o: src/Ethane/Renderer/Vulkan/VulkanIndexBuffer.cpp
 $(OBJDIR)/VulkanPipeline.o: src/Ethane/Renderer/Vulkan/VulkanPipeline.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanRenderCommandBuffer.o: src/Ethane/Renderer/Vulkan/VulkanRenderCommandBuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanRenderPass.o: src/Ethane/Renderer/Vulkan/VulkanRenderPass.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanRenderTargetImage.o: src/Ethane/Renderer/Vulkan/VulkanRenderTargetImage.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanRendererAPI.o: src/Ethane/Renderer/Vulkan/VulkanRendererAPI.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanShader.o: src/Ethane/Renderer/Vulkan/VulkanShader.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanSwapChain.o: src/Ethane/Renderer/Vulkan/VulkanSwapChain.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanTexture.o: src/Ethane/Renderer/Vulkan/VulkanTexture.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanVertexBuffer.o: src/Ethane/Renderer/Vulkan/VulkanVertexBuffer.cpp

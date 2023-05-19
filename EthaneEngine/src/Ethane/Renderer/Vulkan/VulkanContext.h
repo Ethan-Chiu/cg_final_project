@@ -5,12 +5,12 @@
 #include <vulkan/vulkan.h>
 
 #include "VulkanDevice.h"
-#include "VulkanSwapChain.h"
 
 
 struct GLFWwindow;
 
 namespace Ethane {
+    class VulkanSwapChain;
 
 	struct ContextCreateInfo
 	{
@@ -93,20 +93,21 @@ namespace Ethane {
 
 	public:
 		VulkanContext(GLFWwindow* windowHandle);
-		virtual ~VulkanContext() {};
+		virtual ~VulkanContext();
 
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
-		virtual bool BeginFrame() override {};
-		virtual void SwapBuffers() override {};
+		virtual bool BeginFrame() override;
+		virtual void SwapBuffers() override;
 		
-		virtual void OnResize(uint32_t width, uint32_t height) override {};
+		virtual void OnResize(uint32_t width, uint32_t height) override;
 
 		// Getter
 		static VkInstance GetInstance() { return s_VulkanInstance; }
         const VulkanPhysicalDevice* GetPhysicalDevice() const { return m_PhysicalDevice.get(); }
         const VulkanDevice* GetDevice() const { return m_Device.get(); }
+        const VulkanSwapChain* GetSwapchain() const { return m_SwapChain.get(); }
 
     private:
         bool InitInstance(const ContextCreateInfo& info);

@@ -2,9 +2,6 @@
 
 #include "Vulkan.h"
 #include "VulkanDevice.h"
-
-//#include "VulkanImage.h"
-
 #include "VulkanCommandBuffer.h"
 #include "VulkanRenderPass.h"
 
@@ -36,7 +33,7 @@ namespace Ethane{
 		VkSurfaceKHR GetSurface() const { return m_Surface; }
 		VkFormat GetImageFormat() const { return m_ImageFormat; }
 		VkFormat GetDepthFormat() const { return m_DepthFormat; }
-		VkRenderPass GetRenderPass() const { return m_RenderPass.GetHandle(); } // test
+		VkRenderPass GetRenderPass() const { return m_RenderPass->GetHandle(); } // test
 		uint32_t GetImageCount() const { return m_ImageCount; } // test
 		uint32_t GetWidth() const { return m_Extent.width; }// test
 		uint32_t GetHeight() const { return m_Extent.height; }// test
@@ -78,7 +75,7 @@ namespace Ethane{
 
 		std::vector<VkFramebuffer> m_Framebuffers;
 
-		VulkanRenderPass m_RenderPass;
+		Scope<VulkanRenderPass> m_RenderPass;
 		std::vector<VulkanCommandBuffer> m_GraphicsCommandBuffers;
 		std::vector<VkCommandBuffer> m_SecondaryCommandBuffers;
 

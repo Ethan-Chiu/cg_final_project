@@ -1,18 +1,21 @@
 #pragma once
 
-#include "Vulkan.h"
 #include "Ethane/Renderer/RenderPass.h"
+#include "VulkanImage.h"
 
 namespace Ethane {
 
 	class VulkanRenderPass : public RenderPass
 	{
 	public:
-		VulkanRenderPass() = default;
+		VulkanRenderPass(VkDevice device, const std::vector<ImageFormat>& colorAttachmentFormats, ImageFormat depthAttachmentFormat, bool clearOnLoad, bool finalPresent = false);
 		virtual ~VulkanRenderPass() {};
 
-		void Create(VkDevice device, bool hasDepth, VkFormat imageFormat, VkFormat depthFormat);
+        static Scope<VulkanRenderPass> Create(VkDevice device, const std::vector<ImageFormat>& colorAttachmentFormats, ImageFormat depthAttachmentFormat, bool clearOnLoad, bool finalPresent = false);
+        
+		void CreateOld(VkDevice device, bool hasDepth, VkFormat imageFormat, VkFormat depthFormat);
 		void Destroy();
+        
 		void Begin(VkCommandBuffer cmdBuffer, uint32_t width, uint32_t height, VkFramebuffer frameBuffer);
 		void End(VkCommandBuffer cmdBuffer);
 
