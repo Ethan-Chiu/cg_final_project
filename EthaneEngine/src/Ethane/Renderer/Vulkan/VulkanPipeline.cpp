@@ -206,7 +206,7 @@ namespace Ethane {
 		pipelineInfo.pDynamicState = &dynamicState; // Optional
 		pipelineInfo.layout = m_PipelineLayout;
 
-		Ref<VulkanRenderPass> renderPass = std::dynamic_pointer_cast<VulkanRenderPass>(m_Specification.RenderPass);
+		const VulkanRenderPass* renderPass = dynamic_cast<const VulkanRenderPass*>(m_Specification.RenderPass);
 		pipelineInfo.renderPass = renderPass->GetHandle();
 		pipelineInfo.subpass = 0;
 

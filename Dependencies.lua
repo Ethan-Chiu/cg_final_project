@@ -9,11 +9,11 @@ IncludeDir["spdlog"] = "%{wks.location}/EthaneEngine/vendor/spdlog/include"
 IncludeDir["glm"] = "%{wks.location}/EthaneEngine/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/EthaneEngine/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/EthaneEngine/vendor/entt/include"
-IncludeDir["yaml_cpp"] = "%{wks.location}/EthaneEngine/vendor/yaml-cpp/include"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 -- IncludeDir["shaderc"] = "%{wks.location}/EthaneEngine/vendor/shaderc/include"
 -- IncludeDir["SPIRV_Cross"] = "%{wks.location}/EthaneEngine/vendor/SPIRV-Cross"
 IncludeDir["Assimp"] = "%{wks.location}/EthaneEngine/vendor/assimp/include"
+IncludeDir["yaml_cpp"] = "%{wks.location}/EthaneEngine/vendor/yaml-cpp/include"
 IncludeDir["ImGui"] = "%{wks.location}/EthaneEngine/vendor/imgui"
 IncludeDir["ImGuizmo"] = "%{wks.location}/EthaneEngine/vendor/ImGuizmo"
 
@@ -23,9 +23,13 @@ LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
 LibraryDir["VulkanSDK_Debug"] = "%{wks.location}/EthaneEngine/vendor/VulkanSDK/Lib"
 LibraryDir["VulkanSDK_DebugDLL"] = "%{wks.location}/EthaneEngine/vendor/VulkanSDK/Bin"
 
+LibraryDir["MacAssimp"] = "%{wks.location}/EthaneEngine/vendor/assimp/macos/lib"
+LibraryDir["MacYamlCpp"] = "%{wks.location}/EthaneEngine/vendor/yaml-cpp/build"
+
 Library = {}
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
 Library["VulkanUtils"] = "%{LibraryDir.VulkanSDK}/VkLayer_utils.lib"
+
 
 -- Library["ShaderC_Debug"] = "%{LibraryDir.VulkanSDK}/shaderc_sharedd.lib"
 -- Library["ShaderC_Utils_Debug"] = "%{LibraryDir.VulkanSDK}/shaderc_utild.lib"

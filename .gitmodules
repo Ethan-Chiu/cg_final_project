@@ -7,3 +7,6 @@
 [submodule "EthaneEngine/vendor/glm"]
 	path = EthaneEngine/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "EthaneEngine/vendor/yaml-cpp"]
+	path = EthaneEngine/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

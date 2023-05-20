@@ -2,6 +2,7 @@
 
 #include "Ethane/Core/Base.h"
 #include "Image.h"
+#include "RenderPass.h"
 #include <map>
 
 namespace Ethane {
@@ -51,6 +52,7 @@ namespace Ethane {
         
 		// Getter
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
+        virtual const RenderPass* GetRenderPass() const = 0;
 
 		static Ref<Framebuffer> Create(const GraphicsContext* ctx, const FramebufferSpecification& spec);
 	};

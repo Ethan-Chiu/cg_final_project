@@ -8,8 +8,9 @@ namespace Ethane {
 	RendererConfig Renderer::s_Config = RendererConfig{};
     Scope<RendererAPI> Renderer::s_RendererAPI = nullptr;
 
-	void Renderer::Init(const GraphicsContext* ctx)
+	void Renderer::Init(const GraphicsContext* ctx, const RendererConfig& config)
 	{
+        s_Config = config;
 		ETH_PROFILE_FUNCTION();
         switch (RendererAPI::GetAPI())
         {

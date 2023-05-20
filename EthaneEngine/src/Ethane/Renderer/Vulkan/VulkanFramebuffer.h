@@ -28,7 +28,7 @@ namespace Ethane {
 		uint32_t GetHeight() const { return m_Height; }
 
         VkFramebuffer GetVulkanFramebuffer() const { return m_Framebuffer; }
-        const VulkanRenderPass* GetRenderPass() const { return m_RenderPass.get(); }
+        virtual const VulkanRenderPass* GetRenderPass() const override { return m_RenderPass.get(); }
 
 //		virtual Ref<Image2D> GetImage(uint32_t attachmentIndex = 0) const { ETH_CORE_ASSERT(attachmentIndex < m_AttachmentImages.size()); return m_AttachmentImages[attachmentIndex]; }
 //		virtual Ref<VulkanTexture2D> GetTexture(uint32_t attachmentIndex = 0) const { ETH_CORE_ASSERT(attachmentIndex < m_AttachmentTextures.size()); return m_AttachmentTextures[attachmentIndex]; }

@@ -66,6 +66,8 @@ project "EthaneEngine"
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.yaml_cpp}",
     }
 
 	includedirs
@@ -79,6 +81,7 @@ project "EthaneEngine"
 	{
 		"GLFW",
 		"Glad",
+		"yaml-cpp",
 	}
  
     filter "action:xcode4"
@@ -105,6 +108,11 @@ project "EthaneEngine"
 		}
 		kind "SharedLib"
 
+		libdirs { 
+			LibraryDir["MacAssimp"],
+			LibraryDir["MacYamlCpp"]
+		}
+
 		links {
 			"OpenGL.framework",
 			"Cocoa.framework",
@@ -115,6 +123,8 @@ project "EthaneEngine"
             "spirv-cross-core",
             "spirv-cross-glsl",
             "SPIRV-Tools",
+			"assimp",
+			"z"
 		}
   
     filter "configurations:Debug"

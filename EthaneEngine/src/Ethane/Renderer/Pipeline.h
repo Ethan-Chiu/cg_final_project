@@ -13,7 +13,7 @@ namespace Ethane {
 	struct PipelineSpecification
 	{
 		Ref<Shader> Shader;
-		Ref<RenderPass> RenderPass;
+		const RenderPass* RenderPass;
 		VertexBufferLayout Layout;
 	};
 

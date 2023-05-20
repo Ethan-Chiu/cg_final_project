@@ -25,7 +25,11 @@ namespace Ethane
 		m_Window->SetEventCallback(BIND_EVENT_FUNCTION(OnEvent));
 		m_Window->SetVSync(false);
         
-        Renderer::Init(m_Window->GetGraphicsContext());
+        RendererConfig config = {
+            m_Window->GetWidth(),
+            m_Window->GetHeight()
+        };
+        Renderer::Init(m_Window->GetGraphicsContext(), config);
 	}
 
 	Application::~Application()
