@@ -7,6 +7,8 @@ namespace Ethane {
 
 	RendererConfig Renderer::s_Config = RendererConfig{};
     Scope<RendererAPI> Renderer::s_RendererAPI = nullptr;
+    std::vector<const GraphicsContext*> Renderer::s_ContextList = {};
+
 
 	void Renderer::Init(const GraphicsContext* ctx, const RendererConfig& config)
 	{
@@ -22,6 +24,7 @@ namespace Ethane {
             ETH_CORE_INFO("Vulkan graphic API selected");
             break;
         }
+        s_ContextList.push_back(ctx);
         s_RendererAPI->Init(s_Config, ctx);
 	}
 
@@ -44,5 +47,20 @@ namespace Ethane {
 	{
         s_RendererAPI->EndFrame();
 	}
+
+    void Renderer::BeginRenderTarget(const RenderTarget* target, bool explicitClear)
+    {
+        s_RendererAPI->BeginRenderTarget(target, explicitClear);
+    }
+
+    void Renderer::EndRenderTarget()
+    {
+        s_RendererAPI->EndRenderTarget();
+    }
+
+    TargetImage* Renderer::GetSwapchainTarget()
+    {
+        return s_RendererAPI->GetSwapchainTarget();
+    }
 	
 }

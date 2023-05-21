@@ -46,7 +46,8 @@ namespace Ethane {
 			return;
 
 		auto device = m_Context->GetDevice()->GetVulkanDevice();
-
+        vkDeviceWaitIdle(device);
+        
 		if (m_Info.ImageView) {
 			vkDestroyImageView(device, m_Info.ImageView, nullptr);
 			ETH_CORE_WARN("VulkanImage2D::Release ImageView = {0}", (const void*)m_Info.ImageView);

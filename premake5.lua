@@ -167,11 +167,14 @@ project "Ethane-Editor"
     { 
 		"%{wks.location}/EthaneEngine/src",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.VulkanSDK}",
+		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.yaml_cpp}"
     }
 
 	includedirs

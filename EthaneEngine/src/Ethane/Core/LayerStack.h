@@ -13,6 +13,8 @@ namespace Ethane {
 		LayerStack() = default;
 		~LayerStack();
 
+        void Detach();
+        
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 		void PopLayer(Layer* layer);

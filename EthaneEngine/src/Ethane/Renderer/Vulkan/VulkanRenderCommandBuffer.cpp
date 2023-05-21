@@ -27,22 +27,22 @@ namespace Ethane {
             cmdBuffer.Allocate(m_CommandPool, true);
         }
         
-		VkFenceCreateInfo fenceCreateInfo{};
-		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		m_WaitFences.resize(framesInFlight);
-		for (auto& fence : m_WaitFences)
-			VK_CHECK_RESULT(vkCreateFence(device->GetVulkanDevice(), &fenceCreateInfo, nullptr, &fence));
-        
+        VkFenceCreateInfo fenceCreateInfo{};
+        fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        m_WaitFences.resize(framesInFlight);
+        for (auto& fence : m_WaitFences)
+            VK_CHECK_RESULT(vkCreateFence(device->GetVulkanDevice(), &fenceCreateInfo, nullptr, &fence));
 	}
 
     void VulkanRenderCommandBuffer::Destroy()
     {
         auto device =m_Context->GetDevice()->GetVulkanDevice();
         
+        vkDeviceWaitIdle(device);
         for (auto& fence : m_WaitFences)
             vkDestroyFence(device, fence, nullptr);
-        
+    
         VkCommandPool commandPool = m_CommandPool;
         vkDestroyCommandPool(device, commandPool, nullptr);
     }
@@ -61,19 +61,19 @@ namespace Ethane {
 
 	void VulkanRenderCommandBuffer::Submit()
 	{
-		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
+        uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
 
-		auto device = m_Context->GetDevice()->GetVulkanDevice();
-
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submitInfo.commandBufferCount = 1;
-		VkCommandBuffer commandBuffer = m_CommandBuffers[frameIndex].GetHandle();
-		submitInfo.pCommandBuffers = &commandBuffer;
-
-		VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_WaitFences[frameIndex], VK_TRUE, UINT64_MAX));
-		VK_CHECK_RESULT(vkResetFences(device, 1, &m_WaitFences[frameIndex]));
-		VK_CHECK_RESULT(vkQueueSubmit(m_Context->GetDevice()->GetGraphicsQueue(), 1, &submitInfo, m_WaitFences[frameIndex]));
+        auto device = m_Context->GetDevice()->GetVulkanDevice();
+        
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        VkCommandBuffer commandBuffer = m_CommandBuffers[frameIndex].GetHandle();
+        submitInfo.pCommandBuffers = &commandBuffer;
+        
+        VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_WaitFences[frameIndex], VK_TRUE, UINT64_MAX));
+        VK_CHECK_RESULT(vkResetFences(device, 1, &m_WaitFences[frameIndex]));
+        VK_CHECK_RESULT(vkQueueSubmit(m_Context->GetDevice()->GetGraphicsQueue(), 1, &submitInfo, m_WaitFences[frameIndex]));
 	}
 
 }

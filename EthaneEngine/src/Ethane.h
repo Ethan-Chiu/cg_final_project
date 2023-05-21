@@ -15,6 +15,25 @@
 #include "Ethane/Events/ApplicationEvent.h"
 #include "Ethane/Events/KeyEvent.h"
 #include "Ethane/Events/MouseEvent.h"
-
+//-----renderer-------
+#include "Ethane/Renderer/Renderer.h"
+#include "Ethane/Renderer/SceneRenderer.h"
+#include "Ethane/Renderer/VertexBuffer.h"
+#include "Ethane/Renderer/IndexBuffer.h"
+#include "Ethane/Renderer/Pipeline.h"
+#include "Ethane/Renderer/Shader.h"
+#include "Ethane/Renderer/Texture.h"
+#include "Ethane/Renderer/Mesh.h"
+#include "Ethane/Renderer/RenderPass.h"
+//-------Scene--------
+#include "Ethane/Scene/Scene.h"
+#include "Ethane/Scene/Entity.h"
+#include "Ethane/Scene/ScriptableEntity.h"
+#include "Ethane/Scene/Components.h"
 //-----Time Step-----
 #include "Ethane/Core/Timestep.h"
+//-------Asset-------
+#include "Ethane/Asset/Asset.h"
+#include "Ethane/Asset/AssetManager.h"
+#include "Ethane/Asset/ShaderLibrary.h"
+//--------------------

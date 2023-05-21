@@ -217,6 +217,9 @@
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/stb_image,
 					../EthaneEngine/vendor/entt/include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../EthaneEngine/vendor/assimp/include,
+					"../EthaneEngine/vendor/yaml-cpp/include",
 					"$(inherited)",
 				);
 			};
@@ -277,6 +280,9 @@
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/stb_image,
 					../EthaneEngine/vendor/entt/include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../EthaneEngine/vendor/assimp/include,
+					"../EthaneEngine/vendor/yaml-cpp/include",
 					"$(inherited)",
 				);
 			};
@@ -324,6 +330,9 @@
 					../EthaneEngine/vendor/glm,
 					../EthaneEngine/vendor/stb_image,
 					../EthaneEngine/vendor/entt/include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../EthaneEngine/vendor/assimp/include,
+					"../EthaneEngine/vendor/yaml-cpp/include",
 					"$(inherited)",
 				);
 			};

@@ -153,7 +153,7 @@ namespace Ethane {
 		ETH_PROFILE_FUNCTION();
 
 		glfwDestroyWindow(m_Window);
-		 m_Context->Shutdown();
+        m_Context->Shutdown();
 	}
 
 	bool MacosWindow::BeginFrame()
@@ -187,7 +187,7 @@ namespace Ethane {
 
 	void MacosWindow::OnResize(uint32_t width, uint32_t height)
 	{
-		// m_Context->OnResize(width, height);
+		 m_Context->OnResize(width, height);
 	}
 
 	bool MacosWindow::IsVSync() const

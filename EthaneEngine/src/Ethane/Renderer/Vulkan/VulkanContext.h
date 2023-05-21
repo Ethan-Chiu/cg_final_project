@@ -11,6 +11,7 @@ struct GLFWwindow;
 
 namespace Ethane {
     class VulkanSwapChain;
+    class VulkanRenderCommandBuffer;
 
 	struct ContextCreateInfo
 	{
@@ -108,7 +109,7 @@ namespace Ethane {
         const VulkanPhysicalDevice* GetPhysicalDevice() const { return m_PhysicalDevice.get(); }
         const VulkanDevice* GetDevice() const { return m_Device.get(); }
         const VulkanSwapChain* GetSwapchain() const { return m_SwapChain.get(); }
-
+        
     private:
         bool InitInstance(const ContextCreateInfo& info);
         void InitDebugUtils();

@@ -30,21 +30,20 @@ namespace Ethane {
         
 		// Geometry
 		{
-//            imageSpec.DebugName = "GeoColor";
-//            imageSpec.Format = ImageFormat::BGRA;
-//            m_GeoColor = Image2D::Create(m_Context, imageSpec);
-//            imageSpec.DebugName = "GeoDepth";
-//            imageSpec.Format = ImageFormat::Depth;
-//            m_GeoDepth = Image2D::Create(m_Context, imageSpec);
-//
-//			FramebufferSpecification geoFramebufferSpec;
-//			geoFramebufferSpec.Attachments = { m_GeoColor.get(), m_GeoDepth.get() };
-//			geoFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-//			geoFramebufferSpec.DebugName = "Geometry";
-//            geoFramebufferSpec.Width = rendererConfig.DefaultWindowWidth;
-//            geoFramebufferSpec.Height = rendererConfig.DefaultWindowHeight;
-//			Ref<Framebuffer> framebuffer = Framebuffer::Create(m_Context, geoFramebufferSpec);
-//
+            m_GeoColor = Renderer::GetSwapchainTarget();
+            imageSpec.DebugName = "GeoDepth";
+            imageSpec.Format = ImageFormat::DEPTH32F;
+            m_GeoDepth = Image2D::Create(m_Context, imageSpec);
+
+			RenderTargetSpecification geoTargetSpec;
+            geoTargetSpec.Attachments = { m_GeoColor, m_GeoDepth.get() };
+            geoTargetSpec.IsTargetImage = true;
+            geoTargetSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+            geoTargetSpec.DebugName = "Geometry";
+            geoTargetSpec.Width = rendererConfig.DefaultWindowWidth;
+            geoTargetSpec.Height = rendererConfig.DefaultWindowHeight;
+			m_GeoTarget = RenderTarget::Create(m_Context, geoTargetSpec);
+
 //			PipelineSpecification pipelineSpecification;
 //			pipelineSpecification.Layout = {
 //				{ ShaderDataType::Float3, "a_Position" },
@@ -54,7 +53,7 @@ namespace Ethane {
 //				{ ShaderDataType::Float2, "a_TexCoord" },
 //			};
 //			pipelineSpecification.Shader = ShaderLibrary::Get("PBR_static");
-//            pipelineSpecification.RenderPass = framebuffer->GetRenderPass();
+//            pipelineSpecification.RenderPass = m_GeoTarget->GetRenderPass();
 //			m_GeometryPipeline = Pipeline::Create(m_Context, pipelineSpecification);
 
 //			m_TestDiffuse = Texture2D::Create("assets/textures/FloorSandStone/cobblestone.png");
@@ -141,7 +140,8 @@ namespace Ethane {
 		{
 			m_NeedResize = false;
 		
-			m_GeoFramebuffer->Resize(m_ViewportWidth, m_ViewportHeight);
+            m_GeoTarget->Resize(m_ViewportWidth, m_ViewportHeight);
+//			m_GeoFramebuffer->Resize(m_ViewportWidth, m_ViewportHeight);
 //			->Resize(m_ViewportWidth, m_ViewportHeight);
 
 //			m_CompositeMaterial->Set("u_Texture", std::dynamic_pointer_cast<VulkanFramebuffer>(geoFramebuffer)->GetTexture());
@@ -196,7 +196,8 @@ namespace Ethane {
 	{
 		ETH_PROFILE_FUNCTION();
 
-//		VulkanRendererAPI::BeginRenderPass(m_GeometryPipeline->GetSpecification().RenderPass);
+        
+		Renderer::BeginRenderTarget(m_GeoTarget.get());
 //
 //		// Render entities
 //		for (auto& dc : m_DrawList)
@@ -212,7 +213,7 @@ namespace Ethane {
 //			VulkanRendererAPI::DrawQuad(m_GridPipeline, m_GridMaterial, transform);
 //		}
 //
-//		VulkanRendererAPI::EndRenderPass();
+        Renderer::EndRenderTarget();
 	}
 
 	void SceneRenderer::CompositePass()
@@ -240,4 +241,10 @@ namespace Ethane {
 
 		m_DrawList.clear();
 	}
+
+    void SceneRenderer::Shutdown()
+    {
+        m_GeoTarget->Destroy();
+        m_GeoDepth->Destroy();
+    }
 }

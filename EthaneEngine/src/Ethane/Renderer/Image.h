@@ -65,6 +65,12 @@ namespace Ethane {
 		static Ref<Image2D> Create(const GraphicsContext* ctx, ImageSpecification specification, void* buffer = nullptr);
 	};
 
+    class TargetImage : public Image
+    {
+    public:
+        static Ref<TargetImage> Create(const GraphicsContext* ctx, ImageSpecification specification);
+    };
+
 	namespace Utils {
 		inline bool IsDepthFormat(ImageFormat format)
 		{

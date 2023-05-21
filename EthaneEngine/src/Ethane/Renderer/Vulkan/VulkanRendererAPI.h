@@ -5,7 +5,7 @@
 #include "VulkanVertexBuffer.h"
 #include "VulkanIndexBuffer.h"
 #include "VulkanRenderCommandBuffer.h"
-#include "VulkanFramebuffer.h"
+#include "VulkanRenderTarget.h"
 
 namespace Ethane {
 
@@ -38,7 +38,9 @@ namespace Ethane {
         virtual void Shutdown() override;
 
 		void BeginFrame() override;
-		void EndFrame() override {};
+		void EndFrame() override;
+        
+        virtual VulkanTargetImage* GetSwapchainTarget() const override;
 
         // TODO:
         void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {};
@@ -47,8 +49,8 @@ namespace Ethane {
 		void BeginRenderCommandBuffer();
 		void EndRenderCommandBuffer();
 
-		void BeginRenderPass(const Framebuffer* framebuffer, bool explicitClear = false);
-		void EndRenderPass();
+		virtual void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false) override;
+        virtual void EndRenderTarget() override;
 	private:
 //		static void UpdateMaterialForRendering(Ref<VulkanMaterial> material);
 //		static void CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, Ref<VulkanMaterial> material, uint32_t frameIndex);

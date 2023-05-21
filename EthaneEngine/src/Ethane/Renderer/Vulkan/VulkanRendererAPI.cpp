@@ -95,13 +95,11 @@ namespace Ethane {
         s_Data->QuadVertexBuffer->Destroy();
         s_Data->QuadIndexBuffer->Destroy();
         
-        auto imageCount = m_Context->GetSwapchain()->GetImageCount();
         for (auto pool : s_Data->DescriptorPools)
         {
             vkDestroyDescriptorPool(m_Context->GetDevice()->GetVulkanDevice(), pool, nullptr);
         }
         s_Data->DescriptorPools.clear();
-
         
         delete s_Data;
     }
@@ -121,9 +119,19 @@ namespace Ethane {
 
 	void VulkanRendererAPI::BeginFrame()
 	{
-		VkDevice device = m_Context->GetDevice()->GetVulkanDevice();
-		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
+        BeginRenderCommandBuffer();
 	}
+
+    void VulkanRendererAPI::EndFrame()
+    {
+        EndRenderCommandBuffer();
+        m_RenderCommandBuffer->Submit();
+    }
+
+    VulkanTargetImage* VulkanRendererAPI::GetSwapchainTarget() const
+    {
+        return m_Context->GetSwapchain()->GetTargetImage();
+    }
 
 	void VulkanRendererAPI::BeginRenderCommandBuffer()
 	{
@@ -135,15 +143,15 @@ namespace Ethane {
         m_RenderCommandBuffer->End();
 	}
 
-	void VulkanRendererAPI::BeginRenderPass(const Framebuffer* framebuffer, bool explicitClear)
+	void VulkanRendererAPI::BeginRenderTarget(const RenderTarget* render_target, bool explicitClear)
 	{
 //		ETH_PROFILE_FUNCTION(fmt::format("VulkanRenderer::BeginRenderPass ({})", renderPass->GetSpecification().DebugName).c_str());
+        const VulkanRenderTarget* target = static_cast<const VulkanRenderTarget*>(render_target);
 
 		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
-		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
-
-        const VulkanFramebuffer* fb = dynamic_cast<const VulkanFramebuffer*>(framebuffer);
-		const auto& fbSpec = fb->GetSpecification();
+//		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
+        //TODO: 
+        VkCommandBuffer commandBuffer = m_Context->GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
 
 		uint32_t width, height;
 
@@ -151,20 +159,19 @@ namespace Ethane {
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 
-		VkRenderPassBeginInfo renderPassBeginInfo = {};
-		if (framebuffer->GetSpecification().SwapChainTarget)
+		VkRenderPassBeginInfo renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+		if (target->GetSpecification().SwapChainTarget)
 		{
 			const VulkanSwapChain* swapChain = m_Context->GetSwapchain();
 			width = swapChain->GetWidth();
 			height = swapChain->GetHeight();
-			renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			renderPassBeginInfo.pNext = nullptr;
-			renderPassBeginInfo.renderPass = fb->GetRenderPass()->GetHandle();
+			renderPassBeginInfo.renderPass = target->GetRenderPass()->GetHandle();
 			renderPassBeginInfo.renderArea.offset.x = 0;
 			renderPassBeginInfo.renderArea.offset.y = 0;
 			renderPassBeginInfo.renderArea.extent.width = width;
 			renderPassBeginInfo.renderArea.extent.height = height;
-			renderPassBeginInfo.framebuffer = swapChain->GetCurrentFramebuffer();
+			renderPassBeginInfo.framebuffer = target->GetCurrentFramebuffer()->GetHandle();
 
 			viewport.x = 0.0f;
 			viewport.y = (float)height;
@@ -173,16 +180,15 @@ namespace Ethane {
 		}
 		else
 		{
-			width = fb->GetWidth();
-			height = fb->GetHeight();
-			renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+			width = target->GetWidth();
+			height = target->GetHeight();
 			renderPassBeginInfo.pNext = nullptr;
-			renderPassBeginInfo.renderPass = fb->GetRenderPass()->GetHandle();
+			renderPassBeginInfo.renderPass = target->GetRenderPass()->GetHandle();
 			renderPassBeginInfo.renderArea.offset.x = 0;
 			renderPassBeginInfo.renderArea.offset.y = 0;
 			renderPassBeginInfo.renderArea.extent.width = width;
 			renderPassBeginInfo.renderArea.extent.height = height;
-			renderPassBeginInfo.framebuffer = fb->GetVulkanFramebuffer();
+			renderPassBeginInfo.framebuffer = target->GetCurrentFramebuffer()->GetHandle();
 
 			viewport.x = 0.0f;
 			viewport.y = 0.0f;
@@ -190,8 +196,7 @@ namespace Ethane {
 			viewport.height = (float)height;
 		}
 
-		// TODO: Does our framebuffer have a depth attachment?
-		const auto& clearValues = fb->GetVulkanClearValues();
+		const auto& clearValues = target->GetVulkanClearValues();
 		renderPassBeginInfo.clearValueCount = (uint32_t)clearValues.size();
 		renderPassBeginInfo.pClearValues = clearValues.data();
 
@@ -199,8 +204,8 @@ namespace Ethane {
 
 		if (explicitClear)
 		{
-			const uint32_t colorAttachmentCount = (uint32_t)fb->GetColorAttachmentCount();
-			const uint32_t totalAttachmentCount = colorAttachmentCount + (fb->HasDepthAttachment() ? 1 : 0);
+			const uint32_t colorAttachmentCount = (uint32_t)target->GetColorAttachmentCount();
+			const uint32_t totalAttachmentCount = colorAttachmentCount + (target->HasDepthAttachment() ? 1 : 0);
 			ETH_CORE_ASSERT(clearValues.size() == totalAttachmentCount);
 
 			std::vector<VkClearAttachment> attachments(totalAttachmentCount);
@@ -217,7 +222,7 @@ namespace Ethane {
 				clearRects[i].layerCount = 1;
 			}
 
-			if (fb->HasDepthAttachment())
+			if (target->HasDepthAttachment())
 			{
 				attachments[colorAttachmentCount].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 				attachments[colorAttachmentCount].clearValue = clearValues[colorAttachmentCount];
@@ -243,13 +248,15 @@ namespace Ethane {
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	void VulkanRendererAPI::EndRenderPass()
+	void VulkanRendererAPI::EndRenderTarget()
 	{
 //		ETH_PROFILE_FUNCTION("VulkanRenderer::EndRenderPass");
 
 		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
-		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
-
+        //TODO:
+//		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
+        VkCommandBuffer commandBuffer = m_Context->GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        
 		vkCmdEndRenderPass(commandBuffer);
 	}
 }

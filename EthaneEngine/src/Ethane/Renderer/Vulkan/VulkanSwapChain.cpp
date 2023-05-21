@@ -6,6 +6,7 @@
 
 #include "VulkanSwapChain.h"
 #include "VulkanRenderPass.h"
+#include "VulkanTargetImage.h"
 
 
 namespace Ethane {
@@ -23,6 +24,7 @@ namespace Ethane {
         m_Width(width),
         m_Height(height)
     {
+        m_TargetImage = nullptr;
     }
 
     Scope<VulkanSwapChain> VulkanSwapChain::Create(VkSurfaceKHR surface, VulkanDevice* device, uint32_t width, uint32_t height, bool vsync)
@@ -57,6 +59,7 @@ namespace Ethane {
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
         );
+        ETH_CORE_INFO("Depth Imgae Format: {0}", m_DepthFormat);
 
         // profiling
         ETH_CORE_TRACE("choose time: {0}ms", timer.ElapsedMillis());
@@ -146,6 +149,7 @@ namespace Ethane {
         m_Images.resize(m_ImageCount);
         VK_CHECK_RESULT(vkGetSwapchainImagesKHR(device, m_SwapChain, &m_ImageCount, m_Images.data()));
 
+        std::vector<ImageUtils::VulkanImageInfo> imageInfos;
         // create imageview
         m_ImageViews.resize(m_ImageCount);
         for (uint32_t i = 0; i < m_ImageCount; i++)
@@ -168,37 +172,53 @@ namespace Ethane {
             colorAttachmentView.flags = 0;
 
             VK_CHECK_RESULT(vkCreateImageView(device, &colorAttachmentView, nullptr, &m_ImageViews[i]));
+            imageInfos.push_back(ImageUtils::VulkanImageInfo{m_Images[i], m_ImageViews[i]});
         }
-
+        
+        ImageSpecification imageSpec = {};
+        imageSpec.Format = ImageUtils::VulkanImageFormatToImageFormat(m_ImageFormat);
+        imageSpec.Usage = ImageUsage::Attachment;
+        imageSpec.Width = m_Width;
+        imageSpec.Height = m_Height;
+        imageSpec.Mips = 1;
+        imageSpec.Layers = 1;
+        imageSpec.DebugName = "swapchain image";
+        
+        if(m_TargetImage == nullptr) {
+            m_TargetImage = CreateScope<VulkanTargetImage>(imageSpec, imageInfos);
+        } else {
+            m_TargetImage->SwapchainUpdate(imageSpec, imageInfos);
+        }
+        
 //        m_DepthAttachment = VulkanImage2D::Create(m_Width, m_Height, 1, 1, m_DepthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 //            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_IMAGE_ASPECT_DEPTH_BIT, true);
 
         // Render pass
-        std::vector<ImageFormat> attachmentFormat = {ImageUtils::VulkanImageFormatToImageFormat(m_ImageFormat)};
-        m_RenderPass = VulkanRenderPass::Create(device, attachmentFormat, ImageFormat::None, true, true);
-        ETH_CORE_TRACE("Swapchain renderpass created");
+//        std::vector<ImageFormat> attachmentFormat = {ImageUtils::VulkanImageFormatToImageFormat(m_ImageFormat)};
+//        m_RenderPass = VulkanRenderPass::Create(device, attachmentFormat, ImageFormat::None, true, true);
+//        ETH_CORE_TRACE("Swapchain renderpass created");
         
         // Framebuffers
-        m_Framebuffers.resize(m_ImageViews.size());
+//        m_Framebuffers.resize(m_ImageViews.size());
 
-        std::array<VkImageView, 1> attachments = {
-            m_ImageViews[0],
-            // m_DepthImageView
-        };
-        VkFramebufferCreateInfo framebufferInfo{};
-        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = m_RenderPass->GetHandle();
-        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-        framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width = m_Extent.width;
-        framebufferInfo.height = m_Extent.height;
-        framebufferInfo.layers = 1;
+//        std::array<VkImageView, 1> attachments = {
+//            m_ImageViews[0],
+//            // m_DepthImageView
+//        };
+//        VkFramebufferCreateInfo framebufferInfo{};
+//        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+//        framebufferInfo.renderPass = m_RenderPass->GetHandle();
+//        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+//        framebufferInfo.pAttachments = attachments.data();
+//        framebufferInfo.width = m_Extent.width;
+//        framebufferInfo.height = m_Extent.height;
+//        framebufferInfo.layers = 1;
 
-        for (size_t i = 0; i < m_ImageViews.size(); i++) {
-            attachments[0] = m_ImageViews[i];
-
-            VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
-        }
+//        for (size_t i = 0; i < m_ImageViews.size(); i++) {
+//            attachments[0] = m_ImageViews[i];
+//
+//            VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
+//        }
 
         // Synchronization Objects
         if (m_ImageAvailableSemaphores.empty() || m_RenderFinishedSemaphores.empty() || m_InFlightFences.empty())
@@ -315,7 +335,6 @@ namespace Ethane {
 
     void VulkanSwapChain::OnResize(uint32_t width, uint32_t height)
     {
-        ETH_CORE_WARN("VulkanSwapChain::OnResize");
         // NOTE: width == 0 or height == 0 will not occur
         m_Width = width;
         m_Height = height;
@@ -324,6 +343,8 @@ namespace Ethane {
 
     bool VulkanSwapChain::Resize()
     {
+        ETH_CORE_WARN("VulkanSwapChain::Resize");
+        
         if (m_IsRecreating) {
             ETH_CORE_WARN("Already recreating swapchain");
             return false;
@@ -370,7 +391,7 @@ namespace Ethane {
         currentCommandBuffer.Begin(false, false, false);
 
         SetViewportAndScissor();
-        BeginRenderPass();
+//        BeginRenderPass();
 
         return true;
     }
@@ -394,25 +415,25 @@ namespace Ethane {
         vkCmdSetScissor(currentCommandBuffer.GetHandle(), 0, 1, &scissor);
     }
 
-    void VulkanSwapChain::BeginRenderPass()
-    {
-        VulkanCommandBuffer currentCommandBuffer = m_GraphicsCommandBuffers[m_CurrentFrame];
-
-        std::array<VkClearValue, 1> clearValues{};
-        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-#if depth
-        clearValues[1].depthStencil = { 1.0f, 0 };
-#endif
-
-        VkRenderPassBeginInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-        renderPassInfo.renderPass = m_RenderPass->GetHandle();
-        renderPassInfo.framebuffer = m_Framebuffers[m_CurrentImageIndex];
-        renderPassInfo.renderArea.offset = { 0, 0 };
-        renderPassInfo.renderArea.extent = m_Extent;
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());;
-        renderPassInfo.pClearValues = clearValues.data();
-        vkCmdBeginRenderPass(currentCommandBuffer.GetHandle(), &renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
-    }
+//    void VulkanSwapChain::BeginRenderPass()
+//    {
+//        VulkanCommandBuffer currentCommandBuffer = m_GraphicsCommandBuffers[m_CurrentFrame];
+//
+//        std::array<VkClearValue, 1> clearValues{};
+//        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+//#if depth
+//        clearValues[1].depthStencil = { 1.0f, 0 };
+//#endif
+//
+//        VkRenderPassBeginInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+//        renderPassInfo.renderPass = m_RenderPass->GetHandle();
+//        renderPassInfo.framebuffer = m_Framebuffers[m_CurrentImageIndex];
+//        renderPassInfo.renderArea.offset = { 0, 0 };
+//        renderPassInfo.renderArea.extent = m_Extent;
+//        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());;
+//        renderPassInfo.pClearValues = clearValues.data();
+//        vkCmdBeginRenderPass(currentCommandBuffer.GetHandle(), &renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+//    }
 
     void VulkanSwapChain::RegisterSecondaryCmdBuffer(VkCommandBuffer secondaryBuffer)
     {
@@ -431,7 +452,7 @@ namespace Ethane {
             m_SecondaryCommandBuffers.clear();
         }
 
-        vkCmdEndRenderPass(currentCmdBufferHandle);
+//        vkCmdEndRenderPass(currentCmdBufferHandle);
         VK_CHECK_RESULT(vkEndCommandBuffer(currentCmdBufferHandle));
 
 
@@ -511,12 +532,12 @@ namespace Ethane {
 
         vkDeviceWaitIdle(device);
 
-        for (auto framebuffer : m_Framebuffers)
-        {
-            vkDestroyFramebuffer(device, framebuffer, nullptr);
-        }
-
-        m_RenderPass->Destroy();
+//        for (auto framebuffer : m_Framebuffers)
+//        {
+//            vkDestroyFramebuffer(device, framebuffer, nullptr);
+//        }
+//
+//        m_RenderPass->Destroy();
 
 //        m_DepthAttachment->Destroy();
 
@@ -548,8 +569,8 @@ namespace Ethane {
             vkDestroyFence(device, m_InFlightFences[i], nullptr);
         }
 
+        m_TargetImage = nullptr;
         CleanupSwapChain(m_SwapChain);
-
     }
 
 }

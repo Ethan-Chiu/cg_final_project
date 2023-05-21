@@ -8,7 +8,6 @@
 
 namespace Ethane
 {
-
 #define BIND_EVENT_FUNCTION(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
@@ -112,6 +111,9 @@ namespace Ethane
 	{
 		Close();
 
+        // shutdown all layers first
+        m_LayerStack.Detach();
+        
         Renderer::Shutdown();
         
 		m_Window->Shutdown();

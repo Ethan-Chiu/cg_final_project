@@ -16,6 +16,14 @@ namespace Ethane {
 		void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
 		void OnEvent(Event& e) override;
+    
+        bool OnResize(WindowResizeEvent& e);
+        
+    private:
+        Ref<Scene> m_ActiveScene;
+        Ref<SceneRenderer> m_ViewportRenderer;
+        
+        EditorCamera m_EditorCamera;
 	};
 
 }

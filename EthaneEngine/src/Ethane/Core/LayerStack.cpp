@@ -5,12 +5,22 @@ namespace Ethane {
 
 	LayerStack::~LayerStack()
 	{
-		for (Layer* layer : m_Layers)
-		{
-			layer->OnDetach();
-			delete layer;
-		}
+		if(!m_Layers.empty())
+        {
+            ETH_CORE_ERROR("Layerstack should be detach first");
+        }
+            
 	}
+
+    void LayerStack::Detach()
+    {
+        for (Layer* layer : m_Layers)
+        {
+            layer->OnDetach();
+            delete layer;
+        }
+        m_Layers.clear();
+    }
 
 	void LayerStack::PushLayer(Layer* layer)
 	{

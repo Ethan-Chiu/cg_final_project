@@ -5,6 +5,7 @@
 
 #include "Vulkan/VulkanContext.h"
 #include "Vulkan/VulkanImage.h"
+#include "Vulkan/VulkanTargetImage.h"
 
 namespace Ethane{
 
@@ -19,4 +20,15 @@ namespace Ethane{
 		return nullptr;
 	}
 
+
+    Ref<TargetImage> TargetImage::Create(const GraphicsContext* ctx, ImageSpecification specification)
+    {
+        switch (RendererAPI::GetAPI())
+        {
+        case RendererAPI::API::None: return nullptr;
+            case RendererAPI::API::Vulkan: return CreateRef<VulkanTargetImage>(static_cast<const VulkanContext*>(ctx), specification);
+        }
+        ETH_CORE_ASSERT(false, "Unknown RendererAPI");
+        return nullptr;
+    }
 }

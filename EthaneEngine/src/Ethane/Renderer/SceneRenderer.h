@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Renderer.h"
+#include "Image.h"
 #include "Mesh.h"
-#include "Framebuffer.h"
-
 #include "Ethane/Scene/Scene.h"
+#include "RenderTarget.h"
 
 
 namespace Ethane {
@@ -22,6 +22,7 @@ namespace Ethane {
 		SceneRenderer(const GraphicsContext* ctx, Ref<Scene> scene);
 
 		void Init();
+        void Shutdown();
 
 		void SetViewportSize(uint32_t width, uint32_t height);
 
@@ -52,9 +53,9 @@ namespace Ethane {
         const GraphicsContext* m_Context = nullptr;
 		Ref<Scene> m_Scene;
 
-        Ref<Image2D> m_GeoColor = nullptr;
+        TargetImage* m_GeoColor = nullptr;
         Ref<Image2D> m_GeoDepth = nullptr;
-        Ref<Framebuffer> m_GeoFramebuffer = nullptr;
+        Scope<RenderTarget> m_GeoTarget = nullptr;
         
         
 

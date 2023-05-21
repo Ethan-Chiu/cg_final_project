@@ -6,6 +6,8 @@ namespace Ethane {
 
     struct RendererConfig;
     class GraphicsContext;
+    class TargetImage;
+    class RenderTarget;
 
 	class RendererAPI
 	{
@@ -23,6 +25,11 @@ namespace Ethane {
         virtual void SetClearColor(const glm::vec4& color) = 0;
         virtual void BeginFrame() = 0;
         virtual void EndFrame() = 0;
+        
+        virtual void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false) = 0;
+        virtual void EndRenderTarget() = 0;
+        
+        virtual TargetImage* GetSwapchainTarget() const = 0;
         
     public:
         virtual ~RendererAPI() = default;
