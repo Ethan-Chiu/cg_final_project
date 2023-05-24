@@ -10,8 +10,8 @@ namespace Ethane {
 	class VulkanVertexBuffer : public VertexBuffer, public VulkanBuffer
 	{
 	public:
-		VulkanVertexBuffer(const VulkanContext* ctx, uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Dynamic
-		VulkanVertexBuffer(const VulkanContext* ctx, void* data, uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Static
+		VulkanVertexBuffer(uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Dynamic
+		VulkanVertexBuffer(void* data, uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Static
 
 		void Cleanup();
 

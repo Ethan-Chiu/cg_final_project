@@ -5,8 +5,6 @@
 #include "VulkanBuffer.h"
 #include "VulkanCommandBuffer.h"
 
-//#include "stb_image.h"
-
 namespace Ethane{
 
 //	VulkanTexture2D::VulkanTexture2D(const std::string& path)
@@ -45,8 +43,8 @@ namespace Ethane{
 //	}
 
 
-	VulkanTexture2D::VulkanTexture2D(const VulkanContext* context, VulkanImage2D* image)
-		:m_Context(context), m_Width(image->GetWidth()), m_Height(image->GetHeight()), m_ChannelCount(4)
+	VulkanTexture2D::VulkanTexture2D(VulkanImage2D* image)
+		:m_Width(image->GetWidth()), m_Height(image->GetHeight()), m_ChannelCount(4)
 	{
         m_Image = image;
 
@@ -55,12 +53,24 @@ namespace Ethane{
 		UpdateDescriptorImageInfo();
 	}
 
+    void VulkanTexture2D::Destroy()
+    {
+        auto vk_device = VulkanContext::GetDevice()->GetVulkanDevice();
+
+        vkDeviceWaitIdle(vk_device);
+
+        m_Image->Destroy();
+
+        if (m_TextureSampler)
+            vkDestroySampler(vk_device, m_TextureSampler, nullptr);
+    }
+
 	void VulkanTexture2D::SetData(void* data, uint32_t imageSize)
 	{
-		const auto device = m_Context->GetDevice();
+		const auto device = VulkanContext::GetDevice();
 
 		// create staging buffer
-        VulkanBuffer stagingBuffer{device};
+        VulkanBuffer stagingBuffer{};
 		stagingBuffer.CreateVulkanBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, true);
 
 		// copy data to staging buffer
@@ -81,20 +91,8 @@ namespace Ethane{
 		stagingBuffer.Destroy();
 	}
 
-	void VulkanTexture2D::Cleanup()
-	{
-		auto vk_device = m_Context->GetDevice()->GetVulkanDevice();
-
-		vkDeviceWaitIdle(vk_device);
-
-		m_Image->Destroy();
-
-		if (m_TextureSampler)
-			vkDestroySampler(vk_device, m_TextureSampler, nullptr);
-	}
-
 	void VulkanTexture2D::CreateTextureSampler() {
-        auto vk_device = m_Context->GetDevice()->GetVulkanDevice();
+        auto vk_device = VulkanContext::GetDevice()->GetVulkanDevice();
 		
 		VkSamplerCreateInfo samplerInfo{ VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
 		samplerInfo.magFilter = VK_FILTER_LINEAR;

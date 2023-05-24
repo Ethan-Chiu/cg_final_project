@@ -8,7 +8,7 @@
 
 namespace Ethane {
 
-	Ref<Pipeline> Pipeline::Create(const GraphicsContext* ctx, const PipelineSpecification& spec)
+	Ref<Pipeline> Pipeline::Create(const PipelineSpecification& spec)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -16,7 +16,7 @@ namespace Ethane {
 			ETH_CORE_ASSERT(false, "endererAPI::None is currently not supported!");
 			return nullptr;
 		case RendererAPI::API::Vulkan:
-			return CreateRef<VulkanPipeline>(static_cast<const VulkanContext*>(ctx), spec);
+			return CreateRef<VulkanPipeline>(spec);
 		}
 
 		ETH_CORE_ASSERT(false, "Unknpwn RendererAPI");

@@ -18,7 +18,7 @@ namespace Ethane {
 class VulkanRenderTarget : public RenderTarget
 {
 public:
-    VulkanRenderTarget(const VulkanContext* context, const RenderTargetSpecification& spec);
+    VulkanRenderTarget(const RenderTargetSpecification& spec);
 
     virtual void Resize(uint32_t width, uint32_t height) override;
     virtual void Destroy() override;
@@ -38,7 +38,6 @@ private:
     void Invalidate();
     
 private:
-    const VulkanContext* m_Context;
     RenderTargetSpecification m_Specification;
     uint32_t m_Width = 0, m_Height = 0;
     

@@ -8,6 +8,10 @@ namespace Ethane {
     class GraphicsContext;
     class TargetImage;
     class RenderTarget;
+    class Mesh;
+    class Material;
+    class Pipeline;
+    class Shader;
 
 	class RendererAPI
 	{
@@ -26,8 +30,13 @@ namespace Ethane {
         virtual void BeginFrame() = 0;
         virtual void EndFrame() = 0;
         
+        virtual void RegisterShader(const Shader* shader) = 0;
+        virtual void SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size) = 0;
+        
         virtual void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false) = 0;
         virtual void EndRenderTarget() = 0;
+        
+        virtual void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform) = 0;
         
         virtual TargetImage* GetSwapchainTarget() const = 0;
         

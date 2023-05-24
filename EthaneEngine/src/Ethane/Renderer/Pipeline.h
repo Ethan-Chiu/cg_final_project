@@ -26,7 +26,8 @@ namespace Ethane {
 		virtual const PipelineSpecification& GetSpecification() const = 0;
 
 		virtual void Create() = 0;
+        virtual void Destroy() = 0;
 
-		static Ref<Pipeline> Create(const GraphicsContext* ctx, const PipelineSpecification& spec);
+		static Ref<Pipeline> Create(const PipelineSpecification& spec);
 	};
 }

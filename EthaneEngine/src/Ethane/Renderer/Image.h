@@ -48,9 +48,8 @@ namespace Ethane {
 	{
 	public:
 		virtual ~Image() {}
-
-		virtual void Destroy() = 0;
-
+        
+        virtual void Destroy() = 0;
 		// Getter
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
@@ -62,13 +61,13 @@ namespace Ethane {
 	class Image2D : public Image
 	{
 	public:
-		static Ref<Image2D> Create(const GraphicsContext* ctx, ImageSpecification specification, void* buffer = nullptr);
+		static Ref<Image2D> Create(ImageSpecification specification, void* buffer = nullptr);
 	};
 
     class TargetImage : public Image
     {
     public:
-        static Ref<TargetImage> Create(const GraphicsContext* ctx, ImageSpecification specification);
+        static Ref<TargetImage> Create(ImageSpecification specification);
     };
 
 	namespace Utils {

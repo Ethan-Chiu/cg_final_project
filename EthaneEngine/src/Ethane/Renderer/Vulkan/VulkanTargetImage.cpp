@@ -13,8 +13,8 @@
 
 namespace Ethane {
 
-    VulkanTargetImage::VulkanTargetImage(const VulkanContext* context, ImageSpecification specification)
-        : m_Context(context), m_Specification(specification)
+    VulkanTargetImage::VulkanTargetImage(ImageSpecification specification)
+        :m_Specification(specification)
     {
         CreateTargetImages();
     }
@@ -27,11 +27,10 @@ namespace Ethane {
 
     VulkanTargetImage::VulkanTargetImage(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
         VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag, VkImageAspectFlags aspectFlag, bool createView)
-        :m_Context(context)
     {
-        auto device = m_Context->GetDevice();
+        auto device = VulkanContext::GetDevice();
         
-        uint32_t imageCount = m_Context->GetSwapchain()->GetImageCount();
+        uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
         m_Infos.resize(imageCount);
         
         for(uint32_t i = 0; i <= imageCount; i++)
@@ -57,7 +56,7 @@ namespace Ethane {
         if (m_Infos.empty() || m_SwapchainTarget)
             return;
 
-        auto device = m_Context->GetDevice()->GetVulkanDevice();
+        auto device = VulkanContext::GetDevice()->GetVulkanDevice();
         vkDeviceWaitIdle(device);
         
         for(auto& info : m_Infos)
@@ -103,7 +102,7 @@ namespace Ethane {
         
         ETH_CORE_TRACE("VulkanImage2D::Invalidate ({0})", m_Specification.DebugName);
         
-        auto device = m_Context->GetDevice();
+        auto device = VulkanContext::GetDevice();
         
         VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT;
         if (Utils::IsDepthFormat(m_Specification.Format))
@@ -117,7 +116,7 @@ namespace Ethane {
         if (m_Specification.Format == ImageFormat::DEPTH24STENCIL8)
             aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
         
-        uint32_t imageCount = m_Context->GetSwapchain()->GetImageCount();
+        uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
         m_Infos.resize(imageCount);
         m_ImageMemory.resize(imageCount);
         

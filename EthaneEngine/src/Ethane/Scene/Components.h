@@ -9,6 +9,7 @@
 #include "ScriptableEntity.h"
 #include "Ethane/Renderer/Mesh.h"
 #include "Ethane/Renderer/Texture.h"
+#include "Ethane/Renderer/Material.h"
 
 namespace Ethane {
 
@@ -68,15 +69,15 @@ namespace Ethane {
 
 	struct MeshComponent
 	{
-		Ref<Mesh> Mesh;
-		// Ref<Ethane::MaterialTable> MaterialTable = Ref<Hazel::MaterialTable>::Create();
-//		Ref<Material> Material;
+		Ref<Mesh> MeshRef = nullptr;
+        Ref<Material> MatRef = nullptr;
+        // Ref<Ethane::MaterialTable> MaterialTable = Ref<Hazel::MaterialTable>::Create();
 	
-		MeshComponent() = default;
-		MeshComponent(const MeshComponent& other) = default;
-		MeshComponent(const Ref<Ethane::Mesh>& mesh)
-			: Mesh(mesh) {}
+        MeshComponent() = default;
+        MeshComponent(const MeshComponent&) = default;
+		MeshComponent(const Ref<Mesh>& mesh, const Ref<Material> material)
+			: MeshRef(mesh), MatRef(material) {}
 	
-		operator Ref<Ethane::Mesh>() { return Mesh; }
+		operator Ref<Mesh>() { return MeshRef; }
 	};
 }

@@ -4,7 +4,9 @@
 
 #include <GLFW/glfw3.h>
 #include "Ethane/Renderer/Renderer.h"
-
+#include "Ethane/Asset/AssetManager.h"
+#include "Ethane/Systems/ResourceSystem.h"
+#include "Ethane/Systems/TextureSystem.h"
 
 namespace Ethane
 {
@@ -29,6 +31,12 @@ namespace Ethane
             m_Window->GetHeight()
         };
         Renderer::Init(m_Window->GetGraphicsContext(), config);
+        
+        ResourceSystem::Init();
+        
+        TextureSystem::Init();
+        
+        AssetManager::Init();
 	}
 
 	Application::~Application()
@@ -113,6 +121,8 @@ namespace Ethane
 
         // shutdown all layers first
         m_LayerStack.Detach();
+        
+        AssetManager::Shutdown();
         
         Renderer::Shutdown();
         

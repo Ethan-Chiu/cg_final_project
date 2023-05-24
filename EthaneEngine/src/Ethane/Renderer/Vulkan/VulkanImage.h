@@ -9,14 +9,14 @@ namespace Ethane {
 	class VulkanImage2D  : public Image2D
 	{
 	public:
-		VulkanImage2D(const VulkanContext* context, ImageSpecification specification, void* buffer = nullptr);
+		VulkanImage2D(ImageSpecification specification, void* buffer = nullptr);
 		virtual ~VulkanImage2D() override;
 
-		VulkanImage2D(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers,
+		VulkanImage2D(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers,
                       VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag,
                       VkImageAspectFlags aspectFlag, bool createView);
 
-		static Ref<VulkanImage2D> Create(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format,
+		static Ref<VulkanImage2D> Create(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format,
 			VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag, VkImageAspectFlags aspectFlag, bool createView);
 
 		virtual void Destroy() override;
@@ -40,8 +40,6 @@ namespace Ethane {
         void CreateImage();
         
 	private:
-        const VulkanContext* m_Context;
-
 		ImageSpecification m_Specification;
         ImageUtils::VulkanImageInfo m_Info;
 		VkDeviceMemory m_ImageMemory;

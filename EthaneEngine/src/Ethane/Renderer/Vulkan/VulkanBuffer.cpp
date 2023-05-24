@@ -6,8 +6,8 @@
 
 namespace Ethane {
 
-    VulkanBuffer::VulkanBuffer(const VulkanDevice* device)
-        :m_Device(device)
+    VulkanBuffer::VulkanBuffer()
+        :m_Device(VulkanContext::GetDevice())
     {
     }
 

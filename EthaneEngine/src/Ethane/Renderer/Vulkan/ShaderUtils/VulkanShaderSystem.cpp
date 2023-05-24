@@ -4,21 +4,13 @@
 
 #include "../VulkanContext.h"
 #include "VulkanShaderCompiler.h"
-//#include "../VulkanRendererAPI.h"
+
 
 namespace Ethane {
 
 	bool VulkanShaderSystem::Init() 
 	{
 		ETH_CORE_INFO("Vulkan Shader System Init");
-//		s_UniformBufferSet = CreateRef<VulkanUniformBufferSet>(3);
-//		s_DefaultTexture = CreateRef<VulkanTexture2D>("assets/textures/test.png");
-//
-//		for (uint32_t set = 0; set < s_ShaderDescriptorSets.size(); ++set) {
-//			for (auto&& [binding, pShaderUBO] : s_ShaderDescriptorSets[set].UniformBuffers) {
-//				s_UniformBufferSet->Create(pShaderUBO->Size, set, binding);
-//			}
-//		}
 
 		return true;
 	};
@@ -28,26 +20,88 @@ namespace Ethane {
 		ETH_CORE_INFO("Vulkan Shader System Shutdown");
 	};
 
-	bool VulkanShaderSystem::ReflectBufferData(uint32_t set, uint32_t binding, VulkanShaderCompiler::UniformBuffer* uniform)
+    void VulkanShaderSystem::RegisterShader(const VulkanShader* shader)
+    {
+        auto& resourceData = shader->GetShaderDescriptorSetData();
+        uint32_t setCount = (uint32_t)resourceData.size();
+        
+        if (setCount > s_ShaderDescriptorSets[shader].size()) {
+            s_ShaderDescriptorSets[shader].resize(setCount);
+        }
+        
+        // Global set
+        if (setCount >= 1)
+        {
+            for(auto&& [binding, pShaderUBO] : resourceData[0].UniformBuffers) {
+                uint32_t size = pShaderUBO.Size;
+                if (s_GlobalUniformBuffers.find(binding) == s_GlobalUniformBuffers.end())
+                {
+                    Ref<VulkanUniformBuffer> uniformBuffer = CreateRef<VulkanUniformBuffer>(size, binding);
+                    s_GlobalUniformBuffers[binding] = uniformBuffer;
+                    s_GlobalDescriptorSets.UniformBuffers[binding] = pShaderUBO;
+                }
+                else
+                {
+                    if (size > s_GlobalUniformBuffers[binding]->GetSize())
+                    {
+                        s_GlobalUniformBuffers[binding]->Resize(size);
+                        s_GlobalDescriptorSets.UniformBuffers[binding] = pShaderUBO;
+                    }
+                }
+            }
+        }
+        
+        // Instance set
+        auto& shaderUniformBuffers = s_ShaderUniformBuffers[shader];
+        for (uint32_t set = 1; set < setCount; set++)
+        {
+            for(auto&& [binding, pShaderUBO] : resourceData[set].UniformBuffers) {
+                uint32_t size = pShaderUBO.Size * 128;
+                if (shaderUniformBuffers[set].find(binding) == shaderUniformBuffers.at(set).end())
+                {
+                    Ref<VulkanUniformBuffer> uniformBuffer = CreateRef<VulkanUniformBuffer>(size, binding);
+                }
+                else
+                {
+                    if (size > shaderUniformBuffers[0][binding]->GetSize())
+                        shaderUniformBuffers[0][binding]->Resize(size);
+                }
+            }
+            s_ShaderDescriptorSets[shader][set] = resourceData[set];
+        }
+        
+        s_CurrentInstanceCount[shader] = 0;
+    }
+
+    uint32_t VulkanShaderSystem::RegisterShaderInstance(const VulkanShader* shader)
+    {
+        return s_CurrentInstanceCount[shader]++;
+    }
+    
+    VkDescriptorBufferInfo VulkanShaderSystem::GetUniformBufferInfo(uint32_t set, uint32_t binding, const VulkanMaterial* material)
+    {
+        VkDescriptorBufferInfo bufferInfo;
+        if (set == 0)
+        {
+            bufferInfo.buffer = s_GlobalUniformBuffers[binding]->GetHandle();
+            bufferInfo.offset = 0;
+            bufferInfo.range = s_GlobalDescriptorSets.UniformBuffers[binding].Size;
+            return bufferInfo;
+        }
+        uint32_t uboSize = s_ShaderDescriptorSets[static_cast<const VulkanShader*>(material->GetShader())][set].UniformBuffers[binding].Size;
+        bufferInfo.buffer = s_ShaderUniformBuffers[static_cast<const VulkanShader*>(material->GetShader())][set][binding]->GetHandle();
+        bufferInfo.offset = uboSize * (material->GetResourceId());
+        bufferInfo.range = uboSize;
+        return bufferInfo;
+    }
+
+	void VulkanShaderSystem::SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size)
 	{
-		if (set >= s_ShaderDescriptorSets.size()) {
-			s_ShaderDescriptorSets.resize(set+1);
-		}
-		s_ShaderDescriptorSets[set].UniformBuffers[binding] = uniform;
-		return true;
+        s_GlobalUniformBuffers[binding]->SetData(data, 0, size, 0, 0);
 	}
 
-	bool VulkanShaderSystem::ReflectSamplerData(uint32_t set, uint32_t binding, VulkanShaderCompiler::ImageSampler sampler)
-	{
-		if (set == 0) {
-			s_ShaderDescriptorSets[set].ImageSamplers[binding] = sampler;
-		}
-		return true;
-	}
-
-//	void VulkanShaderSystem::SetUniformBuffer(uint32_t set, uint32_t binding, const void* data, uint32_t size, uint32_t offset)
-//	{
-//		uint32_t bufferIndex = VulkanContext::GetSwapChain()->GetCurrentFrameIndex();
-//		s_UniformBufferSet->Get(bufferIndex, set, binding)->SetData(data, size, offset);
-//	}
+    void VulkanShaderSystem::SetInstanceUniformBuffer(uint32_t set, uint32_t binding, const VulkanMaterial* material, const void* data, uint32_t size)
+    {
+        s_ShaderUniformBuffers[static_cast<const VulkanShader*>(material->GetShader())][set][binding]->SetData(data, 0, size, 0, 0);
+    }
 }

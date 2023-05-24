@@ -7,14 +7,14 @@
 
 namespace Ethane {
 
-	VulkanFramebuffer::VulkanFramebuffer(const VulkanContext* ctx, const VulkanRenderPass* renderpass)
-		: m_Context(ctx), m_RenderPass(renderpass)
+	VulkanFramebuffer::VulkanFramebuffer(const VulkanDevice* device, const VulkanRenderPass* renderpass)
+		: m_Device(device), m_RenderPass(renderpass)
 	{
 	}
 
     void VulkanFramebuffer::Destroy()
     {
-        auto device = m_Context->GetDevice()->GetVulkanDevice();
+        auto device = m_Device->GetVulkanDevice();
         
         if (m_Framebuffer)
         {
@@ -26,7 +26,7 @@ namespace Ethane {
     
 	void VulkanFramebuffer::Invalidate(uint32_t width, uint32_t height, const std::vector<VkImageView>& imageViews)
 	{
-		auto device = m_Context->GetDevice()->GetVulkanDevice();
+		auto device = m_Device->GetVulkanDevice();
 
         // TODO: change this: investigate resources management( release at appropriate time )
         Destroy();

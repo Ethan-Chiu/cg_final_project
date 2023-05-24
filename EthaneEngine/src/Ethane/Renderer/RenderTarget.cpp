@@ -11,7 +11,7 @@
 #include "Vulkan/VulkanRenderTarget.h"
 
 namespace Ethane {
-Scope<RenderTarget> RenderTarget::Create(const GraphicsContext* ctx, const RenderTargetSpecification& spec)
+Scope<RenderTarget> RenderTarget::Create(const RenderTargetSpecification& spec)
 {
     switch (RendererAPI::GetAPI())
     {
@@ -19,7 +19,7 @@ Scope<RenderTarget> RenderTarget::Create(const GraphicsContext* ctx, const Rende
         ETH_CORE_ASSERT(false, "endererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::Vulkan:
-        return CreateScope<VulkanRenderTarget>(static_cast<const VulkanContext*>(ctx), spec);
+        return CreateScope<VulkanRenderTarget>(spec);
     }
 
     ETH_CORE_ASSERT(false, "Unknpwn RendererAPI");

@@ -69,6 +69,8 @@ namespace Ethane {
 		Mesh(const std::string& filename);
 		~Mesh() = default;
 
+        void Upload();
+        
 		// Getter
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<Triangle> GetTrianglesCacheInSubmesh(uint32_t index) const { return m_TriangleCache.at(index); }
@@ -88,7 +90,7 @@ namespace Ethane {
 		std::vector<Submesh> m_Submeshes;
 		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
-		Ref<Shader> m_MeshShader;
+//		Ref<Shader> m_MeshShader;
 		Ref<VertexBuffer> m_VertexBuffer;
 		Ref<IndexBuffer> m_IndexBuffer;
 

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Ethane/Scene/Components.h"
 #include "Ethane/Math/Math.h"
 
 namespace Ethane {
@@ -20,10 +21,18 @@ namespace Ethane {
 
 	void EditorLayer::OnAttach()
 	{
+        ShaderSystem::Load("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
+        
         m_ActiveScene = CreateRef<Scene>();
-        m_ViewportRenderer = CreateRef<SceneRenderer>(Renderer::GetGraphicsContext(0), m_ActiveScene);
+        m_ViewportRenderer = CreateRef<SceneRenderer>(m_ActiveScene);
         
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+        
+        auto newEntity = m_ActiveScene->CreateEntity("Cube");
+        Ref<Mesh> mesh = AssetManager::GetAssetMesh("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/resources/meshes/default/Cube.fbx"); // TODO
+        mesh->Upload();
+        Ref<Material> mat = Material::Create(ShaderSystem::Get("test").get());
+        newEntity.AddComponent<MeshComponent>(mesh, mat);
 	}
 
 	void EditorLayer::OnDetach()
@@ -33,6 +42,7 @@ namespace Ethane {
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
+        m_EditorCamera.OnUpdate(ts);
         m_ActiveScene->OnUpdateEditor(m_ViewportRenderer, ts, m_EditorCamera);
 	}
 

@@ -89,7 +89,9 @@ namespace Ethane {
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	// 
+	//
+    Scope<VulkanSwapChain> VulkanContext::m_SwapChain = nullptr;
+
 	VulkanContext::VulkanContext(GLFWwindow* windowHandle)
 		:m_WindowHandle(windowHandle)
 	{
@@ -237,7 +239,7 @@ namespace Ethane {
             ETH_CORE_INFO("_______________");
             ETH_CORE_INFO("Vulkan Version:");
             ETH_CORE_INFO(" - available:  {0}.{1}.{2}", VK_VERSION_MAJOR(version), VK_VERSION_MINOR(version), VK_VERSION_PATCH(version));
-            ETH_CORE_INFO(" - requesting: {0}.{1}.{2}", info.ApiMajor, info.ApiMinor, 0);
+            ETH_CORE_INFO(" - requesting: {0}.{1}.{2}", info.ApiMajor, info.ApiMinor, 204);
         }
 
         {
@@ -673,5 +675,10 @@ namespace Ethane {
 
         info.features10 = features2.features;
         info.properties10 = properties2.properties;
+    }
+
+    uint32_t VulkanContext::GetFramesInFlight()
+    {
+        return m_SwapChain->GetMaxFramesInFlight();
     }
 }

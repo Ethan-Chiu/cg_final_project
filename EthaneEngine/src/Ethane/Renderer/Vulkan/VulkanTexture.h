@@ -9,12 +9,10 @@ namespace Ethane {
 	class VulkanTexture2D : public Texture2D
 	{
 	public:
-//		VulkanTexture2D(const std::string& path);
-//		VulkanTexture2D(const VulkanContext* context, TextureSpec spec);
-		VulkanTexture2D(const VulkanContext* context, VulkanImage2D* image);
+		VulkanTexture2D(VulkanImage2D* image);
 		~VulkanTexture2D() override = default;
 
-		void Cleanup();
+        void Destroy() override;
 
 		virtual void SetData(void* data, uint32_t size) override;
 
@@ -22,6 +20,7 @@ namespace Ethane {
 		virtual uint32_t GetWidth() const override { return m_Width; } 
 		virtual uint32_t GetHeight() const override { return m_Height; } 
 		const VkDescriptorImageInfo& GetDescriptorImageInfo() const { return m_DescriptorInfo; }
+        VulkanImage2D* GetImage() const { return m_Image; }
 		VkImageView GetImageView() { return m_Image->GetImageInfo().ImageView; }
 		VkSampler GetImageSampler() { return m_TextureSampler; }
 
@@ -33,7 +32,6 @@ namespace Ethane {
 		void CreateTextureSampler();
 		void UpdateDescriptorImageInfo();
 	private:
-        const VulkanContext* m_Context;
 		uint32_t m_Width, m_Height, m_ChannelCount;
 
 		// TODO: remove

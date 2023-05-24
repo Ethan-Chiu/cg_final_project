@@ -8,7 +8,7 @@ namespace Ethane {
     class VulkanBuffer
     {
     public:
-        VulkanBuffer(const VulkanDevice* device);
+        VulkanBuffer();
         ~VulkanBuffer() = default;
         
         bool CreateVulkanBuffer(uint32_t size, VkBufferUsageFlags usage, uint32_t memory_property_flags, bool bind_on_create);

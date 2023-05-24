@@ -9,24 +9,24 @@
 
 namespace Ethane{
 
-	Ref<Image2D> Image2D::Create(const GraphicsContext* ctx, ImageSpecification specification, void* data)
+	Ref<Image2D> Image2D::Create(ImageSpecification specification, void* data)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::API::None: return nullptr;
-            case RendererAPI::API::Vulkan: return CreateRef<VulkanImage2D>(static_cast<const VulkanContext*>(ctx), specification);
+            case RendererAPI::API::Vulkan: return CreateRef<VulkanImage2D>(specification);
 		}
 		ETH_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
 
 
-    Ref<TargetImage> TargetImage::Create(const GraphicsContext* ctx, ImageSpecification specification)
+    Ref<TargetImage> TargetImage::Create(ImageSpecification specification)
     {
         switch (RendererAPI::GetAPI())
         {
         case RendererAPI::API::None: return nullptr;
-            case RendererAPI::API::Vulkan: return CreateRef<VulkanTargetImage>(static_cast<const VulkanContext*>(ctx), specification);
+            case RendererAPI::API::Vulkan: return CreateRef<VulkanTargetImage>(specification);
         }
         ETH_CORE_ASSERT(false, "Unknown RendererAPI");
         return nullptr;

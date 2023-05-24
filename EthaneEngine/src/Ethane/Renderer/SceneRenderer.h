@@ -19,7 +19,7 @@ namespace Ethane {
 	class SceneRenderer
 	{
 	public:
-		SceneRenderer(const GraphicsContext* ctx, Ref<Scene> scene);
+		SceneRenderer(Ref<Scene> scene);
 
 		void Init();
         void Shutdown();
@@ -29,7 +29,7 @@ namespace Ethane {
 		void BeginScene(const Camera& camera, const glm::mat4& viewMatrix);
 		void EndScene();
 
-		void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> material = nullptr
+		void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), Ref<Material> material = nullptr);
 		void SubmitSelectedMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
 
 		// Getter
@@ -105,29 +105,14 @@ namespace Ethane {
 			char Padding3[3] = { 0,0,0 };
 		} RendererDataUB;
 
-		Ref<Shader> m_GridShader;
-
-//		Ref<Material> m_CompositeMaterial;
-//		Ref<Material> m_GridMaterial;
-
-		Ref<Pipeline> m_GridPipeline;
+        
 		Ref<Pipeline> m_GeometryPipeline;
-		Ref<Pipeline> m_SelectedGeometryPipeline;
-		Ref<Pipeline> m_GeometryWireframePipeline;
-		Ref<Pipeline> m_GeometryWireframeOnTopPipeline;
-		Ref<Pipeline> m_PreDepthPipeline;
-		Ref<Pipeline> m_CompositePipeline;
-		Ref<Pipeline> m_ShadowPassPipelines[4];
-//		Ref<Material> m_ShadowPassMaterial;
-//		Ref<Material> m_PreDepthMaterial;
-		Ref<Pipeline> m_SkyboxPipeline;
-//		Ref<Material> m_SkyboxMaterial;
-
+        
 		struct DrawCommand
 		{
 			Ref<Mesh> Mesh;
 			glm::mat4 Transform;
-//			Ref<Material> Material;
+			Ref<Material> Material;
 		};
 		std::vector<DrawCommand> m_DrawList;
 		std::vector<DrawCommand> m_SelectedMeshDrawList;

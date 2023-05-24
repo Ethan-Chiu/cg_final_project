@@ -8,7 +8,7 @@ namespace Ethane {
 	class VulkanRenderCommandBuffer
 	{
 	public:
-		VulkanRenderCommandBuffer(const VulkanContext* ctx, uint32_t count = 0, std::string debugName = "");
+		VulkanRenderCommandBuffer(uint32_t count = 0, std::string debugName = "");
 		~VulkanRenderCommandBuffer() = default;
         
         void Destroy();
@@ -26,7 +26,6 @@ namespace Ethane {
 
 	private:
 		std::string m_DebugName;
-        const VulkanContext* m_Context;
 		VkCommandPool m_CommandPool = nullptr;
 		std::vector<VulkanCommandBuffer> m_CommandBuffers;
 		std::vector<VkFence> m_WaitFences;

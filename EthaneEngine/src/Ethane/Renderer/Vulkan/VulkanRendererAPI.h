@@ -6,6 +6,7 @@
 #include "VulkanIndexBuffer.h"
 #include "VulkanRenderCommandBuffer.h"
 #include "VulkanRenderTarget.h"
+#include "VulkanMaterial.h"
 
 namespace Ethane {
 
@@ -27,7 +28,7 @@ namespace Ethane {
 			// Default samplers
 			VkSampler SamplerClamp = nullptr;
 
-//			std::set<Ref<VulkanMaterial>> UpdatedMaterial = {};
+			std::set<VulkanMaterial*> UpdatedMaterial = {};
 		};
         
 	public:
@@ -42,6 +43,9 @@ namespace Ethane {
         
         virtual VulkanTargetImage* GetSwapchainTarget() const override;
 
+        void RegisterShader(const Shader* shader) override;
+        void SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size) override;
+        
         // TODO:
         void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {};
         void SetClearColor(const glm::vec4& color) override {};
@@ -52,8 +56,8 @@ namespace Ethane {
 		virtual void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false) override;
         virtual void EndRenderTarget() override;
 	private:
-//		static void UpdateMaterialForRendering(Ref<VulkanMaterial> material);
-//		static void CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, Ref<VulkanMaterial> material, uint32_t frameIndex);
+		void UpdateMaterialForRendering(VulkanMaterial* material);
+		void CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VulkanMaterial* material, uint32_t frameIndex);
 
 	public:
 //		static VkDescriptorSet AllocateDescriptorSet(VkDescriptorSetAllocateInfo& allocInfo);
@@ -67,15 +71,15 @@ namespace Ethane {
 //		static void DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material); // Ref<RenderCommandBuffer> renderCommandBuffer,
 //		// void SubmitFullscreenQuad(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Pipeline> pipeline, Ref<UniformBufferSet> uniformBufferSet, Ref<StorageBufferSet> storageBufferSet, Ref<Material> material) override;
 //
-//		static void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform); // , Ref<MaterialTable> materialTable
-//		// virtual void DrawMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)) override;
+		void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform) override;
+        
+		// virtual void DrawMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)) override;
 //
 //		static void DrawGeometry(Ref<Pipeline> pipeline, Ref<VertexBuffer> vertexbuffer, Ref<IndexBuffer> indexbuffer, Ref<Material> material, const glm::mat4& transform = glm::mat4(1.0f), uint32_t indexCount = 0);
 //
 //		// Update uniform buffer value
 //		static void SetUniformBuffer(uint32_t binding, uint32_t set, const void* data, uint32_t size, uint32_t offset = 0);
 	private:
-        const VulkanContext* m_Context = nullptr;
         Scope<VulkanRenderCommandBuffer> m_RenderCommandBuffer = nullptr;
 
 		static VulkanRendererData* s_Data;

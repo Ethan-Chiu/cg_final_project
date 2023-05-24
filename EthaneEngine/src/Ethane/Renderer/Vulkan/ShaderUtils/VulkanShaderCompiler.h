@@ -24,7 +24,7 @@ namespace Ethane {
 
 		struct ShaderDescriptorSetData
 		{
-			std::unordered_map<uint32_t, UniformBuffer*> UniformBuffers;
+			std::unordered_map<uint32_t, UniformBuffer> UniformBuffers;
 			std::unordered_map<uint32_t, ImageSampler> ImageSamplers;
 
 			operator bool() const { return !(UniformBuffers.empty() && ImageSamplers.empty()); }

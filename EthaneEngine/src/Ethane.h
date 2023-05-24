@@ -35,5 +35,8 @@
 //-------Asset-------
 #include "Ethane/Asset/Asset.h"
 #include "Ethane/Asset/AssetManager.h"
-#include "Ethane/Asset/ShaderLibrary.h"
+//------Systems------
+#include "Ethane/Systems/ResourceSystem.h"
+#include "Ethane/Systems/ShaderSystem.h"
+#include "Ethane/Systems/TextureSystem.h"
 //--------------------

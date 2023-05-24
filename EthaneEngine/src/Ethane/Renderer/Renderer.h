@@ -4,6 +4,8 @@
 
 #include "Image.h"
 #include "RenderTarget.h"
+#include "Pipeline.h"
+#include "Mesh.h"
 
 namespace Ethane {
 	
@@ -24,10 +26,18 @@ namespace Ethane {
 		static void BeginFrame();
 		static void EndFrame();
         
+        static void RegisterShader(const Shader* shader);
+        
         static void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false);
         static void EndRenderTarget();
         
-        static const GraphicsContext* GetGraphicsContext(uint32_t i) { return s_ContextList[i]; }
+        static void RegisterShader();
+        static void AquireMaterialResource();
+        static void SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size);
+        
+        static void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform);
+        
+        static const GraphicsContext* GetGraphicsContext() { return s_Context; }
         
         static TargetImage* GetSwapchainTarget();
         
@@ -36,7 +46,7 @@ namespace Ethane {
 	private:
 		static RendererConfig s_Config;
         static Scope<RendererAPI> s_RendererAPI;
-        static std::vector<const GraphicsContext*> s_ContextList;
+        static const GraphicsContext* s_Context;
 	};
 
 }

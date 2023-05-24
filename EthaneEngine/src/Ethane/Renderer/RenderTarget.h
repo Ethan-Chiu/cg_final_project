@@ -57,6 +57,6 @@ public:
     virtual const RenderTargetSpecification& GetSpecification() const = 0;
     virtual const RenderPass* GetRenderPass() const = 0;
 
-    static Scope<RenderTarget> Create(const GraphicsContext* ctx, const RenderTargetSpecification& spec);
+    static Scope<RenderTarget> Create(const RenderTargetSpecification& spec);
 };
 }

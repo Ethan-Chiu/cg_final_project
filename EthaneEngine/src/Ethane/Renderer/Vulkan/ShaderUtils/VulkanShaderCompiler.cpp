@@ -187,8 +187,6 @@ namespace Ethane {
 		}
 	}
 
-	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, VulkanShaderCompiler::UniformBuffer*>> s_UniformBuffers; // set -> binding point -> buffer
-
 	void VulkanShaderCompiler::ReflectStage(VkShaderStageFlagBits stage, const std::vector<uint32_t>& shaderBinary,
 		std::vector<ShaderDescriptorSetData>& shaderDescriptorSets,
 		std::vector<VkPushConstantRange>& pushConstantRanges)
@@ -211,27 +209,13 @@ namespace Ethane {
 			if (descriptorSet >= shaderDescriptorSets.size())
 				shaderDescriptorSets.resize(descriptorSet + 1);
 
-			if (s_UniformBuffers[descriptorSet].find(binding) == s_UniformBuffers[descriptorSet].end())
-			{
-				UniformBuffer* uniformBuffer = new UniformBuffer();
-				uniformBuffer->Size = bufferSize;
-				uniformBuffer->Name = name;
-				uniformBuffer->ShaderStage = VK_SHADER_STAGE_ALL;
-				s_UniformBuffers[descriptorSet][binding] = uniformBuffer;
-			}
-			else
-			{
-				UniformBuffer* uniformBuffer = s_UniformBuffers[descriptorSet][binding];
-				if (bufferSize > uniformBuffer->Size)
-					uniformBuffer->Size = bufferSize;
-
-			}
-
-			ShaderDescriptorSetData& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
-			shaderDescriptorSet.UniformBuffers[binding] = s_UniformBuffers[descriptorSet][binding];
-
-			VulkanShaderSystem::ReflectBufferData(descriptorSet, binding, s_UniformBuffers[descriptorSet][binding]);
-
+            ShaderDescriptorSetData& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
+            auto& uniformBuffer = shaderDescriptorSet.UniformBuffers[binding];
+            
+            uniformBuffer.Size = bufferSize;
+            uniformBuffer.Name = name;
+            uniformBuffer.ShaderStage = VK_SHADER_STAGE_ALL;
+            
 			ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
 			ETH_CORE_TRACE("  Member Count: {0}", memberCount);
 			ETH_CORE_TRACE("  Size: {0}", bufferSize);
@@ -261,8 +245,6 @@ namespace Ethane {
 			imageSampler.Name = name;
 			imageSampler.ShaderStage = stage;
 			imageSampler.ArraySize = arraySize;
-
-			VulkanShaderSystem::ReflectSamplerData(descriptorSet, binding, shaderDescriptorSets[descriptorSet].ImageSamplers[binding]);
 
 			ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
 		}

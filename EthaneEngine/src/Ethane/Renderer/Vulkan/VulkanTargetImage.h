@@ -15,7 +15,7 @@ namespace Ethane {
     class VulkanTargetImage: public TargetImage
     {
     public:
-        VulkanTargetImage(const VulkanContext* context, ImageSpecification specification);
+        VulkanTargetImage(ImageSpecification specification);
         VulkanTargetImage(ImageSpecification specification, const std::vector<ImageUtils::VulkanImageInfo>& infos);
         
         virtual ~VulkanTargetImage() override;
@@ -42,8 +42,6 @@ namespace Ethane {
         void CreateTargetImages();
 
     private:
-        const VulkanContext* m_Context;
-
         ImageSpecification m_Specification;
         bool m_SwapchainTarget = false;
         std::vector<ImageUtils::VulkanImageInfo> m_Infos;

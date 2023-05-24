@@ -11,7 +11,9 @@ namespace Ethane {
 	{
 	public:
 		virtual ~Texture() = default;
-
+        
+        virtual void Destroy() = 0;
+        
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 
@@ -23,6 +25,6 @@ namespace Ethane {
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(const GraphicsContext* ctx, Image2D* image);
+		static Ref<Texture2D> Create(Image2D* image);
 	};
 }

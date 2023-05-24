@@ -115,8 +115,8 @@ namespace Ethane {
 
 		virtual void SetData(const void* data, uint32_t size) = 0;
 
-		static Ref<VertexBuffer> Create(const GraphicsContext* ctx, uint32_t size);
-		static Ref<VertexBuffer> Create(const GraphicsContext* ctx, void* vertices, uint32_t size);
+		static Ref<VertexBuffer> Create(uint32_t size);
+		static Ref<VertexBuffer> Create(void* vertices, uint32_t size);
 	};
 
 }

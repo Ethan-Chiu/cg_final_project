@@ -23,7 +23,7 @@ namespace Ethane {
 
 	void Scene::Init()
 	{
-		
+
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -93,11 +93,11 @@ namespace Ethane {
 			for (auto entity : group)
 			{
 				auto [meshComponent, transformComponent] = group.get<MeshComponent, TransformComponent>(entity);
-				if (meshComponent.Mesh)
+				if (meshComponent.MeshRef)
 				{
 					// glm::mat4 transform = GetTransformRelativeToParent(Entity{ entity, this });
 
-					renderer->SubmitMesh(meshComponent.Mesh, transformComponent.GetTransform()); // m_Material
+					renderer->SubmitMesh(meshComponent.MeshRef, transformComponent.GetTransform(), meshComponent.MatRef); // m_Material
 				}
 			}
 
@@ -113,11 +113,9 @@ namespace Ethane {
 		for (auto entity : group)
 		{
 			auto [meshComponent, transformComponent] = group.get<MeshComponent, TransformComponent>(entity);
-			if (meshComponent.Mesh)
+			if (meshComponent.MeshRef)
 			{
-				// glm::mat4 transform = GetTransformRelativeToParent(Entity{ entity, this });
-				
-				renderer->SubmitMesh(meshComponent.Mesh, transformComponent.GetTransform()); //, m_Material
+				renderer->SubmitMesh(meshComponent.MeshRef, transformComponent.GetTransform(), meshComponent.MatRef);
 			}
 		}
 

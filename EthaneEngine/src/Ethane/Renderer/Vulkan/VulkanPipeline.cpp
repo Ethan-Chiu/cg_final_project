@@ -35,8 +35,8 @@ namespace Ethane {
 		}
 	}
 
-	VulkanPipeline::VulkanPipeline(const VulkanContext* ctx, const PipelineSpecification& spec)
-		:m_Specification(spec), m_Device(ctx->GetDevice())
+	VulkanPipeline::VulkanPipeline(const PipelineSpecification& spec)
+		:m_Specification(spec), m_Device(VulkanContext::GetDevice())
 	{
 		Create();
 	}

@@ -10,8 +10,8 @@ namespace Ethane {
 	class VulkanIndexBuffer : public IndexBuffer, public VulkanBuffer
 	{
 	public:
-		VulkanIndexBuffer(const VulkanContext* ctx, uint32_t size); // size in byte
-		VulkanIndexBuffer(const VulkanContext* ctx, void* data, uint32_t size = 0);
+		VulkanIndexBuffer(uint32_t size); // size in byte
+		VulkanIndexBuffer(void* data, uint32_t size = 0);
 		virtual ~VulkanIndexBuffer();
 
 		void Destroy();

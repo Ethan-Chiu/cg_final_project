@@ -12,10 +12,10 @@ namespace Ethane {
 
 	public:
 		VulkanPipeline() = default;
-		VulkanPipeline(const VulkanContext* ctx, const PipelineSpecification& spec);
+		VulkanPipeline(const PipelineSpecification& spec);
 		virtual ~VulkanPipeline() override;
 		
-		void Destroy();
+		void Destroy() override;
 		void Create() override;
 
 		void Bind(const VulkanCommandBuffer* cmdBuffer, VkPipelineBindPoint bindPoint);

@@ -106,9 +106,10 @@ namespace Ethane {
 
 		// Getter
 		static VkInstance GetInstance() { return s_VulkanInstance; }
-        const VulkanPhysicalDevice* GetPhysicalDevice() const { return m_PhysicalDevice.get(); }
-        const VulkanDevice* GetDevice() const { return m_Device.get(); }
-        const VulkanSwapChain* GetSwapchain() const { return m_SwapChain.get(); }
+        static const VulkanPhysicalDevice* GetPhysicalDevice() { return m_PhysicalDevice.get(); }
+        static const VulkanDevice* GetDevice() { return m_Device.get(); }
+        static const VulkanSwapChain* GetSwapchain() { return m_SwapChain.get(); }
+        static uint32_t GetFramesInFlight();
         
     private:
         bool InitInstance(const ContextCreateInfo& info);
@@ -146,10 +147,10 @@ namespace Ethane {
 
 		PhysicalDeviceInfo m_PhysicalInfo;
         
-        Scope<VulkanPhysicalDevice> m_PhysicalDevice;
-        Scope<VulkanDevice> m_Device;
+        inline static Scope<VulkanPhysicalDevice> m_PhysicalDevice = nullptr;
+        inline static Scope<VulkanDevice> m_Device = nullptr;
 
-        Scope<VulkanSwapChain> m_SwapChain;
+        static Scope<VulkanSwapChain> m_SwapChain;
 	};
 
 }

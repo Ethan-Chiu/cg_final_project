@@ -6,8 +6,8 @@
 
 namespace Ethane {
 
-	VulkanImage2D::VulkanImage2D(const VulkanContext* context, ImageSpecification specification, void* buffer)
-		: m_Context(context), m_Specification(specification)
+	VulkanImage2D::VulkanImage2D(ImageSpecification specification, void* buffer)
+		: m_Specification(specification)
 	{
 		ETH_CORE_ASSERT(m_Specification.Width > 0 && m_Specification.Height > 0);
 		ETH_CORE_TRACE("VulkanImage2D::Invalidate ({0})", m_Specification.DebugName);
@@ -15,21 +15,20 @@ namespace Ethane {
         CreateImage();
 	}
 
-	VulkanImage2D::VulkanImage2D(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
+	VulkanImage2D::VulkanImage2D(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
 		VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag, VkImageAspectFlags aspectFlag, bool createView)
-        :m_Context(context)
 	{
-		auto device = m_Context->GetDevice();
+		auto device = VulkanContext::GetDevice();
 		ImageUtils::CreateVulkanImage(device, width, height, mip, layers, format, tiling, usage, memoryFlag, m_Info, m_ImageMemory);
 		if (createView) {
             ImageUtils::CreateImageView(device->GetVulkanDevice(), format, aspectFlag, mip, layers, m_Info);
 		}
 	}
 
-	Ref<VulkanImage2D> VulkanImage2D::Create(const VulkanContext* context, uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
+	Ref<VulkanImage2D> VulkanImage2D::Create(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
 		VkImageUsageFlags usage, VkMemoryPropertyFlags memoryFlag, VkImageAspectFlags aspectFlag, bool createView)
 	{
-		return CreateRef<VulkanImage2D>(context, width, height, mip, layers, format, tiling, usage, memoryFlag, aspectFlag, createView);
+		return CreateRef<VulkanImage2D>(width, height, mip, layers, format, tiling, usage, memoryFlag, aspectFlag, createView);
 	}
 
 	VulkanImage2D::~VulkanImage2D()
@@ -45,7 +44,7 @@ namespace Ethane {
 		if (m_Info.Image == nullptr)
 			return;
 
-		auto device = m_Context->GetDevice()->GetVulkanDevice();
+		auto device = VulkanContext::GetDevice()->GetVulkanDevice();
         vkDeviceWaitIdle(device);
         
 		if (m_Info.ImageView) {
@@ -75,7 +74,7 @@ namespace Ethane {
 
     void VulkanImage2D::CreateImage()
     {
-        auto device = m_Context->GetDevice();
+        auto device = VulkanContext::GetDevice();
 
         VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT;
         if (m_Specification.Usage == ImageUsage::Attachment)

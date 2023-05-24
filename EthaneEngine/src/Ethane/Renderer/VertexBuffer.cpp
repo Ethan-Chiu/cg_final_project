@@ -7,7 +7,7 @@
 
 namespace Ethane {
 
-	Ref<VertexBuffer> VertexBuffer::Create(const GraphicsContext* ctx, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -15,14 +15,14 @@ namespace Ethane {
 				ETH_CORE_ASSERT(false, "endererAPI::None is currently not supported!");
 				return nullptr;
 		case RendererAPI::API::Vulkan:
-			return CreateRef<VulkanVertexBuffer>(static_cast<const VulkanContext*>(ctx), size);
+			return CreateRef<VulkanVertexBuffer>(size);
 		}
 
 		ETH_CORE_ASSERT(false, "Unknpwn RendererAPI");
 		return nullptr;
 	}
 
-	Ref<VertexBuffer> VertexBuffer::Create(const GraphicsContext* ctx, void* vertices, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -30,7 +30,7 @@ namespace Ethane {
 			ETH_CORE_ASSERT(false, "endererAPI::None is currently not supported!");
 			return nullptr;
 		case RendererAPI::API::Vulkan:
-			return CreateRef<VulkanVertexBuffer>(static_cast<const VulkanContext*>(ctx), vertices, size);
+			return CreateRef<VulkanVertexBuffer>(vertices, size);
 		}
 
 		ETH_CORE_ASSERT(false, "Unknpwn RendererAPI");

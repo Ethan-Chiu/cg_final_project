@@ -9,6 +9,8 @@
 
 #include "./ShaderUtils/VulkanShaderSystem.h"
 
+#include "Ethane/Renderer/Mesh.h"
+
 // #include "VulkanShader.h"
 //#include "VulkanTexture.h"
 
@@ -20,8 +22,7 @@ namespace Ethane {
 	{
 		s_Data = new VulkanRendererData();
 
-        m_Context = static_cast<const VulkanContext*>(ctx);
-        auto imageCount = m_Context->GetSwapchain()->GetImageCount();
+        auto imageCount = VulkanContext::GetSwapchain()->GetImageCount();
         ETH_INFO("{0} images in swapchain", imageCount);
         
         s_Data->DescriptorPools.resize(imageCount);
@@ -48,7 +49,7 @@ namespace Ethane {
 		pool_info.maxSets = 100000;
 		pool_info.poolSizeCount = (uint32_t)(std::end(pool_sizes)-std::begin(pool_sizes));
 		pool_info.pPoolSizes = pool_sizes;
-		VkDevice device = m_Context->GetDevice()->GetVulkanDevice();
+		VkDevice device = VulkanContext::GetDevice()->GetVulkanDevice();
 		for (uint32_t i = 0; i < imageCount; i++)
 		{
 			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &s_Data->DescriptorPools[i]));
@@ -81,11 +82,11 @@ namespace Ethane {
 		data[3].Position = glm::vec3(x, y + height, 0.0f);
 		data[3].TexCoord = glm::vec2(0, 1);
 
-		s_Data->QuadVertexBuffer = CreateRef<VulkanVertexBuffer>(m_Context, data, 4 * sizeof(QuadVertex));
+		s_Data->QuadVertexBuffer = CreateRef<VulkanVertexBuffer>(data, 4 * sizeof(QuadVertex));
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0, };
-		s_Data->QuadIndexBuffer = CreateRef<VulkanIndexBuffer>(m_Context, indices, 6 * sizeof(uint32_t));
+		s_Data->QuadIndexBuffer = CreateRef<VulkanIndexBuffer>(indices, 6 * sizeof(uint32_t));
         
-        m_RenderCommandBuffer = CreateScope<VulkanRenderCommandBuffer>(m_Context);
+        m_RenderCommandBuffer = CreateScope<VulkanRenderCommandBuffer>();
 	}
 
     void VulkanRendererAPI::Shutdown()
@@ -97,7 +98,7 @@ namespace Ethane {
         
         for (auto pool : s_Data->DescriptorPools)
         {
-            vkDestroyDescriptorPool(m_Context->GetDevice()->GetVulkanDevice(), pool, nullptr);
+            vkDestroyDescriptorPool(VulkanContext::GetDevice()->GetVulkanDevice(), pool, nullptr);
         }
         s_Data->DescriptorPools.clear();
         
@@ -120,6 +121,7 @@ namespace Ethane {
 	void VulkanRendererAPI::BeginFrame()
 	{
         BeginRenderCommandBuffer();
+        s_Data->UpdatedMaterial.clear();
 	}
 
     void VulkanRendererAPI::EndFrame()
@@ -130,7 +132,7 @@ namespace Ethane {
 
     VulkanTargetImage* VulkanRendererAPI::GetSwapchainTarget() const
     {
-        return m_Context->GetSwapchain()->GetTargetImage();
+        return VulkanContext::GetSwapchain()->GetTargetImage();
     }
 
 	void VulkanRendererAPI::BeginRenderCommandBuffer()
@@ -143,15 +145,43 @@ namespace Ethane {
         m_RenderCommandBuffer->End();
 	}
 
+    void VulkanRendererAPI::RegisterShader(const Shader* shader)
+    {
+        VulkanShaderSystem::RegisterShader(static_cast<const VulkanShader*>(shader));
+    }
+
+    void VulkanRendererAPI::SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size)
+    {
+        VulkanShaderSystem::SetGlobalUniformBuffer(binding, data, size);
+    }
+
+    void VulkanRendererAPI::UpdateMaterialForRendering(VulkanMaterial* material)
+    {
+        ETH_PROFILE_FUNCTION();
+        if (s_Data->UpdatedMaterial.find(material) == s_Data->UpdatedMaterial.end())
+        {
+            material->ApplyMaterial();
+            s_Data->UpdatedMaterial.insert(material);
+        }
+    }
+
+    void VulkanRendererAPI::CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VulkanMaterial* material, uint32_t frameIndex)
+    {
+        ETH_PROFILE_FUNCTION();
+        std::vector<VkDescriptorSet> descriptorSet = material->GetDescriptorSets(frameIndex);
+        if (!descriptorSet.empty())
+            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, (uint32_t)(descriptorSet.size()), descriptorSet.data(), 0, nullptr);
+    }
+
 	void VulkanRendererAPI::BeginRenderTarget(const RenderTarget* render_target, bool explicitClear)
 	{
 //		ETH_PROFILE_FUNCTION(fmt::format("VulkanRenderer::BeginRenderPass ({})", renderPass->GetSpecification().DebugName).c_str());
         const VulkanRenderTarget* target = static_cast<const VulkanRenderTarget*>(render_target);
 
-		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
+		uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
 //		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
         //TODO: 
-        VkCommandBuffer commandBuffer = m_Context->GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
 
 		uint32_t width, height;
 
@@ -162,7 +192,7 @@ namespace Ethane {
 		VkRenderPassBeginInfo renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
 		if (target->GetSpecification().SwapChainTarget)
 		{
-			const VulkanSwapChain* swapChain = m_Context->GetSwapchain();
+			const VulkanSwapChain* swapChain = VulkanContext::GetSwapchain();
 			width = swapChain->GetWidth();
 			height = swapChain->GetHeight();
 			renderPassBeginInfo.pNext = nullptr;
@@ -250,13 +280,52 @@ namespace Ethane {
 
 	void VulkanRendererAPI::EndRenderTarget()
 	{
-//		ETH_PROFILE_FUNCTION("VulkanRenderer::EndRenderPass");
+        ETH_PROFILE_SCOPE("VulkanRenderer::EndRenderPass");
 
-		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
+//		uint32_t frameIndex = m_Context->GetSwapchain()->GetCurrentFrameIndex();
         //TODO:
 //		VkCommandBuffer commandBuffer = m_RenderCommandBuffer->GetCommandBuffer(frameIndex)->GetHandle();
-        VkCommandBuffer commandBuffer = m_Context->GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
         
 		vkCmdEndRenderPass(commandBuffer);
 	}
+
+    void VulkanRendererAPI::DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform)
+    {
+        ETH_CORE_ASSERT(mesh);
+        
+        uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+//        VkCommandBuffer commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(s_RenderCommandBuffer)->GetCommandBuffer(frameIndex);
+
+        Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);
+
+        auto vulkanMeshVB = std::dynamic_pointer_cast<VulkanVertexBuffer>(mesh->m_VertexBuffer);
+        VkBuffer vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
+        VkDeviceSize offsets[1] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
+
+        auto vulkanMeshIB = std::dynamic_pointer_cast<VulkanIndexBuffer>(mesh->m_IndexBuffer);// Ref<VulkanIndexBuffer>(meshAsset->GetIndexBuffer());
+        VkBuffer ibBuffer = vulkanMeshIB->GetVulkanBuffer();
+        vkCmdBindIndexBuffer(commandBuffer, ibBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        Ref<VulkanPipeline> vulkanPipeline = std::dynamic_pointer_cast<VulkanPipeline>(pipeline);
+        VkPipelineLayout layout = vulkanPipeline->GetPipelineLayout();
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetVulkanPipeline());
+
+        float lineWidth = 1.0;// vulkanPipeline->GetSpecification().LineWidth;
+        if (lineWidth != 1.0f)
+            vkCmdSetLineWidth(commandBuffer, lineWidth);
+
+        UpdateMaterialForRendering(vulkanMaterial.get());
+        CmdBindMaterial(commandBuffer, layout, vulkanMaterial.get(), frameIndex);
+
+        auto& submeshes = mesh->m_Submeshes;
+        for (auto& submesh : submeshes)
+        {
+            glm::mat4 worldTransform = transform * submesh.Transform;
+            vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &worldTransform);
+            vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
+        }
+    }
 }

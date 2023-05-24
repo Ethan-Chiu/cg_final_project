@@ -1,16 +1,16 @@
 #type vertex
-#version 450 core
+#version 460
 
-layout(std140, set = 0, binding = 0) uniform UniformBufferObject{
-	mat4 viewproj;
-	vec4 ambient_color;
-	vec3 view_position;
-} u_UBO;
+// layout(std140, set = 0, binding = 0) uniform UniformBufferObject{
+// 	mat4 viewproj;
+// 	vec4 ambient_color;
+// 	vec3 view_position;
+// } u_UBO;
 
-layout(push_constant) uniform TransformUniform
-{
-	mat4 transform;
-} u_TransformUniform;
+// layout(push_constant) uniform TransformUniform
+// {
+// 	mat4 transform;
+// } u_TransformUniform;
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec3 a_Normal;
@@ -32,7 +32,6 @@ struct VertexOutput
 };
 
 layout(location = 0) out VertexOutput Output;
-// layout(location = 6) out flat int v_EntityID;
 
 void main()
 {
@@ -53,7 +52,7 @@ void main()
 
 
 #type fragment
-#version 450 core
+#version 460
 
 layout(set = 1, binding = 0) uniform LocalUBO {
     vec4 diffuse_color;

@@ -2,7 +2,10 @@
 #include "VulkanShaderCompiler.h"
 //#include "../VulkanUniformBufferSet.h"
 #include "../VulkanShader.h"
-//#include "../VulkanTexture.h"
+#include "../VulkanTexture.h"
+
+#include "../VulkanUniformBuffer.h"
+#include "../VulkanMaterial.h"
 
 namespace Ethane {
 
@@ -17,26 +20,24 @@ namespace Ethane {
 //			return s_UniformBufferSet->Get(frame, set, binding);
 //		}
 //
-//		static Ref<VulkanTexture2D> GetDefaultTexture() {
-//			return s_DefaultTexture;
-//		}
-
-//		static void SetUniformBuffer(uint32_t set, uint32_t binding, const void* data, uint32_t size, uint32_t offset);
-
-	protected:
-		static bool ReflectBufferData(uint32_t set, uint32_t binding, VulkanShaderCompiler::UniformBuffer* uniform);
-		static bool ReflectSamplerData(uint32_t set, uint32_t binding, VulkanShaderCompiler::ImageSampler sampler);
+        static void RegisterShader(const VulkanShader* shader);
+        static uint32_t RegisterShaderInstance(const VulkanShader* shader);
+        
+        static VkDescriptorBufferInfo GetUniformBufferInfo(uint32_t set, uint32_t binding, const VulkanMaterial* material);
+        
+        static void SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size);
+        static void SetInstanceUniformBuffer(uint32_t set, uint32_t binding, const VulkanMaterial* material, const void* data, uint32_t size);
 
 	private:
-		// shader id
-
 		// resource 
-//		inline static Ref<VulkanUniformBufferSet> s_UniformBufferSet;
-//		inline static Ref<VulkanTexture2D> s_DefaultTexture;
+        inline static std::map<uint32_t, Ref<VulkanUniformBuffer>> s_GlobalUniformBuffers; // binding
+        inline static std::map<const VulkanShader* ,std::vector<std::map<uint32_t, Ref<VulkanUniformBuffer>>>> s_ShaderUniformBuffers; // shader->set->binding
 
+        inline static std::map<const VulkanShader* ,uint32_t> s_CurrentInstanceCount;
+        
 		// reflect data
-		inline static std::vector<VulkanShaderCompiler::ShaderDescriptorSetData> s_ShaderDescriptorSets;
-		inline static std::vector<VkPushConstantRange> s_PushConstantRanges;
+		inline static VulkanShaderCompiler::ShaderDescriptorSetData s_GlobalDescriptorSets;
+        inline static std::map<const VulkanShader*, std::vector<VulkanShaderCompiler::ShaderDescriptorSetData>> s_ShaderDescriptorSets;
 
 	friend VulkanShaderCompiler;
 	};

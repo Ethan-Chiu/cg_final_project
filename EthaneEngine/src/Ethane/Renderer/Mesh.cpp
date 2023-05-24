@@ -3,7 +3,6 @@
 
 #include "Renderer.h"
 #include "Pipeline.h"
-#include "ShaderLibrary.h"
 
 namespace Ethane {
 
@@ -47,7 +46,7 @@ namespace Ethane {
 		m_Scene = scene;
 
 		// m_MeshShader = Shader::Create("assets/shaders/PBR_static.glsl");
-		m_MeshShader = ShaderLibrary::Get("PBR_static");
+//		m_MeshShader = ShaderLibrary::Get("PBR_static");
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
 		uint32_t vertexCount = 0;
@@ -145,14 +144,17 @@ namespace Ethane {
 		// 	mi->Set("u_RoughnessTexture", whiteTexture);
 		// 	m_Materials.push_back(mi);
 		// }
-
-//		{
-//			uint32_t size = (uint32_t)(m_StaticVertices.size() * sizeof(Vertex));
-//			m_VertexBuffer = VertexBuffer::Create(m_StaticVertices.data(), size);
-//		}
-//
-//		m_IndexBuffer = IndexBuffer::Create((uint32_t*) m_Indices.data(), (uint32_t)(m_Indices.size() * 3 * sizeof(uint32_t))); // TODO: temp test change Decide to use byte or 4byte as unit
 	}
+
+    void Mesh::Upload()
+    {
+        {
+            uint32_t size = (uint32_t)(m_StaticVertices.size() * sizeof(Vertex));
+            m_VertexBuffer = VertexBuffer::Create(m_StaticVertices.data(), size);
+        }
+
+        m_IndexBuffer = IndexBuffer::Create((uint32_t*) m_Indices.data(), (uint32_t)(m_Indices.size() * 3 * sizeof(uint32_t))); // TODO: temp test change Decide to use byte or 4byte as unit
+    }
 
 
 	void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)

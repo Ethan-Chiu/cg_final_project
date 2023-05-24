@@ -10,10 +10,10 @@
 
 namespace Ethane {
 
-    VulkanRenderTarget::VulkanRenderTarget(const VulkanContext* context, const RenderTargetSpecification& spec)
-        :m_Context(context), m_Specification(spec)
+    VulkanRenderTarget::VulkanRenderTarget(const RenderTargetSpecification& spec)
+        :m_Specification(spec)
     {
-        auto device = m_Context->GetDevice()->GetVulkanDevice();
+        auto device = VulkanContext::GetDevice()->GetVulkanDevice();
         m_Width = m_Specification.Width;
         m_Height = m_Specification.Height;
         
@@ -45,7 +45,7 @@ namespace Ethane {
         
         if (m_Specification.IsTargetImage)
         {
-            uint32_t imageCount = m_Context->GetSwapchain()->GetImageCount();
+            uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
             m_ImageViewsSets.resize(imageCount);
             m_Framebuffers.resize(imageCount);
         }
@@ -61,7 +61,7 @@ namespace Ethane {
         }
         for (auto& framebuffer : m_Framebuffers)
         {
-            framebuffer = CreateScope<VulkanFramebuffer>(m_Context, m_RenderPass.get());
+            framebuffer = CreateScope<VulkanFramebuffer>(VulkanContext::GetDevice(), m_RenderPass.get());
         }
         
         Invalidate();
@@ -100,7 +100,7 @@ namespace Ethane {
         
         if (m_Specification.IsTargetImage)
         {
-            uint32_t imageCount = m_Context->GetSwapchain()->GetImageCount();
+            uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
             for(uint32_t targetIdx = 0; targetIdx < m_AttachmentImages.size(); targetIdx++)
             {
                 for (uint32_t i = 0; i < imageCount; i++)
@@ -146,7 +146,7 @@ namespace Ethane {
     {
         if(m_Specification.IsTargetImage)
         {
-            uint32_t imageIndex = m_Context->GetSwapchain()->GetCurrentImageIndex();
+            uint32_t imageIndex = VulkanContext::GetSwapchain()->GetCurrentImageIndex();
             return m_Framebuffers[imageIndex].get();
         }
         else
