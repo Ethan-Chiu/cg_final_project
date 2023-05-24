@@ -43,7 +43,6 @@ namespace Ethane {
 		void OnComponentAdded(Entity entity, T& component);
 	private:
 		entt::registry m_Registry;
-        Ref<Material> m_TestMat;
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 

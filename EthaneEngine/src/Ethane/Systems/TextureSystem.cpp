@@ -23,6 +23,8 @@ namespace Ethane {
         s_DefaultImage = Image2D::Create(imageSpec, imageData.Data);
         s_DefaultTexture = Texture2D::Create(s_DefaultImage.get());
         
+        ResourceSystem::UnloadImage(imageData);
+        
         return true;
     }
 

@@ -156,6 +156,12 @@ namespace Ethane {
         m_IndexBuffer = IndexBuffer::Create((uint32_t*) m_Indices.data(), (uint32_t)(m_Indices.size() * 3 * sizeof(uint32_t))); // TODO: temp test change Decide to use byte or 4byte as unit
     }
 
+    void Mesh::Unload()
+    {
+        m_IndexBuffer->Destroy();
+        m_VertexBuffer->Destroy();
+    }
+
 
 	void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
 	{

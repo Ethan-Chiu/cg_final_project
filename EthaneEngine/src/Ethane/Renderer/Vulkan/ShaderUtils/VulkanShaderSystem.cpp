@@ -18,6 +18,24 @@ namespace Ethane {
 	void VulkanShaderSystem::Shutdown() 
 	{
 		ETH_CORE_INFO("Vulkan Shader System Shutdown");
+        
+        // release global buffer
+        for(auto&& [binding, uniformBuf]: s_GlobalUniformBuffers)
+        {
+            uniformBuf->Destroy();
+        }
+        
+        // release shader buffer
+        for(auto&& [shader, uniformSets]: s_ShaderUniformBuffers)
+        {
+            for (auto& uniformSet: uniformSets)
+            {
+                for(auto&& [binding, uniformBuf]: uniformSet)
+                {
+                    uniformBuf->Destroy();
+                }
+            }
+        }
 	};
 
     void VulkanShaderSystem::RegisterShader(const VulkanShader* shader)

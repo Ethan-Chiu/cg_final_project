@@ -70,6 +70,7 @@ namespace Ethane {
 		~Mesh() = default;
 
         void Upload();
+        void Unload();
         
 		// Getter
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }

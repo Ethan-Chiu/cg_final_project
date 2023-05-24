@@ -14,7 +14,7 @@ namespace Ethane {
 		VulkanIndexBuffer(void* data, uint32_t size = 0);
 		virtual ~VulkanIndexBuffer();
 
-		void Destroy();
+		void Destroy() override;
 
 		void SetData(void* buffer, uint32_t size, uint32_t offset = 0) override;
 

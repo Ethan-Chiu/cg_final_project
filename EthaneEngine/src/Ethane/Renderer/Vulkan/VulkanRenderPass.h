@@ -12,8 +12,7 @@ namespace Ethane {
 		virtual ~VulkanRenderPass() {};
 
         static Scope<VulkanRenderPass> Create(VkDevice device, const std::vector<ImageFormat>& colorAttachmentFormats, ImageFormat depthAttachmentFormat, bool clearOnLoad, bool finalPresent = false);
-        
-		void CreateOld(VkDevice device, bool hasDepth, VkFormat imageFormat, VkFormat depthFormat);
+
 		void Destroy();
         
 		void Begin(VkCommandBuffer cmdBuffer, uint32_t width, uint32_t height, VkFramebuffer frameBuffer);

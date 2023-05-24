@@ -13,7 +13,7 @@ namespace Ethane {
 		VulkanVertexBuffer(uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Dynamic
 		VulkanVertexBuffer(void* data, uint32_t size); // , VertexBufferUsage usage = VertexBufferUsage::Static
 
-		void Cleanup();
+		void Destroy() override;
 
 		virtual void SetData(const void* data, uint32_t size) override { SetData(data, size, 0); };
 		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0);

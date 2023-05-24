@@ -22,18 +22,6 @@ namespace Ethane {
         
         for (auto attachmentFormat : colorAttachmentFormats)
         {
-
-//                    if (createImages)
-//                    {
-//                        ImageSpecification spec;
-//                        spec.Format = attachmentSpec.Format;
-//                        spec.Usage = ImageUsage::Attachment;
-//                        spec.Width = m_Width;
-//                        spec.Height = m_Height;
-//                        colorAttachment = std::dynamic_pointer_cast<VulkanImage2D>(m_AttachmentImages.emplace_back(Image2D::Create(spec)));
-//                        m_AttachmentTextures.emplace_back(CreateRef<VulkanTexture2D>(colorAttachment));
-//                    }
-
             VkAttachmentDescription& attachmentDescription = attachmentDescriptions.emplace_back();
             attachmentDescription.flags = 0;
             attachmentDescription.format = ImageUtils::VulkanImageFormat(attachmentFormat);
@@ -164,93 +152,6 @@ namespace Ethane {
         
         VK_CHECK_RESULT(vkCreateRenderPass(m_Device, &renderPassInfo, nullptr, &m_RenderPass));
     }
-
-	void VulkanRenderPass::CreateOld(VkDevice device, bool hasDepth, VkFormat imageFormat, VkFormat depthFormat)
-	{
-        m_Device = device;
-        
-        std::vector<VkAttachmentDescription> allAttachments;
-        std::vector<VkAttachmentReference>   colorAttachmentRefs;
-
-        // bool hasDepth = (depthAttachmentFormat != VK_FORMAT_UNDEFINED);
-
-        // TODO: 2 attachment for now
-        // for (const auto& format : colorAttachmentFormats) {}
-        VkAttachmentDescription colorAttachment = {};
-        colorAttachment.format = imageFormat; // TODO
-        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; // TODO: configuration check nvvk
-        colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-        colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; // TODO: initialLayout;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //TODO: finalLayout
-
-        VkAttachmentReference colorAttachmentRef = {};
-        colorAttachmentRef.attachment = static_cast<uint32_t>(allAttachments.size());
-        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-        allAttachments.push_back(colorAttachment);
-        colorAttachmentRefs.push_back(colorAttachmentRef);
-
-        VkAttachmentReference depthAttachmentRef = {};
-        if (hasDepth) {
-            VkAttachmentDescription depthAttachment = {};
-            depthAttachment.format = depthFormat; //TODO
-            depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-            depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; // TODO: configuration check nvvk
-            depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-            depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-            depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-            depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-            depthAttachmentRef.attachment = static_cast<uint32_t>(allAttachments.size());
-            depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-            allAttachments.push_back(depthAttachment);
-        }
-
-        std::vector<VkSubpassDescription> subpasses;
-        std::vector<VkSubpassDependency>  subpassDependencies;
-
-        // for (uint32_t i = 0; i < subpassCount; i++) { // TODO: 1 subpass for now
-        VkSubpassDescription subpass = {};
-        subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-        subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachmentRefs.size());
-        subpass.pColorAttachments = colorAttachmentRefs.data();
-        subpass.pDepthStencilAttachment = hasDepth ? &depthAttachmentRef : VK_NULL_HANDLE;
-        subpass.inputAttachmentCount = 0;
-        subpass.pInputAttachments = VK_NULL_HANDLE;
-        subpass.pResolveAttachments = VK_NULL_HANDLE;
-        subpass.preserveAttachmentCount = 0;
-        subpass.pPreserveAttachments = VK_NULL_HANDLE;
-
-        VkSubpassDependency dependency = {};
-        dependency.srcSubpass = VK_SUBPASS_EXTERNAL; // TODO: i == 0 ? : (i - 1);
-        dependency.dstSubpass = 0; // i
-        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-        dependency.srcAccessMask = 0;
-        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT; // VK_ACCESS_COLOR_ATTACHMENT_READ_BIT
-        dependency.dependencyFlags = 0;
-
-        subpasses.push_back(subpass);
-        subpassDependencies.push_back(dependency);
-        
-
-        VkRenderPassCreateInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-        renderPassInfo.pNext = nullptr;
-        renderPassInfo.attachmentCount = static_cast<uint32_t>(allAttachments.size());
-        renderPassInfo.pAttachments = allAttachments.data();
-        renderPassInfo.subpassCount = static_cast<uint32_t>(subpasses.size());
-        renderPassInfo.pSubpasses = subpasses.data();
-        renderPassInfo.dependencyCount = static_cast<uint32_t>(subpassDependencies.size());
-        renderPassInfo.pDependencies = subpassDependencies.data();
-        renderPassInfo.flags = 0;
-
-        VK_CHECK_RESULT(vkCreateRenderPass(m_Device, &renderPassInfo, nullptr, &m_RenderPass));
-	}
 
     void VulkanRenderPass::Destroy()
     {

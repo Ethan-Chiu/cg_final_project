@@ -34,7 +34,7 @@ namespace Ethane {
 		stagingBuffer.Destroy();
 	}
 
-	void VulkanVertexBuffer::Cleanup()
+	void VulkanVertexBuffer::Destroy()
 	{
 		VulkanBuffer::Destroy();
 	}

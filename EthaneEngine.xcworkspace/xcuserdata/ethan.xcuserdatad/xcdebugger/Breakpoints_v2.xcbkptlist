@@ -3,4 +3,54 @@
    uuid = "D837629B-D94E-4722-B2AD-03987C0197A3"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "394B1510-B1A4-44DF-80B0-102363374356"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EthaneEngine/src/Ethane/Renderer/Vulkan/VulkanRendererAPI.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
+            landmarkName = "VulkanRendererAPI::BeginRenderTarget(render_target, explicitClear)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "394B1510-B1A4-44DF-80B0-102363374356 - 73dd6f4ee6b4b271"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Ethane::VulkanRendererAPI::BeginRenderTarget(Ethane::RenderTarget const*, bool)"
+                  moduleName = "libEthaneEngine.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ethan/ethans_folder/Program_dev/cg_final_project/EthaneEngine/src/Ethane/Renderer/Vulkan/VulkanRendererAPI.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "219"
+                  endingLineNumber = "219"
+                  offsetFromSymbolStart = "401">
+               </Location>
+               <Location
+                  uuid = "394B1510-B1A4-44DF-80B0-102363374356 - 73dd6f4ee6b4b2b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Ethane::VulkanRendererAPI::BeginRenderTarget(Ethane::RenderTarget const*, bool)"
+                  moduleName = "libEthaneEngine.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ethan/ethans_folder/Program_dev/cg_final_project/EthaneEngine/src/Ethane/Renderer/Vulkan/VulkanRendererAPI.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "221"
+                  endingLineNumber = "221"
+                  offsetFromSymbolStart = "401">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

@@ -38,6 +38,7 @@ namespace Ethane {
             geoTargetSpec.DebugName = "Geometry";
             geoTargetSpec.Width = rendererConfig.DefaultWindowWidth;
             geoTargetSpec.Height = rendererConfig.DefaultWindowHeight;
+            geoTargetSpec.SwapChainTarget = true;
 			m_GeoTarget = RenderTarget::Create(geoTargetSpec);
 
 			PipelineSpecification pipelineSpecification;

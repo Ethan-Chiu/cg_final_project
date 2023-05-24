@@ -23,6 +23,9 @@ namespace Ethane {
         Ref<Scene> m_ActiveScene;
         Ref<SceneRenderer> m_ViewportRenderer;
         
+        Ref<Mesh> m_Mesh;
+        Ref<Material> m_Mat;
+        
         EditorCamera m_EditorCamera;
 	};
 

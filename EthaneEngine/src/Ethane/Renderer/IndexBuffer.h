@@ -8,6 +8,8 @@ namespace Ethane {
 	{
 	public:
 		virtual ~IndexBuffer() {}
+        
+        virtual void Destroy() = 0;
 
 		virtual void SetData(void* buffer, uint32_t size, uint32_t offset = 0) = 0;
         

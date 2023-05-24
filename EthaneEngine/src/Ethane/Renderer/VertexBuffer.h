@@ -112,6 +112,8 @@ namespace Ethane {
 	{
 	public:
 		virtual ~VertexBuffer() {}
+        
+        virtual void Destroy() = 0;
 
 		virtual void SetData(const void* data, uint32_t size) = 0;
 

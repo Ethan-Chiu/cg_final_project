@@ -103,6 +103,8 @@ namespace Ethane {
         s_Data->DescriptorPools.clear();
         
         delete s_Data;
+        
+        VulkanShaderSystem::Shutdown();
     }
 
 //	VkDescriptorSet VulkanRendererAPI::AllocateDescriptorSet(VkDescriptorSetAllocateInfo& allocInfo)
@@ -207,6 +209,11 @@ namespace Ethane {
 			viewport.y = (float)height;
 			viewport.width = (float)width;
 			viewport.height = -(float)height;
+            
+//            viewport.x = 0.0f;
+//            viewport.y = 0.0f;
+//            viewport.width = (float)width;
+//            viewport.height = (float)height;
 		}
 		else
 		{

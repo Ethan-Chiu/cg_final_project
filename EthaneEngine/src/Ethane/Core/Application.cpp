@@ -124,6 +124,10 @@ namespace Ethane
         
         AssetManager::Shutdown();
         
+        TextureSystem::Shutdown();
+        
+        ResourceSystem::Shutdown();
+        
         Renderer::Shutdown();
         
 		m_Window->Shutdown();

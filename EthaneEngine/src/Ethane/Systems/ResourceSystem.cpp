@@ -26,4 +26,9 @@ namespace Ethane {
     {
         s_ImageLoader.LoadImage(filepath, out_resource);
     }
+
+    void ResourceSystem::UnloadImage(ImageResource& resource)
+    {
+        s_ImageLoader.UnloadImage(resource);
+    }
 }
