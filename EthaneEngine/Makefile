@@ -119,6 +119,7 @@ GENERATED += $(OBJDIR)/UUID.o
 GENERATED += $(OBJDIR)/VertexBuffer.o
 GENERATED += $(OBJDIR)/VulkanBuffer.o
 GENERATED += $(OBJDIR)/VulkanCommandBuffer.o
+GENERATED += $(OBJDIR)/VulkanComputePipeline.o
 GENERATED += $(OBJDIR)/VulkanContext.o
 GENERATED += $(OBJDIR)/VulkanDevice.o
 GENERATED += $(OBJDIR)/VulkanFramebuffer.o
@@ -179,6 +180,7 @@ OBJECTS += $(OBJDIR)/UUID.o
 OBJECTS += $(OBJDIR)/VertexBuffer.o
 OBJECTS += $(OBJDIR)/VulkanBuffer.o
 OBJECTS += $(OBJDIR)/VulkanCommandBuffer.o
+OBJECTS += $(OBJDIR)/VulkanComputePipeline.o
 OBJECTS += $(OBJDIR)/VulkanContext.o
 OBJECTS += $(OBJDIR)/VulkanDevice.o
 OBJECTS += $(OBJDIR)/VulkanFramebuffer.o
@@ -365,6 +367,9 @@ $(OBJDIR)/VulkanBuffer.o: src/Ethane/Renderer/Vulkan/VulkanBuffer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanCommandBuffer.o: src/Ethane/Renderer/Vulkan/VulkanCommandBuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VulkanComputePipeline.o: src/Ethane/Renderer/Vulkan/VulkanComputePipeline.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanContext.o: src/Ethane/Renderer/Vulkan/VulkanContext.cpp

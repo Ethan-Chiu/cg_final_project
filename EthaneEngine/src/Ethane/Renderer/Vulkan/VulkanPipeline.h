@@ -16,7 +16,6 @@ namespace Ethane {
 		virtual ~VulkanPipeline() override;
 		
 		void Destroy() override;
-		void Create() override;
 
 		void Bind(const VulkanCommandBuffer* cmdBuffer, VkPipelineBindPoint bindPoint);
 
@@ -25,6 +24,8 @@ namespace Ethane {
 		VkPipelineLayout GetPipelineLayout() { return m_PipelineLayout; }
 		virtual PipelineSpecification& GetSpecification() override { return m_Specification; }
 		virtual const PipelineSpecification& GetSpecification() const override { return m_Specification; }
+    private:
+        void Create();
 	private:
 		PipelineSpecification m_Specification;
 

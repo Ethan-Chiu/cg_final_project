@@ -29,7 +29,7 @@ namespace Ethane {
 		void BeginScene(const Camera& camera, const glm::mat4& viewMatrix);
 		void EndScene();
 
-		void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), Ref<Material> material = nullptr);
+		void SubmitMesh(Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform = glm::mat4(1.0f));
 		void SubmitSelectedMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
 
 		// Getter
@@ -50,7 +50,6 @@ namespace Ethane {
 		float m_InvViewportWidth = 0.f, m_InvViewportHeight = 0.f;
 		bool m_NeedResize = false;
 
-        const GraphicsContext* m_Context = nullptr;
 		Ref<Scene> m_Scene;
 
         TargetImage* m_GeoColor = nullptr;
@@ -107,6 +106,7 @@ namespace Ethane {
 
         
 		Ref<Pipeline> m_GeometryPipeline;
+        Ref<ComputePipeline> m_MorphingPipeline;
         
 		struct DrawCommand
 		{
@@ -116,13 +116,6 @@ namespace Ethane {
 		};
 		std::vector<DrawCommand> m_DrawList;
 		std::vector<DrawCommand> m_SelectedMeshDrawList;
-
-		// TODO: remove
-//		Ref<Texture2D> m_Texture2D = nullptr;
-//		Ref<Material> m_testMaterial = nullptr;
-//		Ref<Texture2D> m_TestDiffuse = nullptr;
-//		Ref<Texture2D> m_TestSpecular = nullptr;
-//		Ref<Texture2D> m_TestNormal = nullptr;
 	};
 
 }

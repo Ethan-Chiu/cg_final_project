@@ -97,7 +97,7 @@ namespace Ethane {
 				{
 					// glm::mat4 transform = GetTransformRelativeToParent(Entity{ entity, this });
 
-					renderer->SubmitMesh(meshComponent.MeshRef, transformComponent.GetTransform(), meshComponent.MatRef); // m_Material
+					renderer->SubmitMesh(meshComponent.MeshRef, meshComponent.MatRef, transformComponent.GetTransform());
 				}
 			}
 
@@ -115,7 +115,7 @@ namespace Ethane {
 			auto [meshComponent, transformComponent] = group.get<MeshComponent, TransformComponent>(entity);
 			if (meshComponent.MeshRef)
 			{
-				renderer->SubmitMesh(meshComponent.MeshRef, transformComponent.GetTransform(), meshComponent.MatRef);
+				renderer->SubmitMesh(meshComponent.MeshRef, meshComponent.MatRef, transformComponent.GetTransform());
 			}
 		}
 

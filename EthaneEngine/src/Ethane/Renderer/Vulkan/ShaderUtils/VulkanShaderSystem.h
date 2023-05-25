@@ -32,6 +32,9 @@ namespace Ethane {
 		// resource 
         inline static std::map<uint32_t, Ref<VulkanUniformBuffer>> s_GlobalUniformBuffers; // binding
         inline static std::map<const VulkanShader* ,std::vector<std::map<uint32_t, Ref<VulkanUniformBuffer>>>> s_ShaderUniformBuffers; // shader->set->binding
+        
+//        inline static std::map<const VulkanShader* ,std::vector<std::map<uint32_t, Ref<VulkanUniformBuffer>>>> s_ShaderStorageBuffers; // shader->set->binding
+        
 
         inline static std::map<const VulkanShader* ,uint32_t> s_CurrentInstanceCount;
         

@@ -7,6 +7,7 @@
 #include "Ethane/Asset/AssetManager.h"
 #include "Ethane/Systems/ResourceSystem.h"
 #include "Ethane/Systems/TextureSystem.h"
+#include "Ethane/Systems/ShaderSystem.h"
 
 namespace Ethane
 {
@@ -35,6 +36,8 @@ namespace Ethane
         ResourceSystem::Init();
         
         TextureSystem::Init();
+        
+        ShaderSystem::Init();
         
         AssetManager::Init();
 	}
@@ -123,6 +126,8 @@ namespace Ethane
         m_LayerStack.Detach();
         
         AssetManager::Shutdown();
+        
+        ShaderSystem::Shutdown();
         
         TextureSystem::Shutdown();
         

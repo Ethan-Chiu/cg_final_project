@@ -17,6 +17,11 @@ namespace Ethane {
 		VertexBufferLayout Layout;
 	};
 
+    struct ComputePipelineSpecification
+    {
+        Ref<Shader> Shader;
+    };
+
 	class Pipeline
 	{
 	public:
@@ -25,9 +30,21 @@ namespace Ethane {
 		virtual PipelineSpecification& GetSpecification() = 0;
 		virtual const PipelineSpecification& GetSpecification() const = 0;
 
-		virtual void Create() = 0;
         virtual void Destroy() = 0;
 
 		static Ref<Pipeline> Create(const PipelineSpecification& spec);
 	};
+
+    class ComputePipeline
+    {
+    public:
+        virtual ~ComputePipeline() = default;
+
+        virtual ComputePipelineSpecification& GetSpecification() = 0;
+        virtual const ComputePipelineSpecification& GetSpecification() const = 0;
+
+        virtual void Destroy() = 0;
+
+        static Ref<ComputePipeline> Create(const ComputePipelineSpecification& spec);
+    };
 }

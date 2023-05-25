@@ -22,6 +22,7 @@ namespace Ethane {
 	void EditorLayer::OnAttach()
 	{
         ShaderSystem::Load("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
+        ShaderSystem::Load("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/shaders/test_compute.glsl");
         
         m_ActiveScene = CreateRef<Scene>();
         m_ViewportRenderer = CreateRef<SceneRenderer>(m_ActiveScene);

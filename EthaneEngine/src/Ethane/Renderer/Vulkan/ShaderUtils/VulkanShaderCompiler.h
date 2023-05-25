@@ -22,10 +22,27 @@ namespace Ethane {
 			VkShaderStageFlagBits ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
 		};
 
+        struct StorageBuffer
+        {
+            std::string Name;
+            uint32_t Size = 0;
+            VkShaderStageFlagBits ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+        };
+        
+        struct StorageSampler
+        {
+            std::string Name;
+            uint32_t DescriptorSet = 0;
+            uint32_t ArraySize = 0;
+            VkShaderStageFlagBits ShaderStage = VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+        };
+        
 		struct ShaderDescriptorSetData
 		{
 			std::unordered_map<uint32_t, UniformBuffer> UniformBuffers;
 			std::unordered_map<uint32_t, ImageSampler> ImageSamplers;
+            std::unordered_map<uint32_t, StorageBuffer> StorageBuffers;
+            std::unordered_map<uint32_t, StorageSampler> StorageSamplers;
 
 			operator bool() const { return !(UniformBuffers.empty() && ImageSamplers.empty()); }
 		};

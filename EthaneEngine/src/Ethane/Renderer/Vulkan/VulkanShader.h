@@ -30,6 +30,7 @@ namespace Ethane {
 		virtual const std::string& GetName() const override { return  m_Name; }
         
     friend class VulkanPipeline;
+    friend class VulkanComputePipeline;
     friend class VulkanShaderSystem;
     protected:
 		const std::vector<VkPipelineShaderStageCreateInfo>& GetPipelineShaderStageCreateInfos() const { return m_PipelineShaderStageCreateInfos; }

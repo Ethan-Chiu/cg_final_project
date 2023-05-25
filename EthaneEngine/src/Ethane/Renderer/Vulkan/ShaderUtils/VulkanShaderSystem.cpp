@@ -36,6 +36,18 @@ namespace Ethane {
                 }
             }
         }
+        
+        // release shader buffer
+//        for(auto&& [shader, storageSets]: s_ShaderStorageBuffers)
+//        {
+//            for (auto& storageSet: storageSets)
+//            {
+//                for(auto&& [binding, storageBuf]: storageSet)
+//                {
+//                    storageBuf->Destroy();
+//                }
+//            }
+//        }
 	};
 
     void VulkanShaderSystem::RegisterShader(const VulkanShader* shader)

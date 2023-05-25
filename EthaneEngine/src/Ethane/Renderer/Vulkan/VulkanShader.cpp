@@ -133,6 +133,42 @@ namespace Ethane {
 				wds.dstBinding = layoutBinding.binding;
 				wds.descriptorCount = imageSampler.ArraySize;
 			}
+            
+            // Storage Buffers
+            for (auto& [binding, storageBuffer] : shaderDescriptorSet.StorageBuffers)
+            {
+                VkDescriptorSetLayoutBinding& layoutBinding = layoutBindings.emplace_back();
+                layoutBinding.binding = binding;
+                layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                layoutBinding.descriptorCount = 1;
+                layoutBinding.stageFlags = storageBuffer.ShaderStage;
+                layoutBinding.pImmutableSamplers = nullptr;
+
+                VkWriteDescriptorSet& wds = m_WriteDescriptorSetsBase[set][storageBuffer.Name].WriteDescriptor;
+                wds = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+                wds.descriptorType = layoutBinding.descriptorType;
+                wds.dstBinding = layoutBinding.binding;
+                wds.descriptorCount = 1;
+            }
+
+            // Image Sampler
+            for (auto& [binding, imageSampler] : shaderDescriptorSet.StorageSamplers)
+            {
+                auto& layoutBinding = layoutBindings.emplace_back();
+                layoutBinding.binding = binding;
+                layoutBinding.descriptorCount = imageSampler.ArraySize;
+                layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+                layoutBinding.pImmutableSamplers = nullptr;
+                layoutBinding.stageFlags = imageSampler.ShaderStage;
+
+                ETH_CORE_ASSERT(shaderDescriptorSet.UniformBuffers.find(binding) == shaderDescriptorSet.UniformBuffers.end(), "Binding is already present!");
+
+                VkWriteDescriptorSet& wds = m_WriteDescriptorSetsBase[set][imageSampler.Name].WriteDescriptor;
+                wds = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+                wds.descriptorType = layoutBinding.descriptorType;
+                wds.dstBinding = layoutBinding.binding;
+                wds.descriptorCount = imageSampler.ArraySize;
+            }
 
 			VkDescriptorSetLayoutCreateInfo descriptorLayout = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
 			descriptorLayout.pNext = nullptr;
@@ -140,7 +176,7 @@ namespace Ethane {
 			descriptorLayout.pBindings = layoutBindings.data();
 
 			ETH_CORE_INFO("Creating descriptor set {0} with {1} ubo's, {2} ssbo's, {3} samplers and {4} storage images", set,
-				shaderDescriptorSet.UniformBuffers.size(), 0, shaderDescriptorSet.ImageSamplers.size(), 0);
+				shaderDescriptorSet.UniformBuffers.size(), shaderDescriptorSet.StorageBuffers.size(), shaderDescriptorSet.ImageSamplers.size(), shaderDescriptorSet.StorageSamplers.size());
 
 			if (set >= m_DescriptorSetLayouts.size())
 				m_DescriptorSetLayouts.resize((size_t)(set + 1));
@@ -198,6 +234,24 @@ namespace Ethane {
 				typeCount.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 				typeCount.descriptorCount = descriptorSetCount * numberOfSets;
 			}
+            
+            if (shaderDescriptorSet.StorageBuffers.size())
+            {
+                VkDescriptorPoolSize& typeCount = poolSizes.emplace_back();
+                typeCount.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+                typeCount.descriptorCount = (uint32_t)shaderDescriptorSet.StorageBuffers.size() * numberOfSets;
+            }
+
+            if (shaderDescriptorSet.StorageSamplers.size())
+            {
+                VkDescriptorPoolSize& typeCount = poolSizes.emplace_back();
+                uint32_t descriptorSetCount = 0;
+                for (auto&& [binding, imageSampler] : shaderDescriptorSet.StorageSamplers)
+                    descriptorSetCount += imageSampler.ArraySize;
+
+                typeCount.type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+                typeCount.descriptorCount = descriptorSetCount * numberOfSets;
+            }
 		}
 
 		VkDescriptorPoolCreateInfo descriptorPoolInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };

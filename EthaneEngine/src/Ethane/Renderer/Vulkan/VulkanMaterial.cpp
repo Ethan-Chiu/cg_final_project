@@ -43,7 +43,6 @@ namespace Ethane {
     {
         VkDevice device = VulkanContext::GetDevice()->GetVulkanDevice();
         vkDeviceWaitIdle(device);
-        
         vkDestroyDescriptorPool(device, m_Pool, nullptr);
     }
 

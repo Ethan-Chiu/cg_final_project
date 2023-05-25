@@ -219,7 +219,7 @@ namespace Ethane {
 			ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
 			ETH_CORE_TRACE("  Member Count: {0}", memberCount);
 			ETH_CORE_TRACE("  Size: {0}", bufferSize);
-			ETH_CORE_TRACE("-------------------");
+			ETH_CORE_TRACE("  -------------------");
 		}
 
 
@@ -247,24 +247,80 @@ namespace Ethane {
 			imageSampler.ArraySize = arraySize;
 
 			ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
+            ETH_CORE_TRACE("  -------------------");
 		}
+        
+        ETH_CORE_INFO("Storage Buffers:");
+        for (const auto& resource : res.storage_buffers)
+        {
+            const auto& name = resource.name;
+            auto& bufferType = compiler.get_type(resource.base_type_id);
+            uint32_t memberCount = (uint32_t)bufferType.member_types.size();
+            uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+            uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+            uint32_t size = (uint32_t)compiler.get_declared_struct_size(bufferType);
 
+            if (descriptorSet >= shaderDescriptorSets.size())
+                shaderDescriptorSets.resize(descriptorSet + 1);
 
-		ETH_CORE_INFO("Push Constant Buffers:");
-		for (const auto& resource : res.push_constant_buffers)
-		{
-			const auto& bufferName = resource.name;
-			auto& bufferType = compiler.get_type(resource.base_type_id);
-			uint32_t bufferSize = (uint32_t)compiler.get_declared_struct_size(bufferType);
-			uint32_t memberCount = uint32_t(bufferType.member_types.size());
-			uint32_t bufferOffset = 0;
-			if (pushConstantRanges.size())
-				bufferOffset = pushConstantRanges.back().offset + pushConstantRanges.back().size;
+            ShaderDescriptorSetData& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
+            auto& storageBuffer = shaderDescriptorSet.StorageBuffers[binding];
+            
+            storageBuffer.Size = size;
+            storageBuffer.Name = name;
+            storageBuffer.ShaderStage = VK_SHADER_STAGE_ALL;
 
-			auto& pushConstantRange = pushConstantRanges.emplace_back();
-			pushConstantRange.stageFlags = stage;
-			pushConstantRange.offset = bufferOffset;
-			pushConstantRange.size = bufferSize - bufferOffset;
-		}
+            ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
+            ETH_CORE_TRACE("  Member Count: {0}", memberCount);
+            ETH_CORE_TRACE("  Size: {0}", size);
+            ETH_CORE_TRACE("  -------------------");
+        }
+
+        ETH_CORE_INFO("Storage Images:");
+        for (const auto& resource : res.storage_images)
+        {
+            const auto& name = resource.name;
+            auto& baseType = compiler.get_type(resource.base_type_id);
+            auto& type = compiler.get_type(resource.type_id);
+            
+            uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+            uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+            uint32_t dimension = baseType.image.dim;
+            uint32_t arraySize = type.array[0];
+            if (arraySize == 0)
+                arraySize = 1;
+            if (descriptorSet >= shaderDescriptorSets.size())
+                shaderDescriptorSets.resize(descriptorSet + 1);
+            
+            ShaderDescriptorSetData& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
+            auto& imageSampler = shaderDescriptorSet.StorageSamplers[binding];
+            imageSampler.DescriptorSet = descriptorSet;
+            imageSampler.Name = name;
+            imageSampler.ShaderStage = stage;
+            imageSampler.ArraySize = arraySize;
+
+            ETH_CORE_TRACE("  {0} ({1}, {2})", name, descriptorSet, binding);
+            ETH_CORE_TRACE("  -------------------");
+        }
+
+        ETH_CORE_INFO("Push Constant Buffers:");
+        for (const auto& resource : res.push_constant_buffers)
+        {
+            const auto& bufferName = resource.name;
+            auto& bufferType = compiler.get_type(resource.base_type_id);
+            uint32_t bufferSize = (uint32_t)compiler.get_declared_struct_size(bufferType);
+            uint32_t memberCount = uint32_t(bufferType.member_types.size());
+            uint32_t bufferOffset = 0;
+            if (pushConstantRanges.size())
+                bufferOffset = pushConstantRanges.back().offset + pushConstantRanges.back().size;
+
+            auto& pushConstantRange = pushConstantRanges.emplace_back();
+            pushConstantRange.stageFlags = stage;
+            pushConstantRange.offset = bufferOffset;
+            pushConstantRange.size = bufferSize - bufferOffset;
+        }
+        
+        ETH_CORE_INFO("===========================");
+        
 	}
 }

@@ -12,7 +12,6 @@ namespace Ethane {
 
 bool ShaderSystem::Init()
 {
-
     return true;
 }
 

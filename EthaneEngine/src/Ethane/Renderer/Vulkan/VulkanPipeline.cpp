@@ -48,7 +48,7 @@ namespace Ethane {
 	void VulkanPipeline::Destroy()
 	{
 		VkDevice device = m_Device->GetVulkanDevice();
-		std::dynamic_pointer_cast<VulkanShader>(m_Specification.Shader)->Destroy(); // TODO test
+        vkDeviceWaitIdle(device);
 		vkDestroyPipeline(device, m_GraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
 	}
@@ -115,7 +115,7 @@ namespace Ethane {
 		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizer.lineWidth = 1.0f;
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE; // TODO:
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
 		rasterizer.depthBiasClamp = 0.0f; // Optional

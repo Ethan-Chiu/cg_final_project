@@ -53,17 +53,15 @@ namespace Ethane {
             pipelineSpecification.Shader = shader;
             pipelineSpecification.RenderPass = m_GeoTarget->GetRenderPass();
 			m_GeometryPipeline = Pipeline::Create(pipelineSpecification);
-
-//			m_TestDiffuse = Texture2D::Create("assets/textures/FloorSandStone/cobblestone.png");
-//			m_TestSpecular = Texture2D::Create("assets/textures/FloorSandStone/cobblestone_SPEC.png");
-//			m_TestNormal = Texture2D::Create("assets/textures/FloorSandStone/cobblestone_NRM.png");
-//			 TODO: test remove
-//			m_testMaterial = Material::Create(ShaderLibrary::Get("PBR_static"), "tset Geo material");
-//			m_testMaterial->Set("u_DiffuseSampler", m_TestDiffuse);
-//			m_testMaterial->Set("u_SpecularSampler", m_TestSpecular);
-//			m_testMaterial->Set("u_NormalSampler", m_TestNormal);
 		}
 
+        {
+            ComputePipelineSpecification pipelineSpec;
+            auto shader = ShaderSystem::Get("test_compute");
+            pipelineSpec.Shader = shader;
+            m_MorphingPipeline = ComputePipeline::Create(pipelineSpec);
+        }
+        
 		// Grid
 //		{
 //			m_GridShader = ShaderLibrary::Get("Grid");
@@ -171,7 +169,7 @@ namespace Ethane {
         Renderer::SetGlobalUniformBuffer(0, (void*)&(cameraData.ViewProjection), sizeof(glm::mat4));
 	}
 
-	void SceneRenderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<Material> material)
+	void SceneRenderer::SubmitMesh(Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform)
 	{
 		// TODO: Culling, sorting, etc.
 		m_DrawList.push_back({ mesh, transform, material});
@@ -233,6 +231,7 @@ namespace Ethane {
 
     void SceneRenderer::Shutdown()
     {
+        m_MorphingPipeline->Destroy();
         m_GeometryPipeline->Destroy();
         m_GeoTarget->Destroy();
         m_GeoDepth->Destroy();
