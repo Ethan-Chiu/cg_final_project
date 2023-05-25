@@ -16,20 +16,18 @@ namespace Ethane {
         ETH_CORE_TRACE("VulkanSwapChain destructed");
     }
 
-    VulkanSwapChain::VulkanSwapChain(VkSurfaceKHR surface, VulkanDevice* device, uint32_t width, uint32_t height, bool vsync)
+    VulkanSwapChain::VulkanSwapChain(VkSurfaceKHR surface, VulkanDevice* device, bool vsync)
         : m_Surface(surface),
         m_Device(device),
         m_PhysicalDevice(device->GetPhysicalDevice()),
-        m_VSync(vsync),
-        m_Width(width),
-        m_Height(height)
+        m_VSync(vsync)
     {
         m_TargetImage = nullptr;
     }
 
-    Scope<VulkanSwapChain> VulkanSwapChain::Create(VkSurfaceKHR surface, VulkanDevice* device, uint32_t width, uint32_t height, bool vsync)
+    Scope<VulkanSwapChain> VulkanSwapChain::Create(VkSurfaceKHR surface, VulkanDevice* device, bool vsync)
 	{
-		return CreateScope<VulkanSwapChain>(surface, device, width, height, vsync);
+		return CreateScope<VulkanSwapChain>(surface, device, vsync);
 	}
 
     void VulkanSwapChain::Init()
@@ -48,7 +46,9 @@ namespace Ethane {
         VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
         m_Extent = ChooseSwapExtent(swapChainSupport.capabilities);
-        ETH_CORE_INFO("width: {0}, height: {1}", m_Extent.width, m_Extent.height);
+        m_Width = m_Extent.width;
+        m_Height = m_Extent.height;
+        ETH_CORE_INFO("width: {0}, height: {1}", m_Width, m_Height);
 
         m_ImageFormat = surfaceFormat.format;
         m_ImageColorSpace = surfaceFormat.colorSpace;

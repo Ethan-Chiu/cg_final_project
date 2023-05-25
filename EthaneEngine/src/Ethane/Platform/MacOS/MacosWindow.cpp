@@ -31,10 +31,8 @@ namespace Ethane {
 		ETH_PROFILE_FUNCTION();
 
 		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
 
-		ETH_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		ETH_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.ScreenCoordWidth, props.ScreenCoordHeight);
 
 
 		if (!s_WindowInitialized)
@@ -49,16 +47,21 @@ namespace Ethane {
 		// if (RendererAPI::GetAPI() == RendererAPI::API::Vulkan)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int)props.ScreenCoordWidth, (int)props.ScreenCoordHeight, m_Data.Title.c_str(), nullptr, nullptr);
 
         m_Context = GraphicsContext::Create(m_Window);
 		m_Context->Init();
+        
+        int width, height;
+        glfwGetFramebufferSize(m_Window, &width, &height);
+        m_Data.Width = width;
+        m_Data.Height = height;
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
 		//Set GLFW callback
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+		glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;

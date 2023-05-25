@@ -16,8 +16,8 @@ namespace Ethane{
 		VulkanSwapChain() = default;
 		~VulkanSwapChain();
 
-		VulkanSwapChain(VkSurfaceKHR surface, VulkanDevice* device, uint32_t width, uint32_t height, bool vsync);
-        static Scope<VulkanSwapChain> Create(VkSurfaceKHR surface, VulkanDevice* device, uint32_t width, uint32_t height, bool vsync);
+		VulkanSwapChain(VkSurfaceKHR surface, VulkanDevice* device, bool vsync);
+        static Scope<VulkanSwapChain> Create(VkSurfaceKHR surface, VulkanDevice* device, bool vsync);
 		
 		void Init();
 		void Destroy();

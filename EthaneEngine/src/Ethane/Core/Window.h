@@ -10,13 +10,13 @@ namespace Ethane {
 	struct WindowProps 
 	{
 		std::string Title;
-		uint32_t Width;
-		uint32_t Height;
+		uint32_t ScreenCoordWidth;
+		uint32_t ScreenCoordHeight;
 
 		WindowProps(const std::string& title = "Ethane Engine", 
 					uint32_t width = 1600,
 					uint32_t height = 900)
-			: Title(title), Width(width), Height(height) {}
+			: Title(title), ScreenCoordWidth(width), ScreenCoordHeight(height) {}
 			
 	};
 
