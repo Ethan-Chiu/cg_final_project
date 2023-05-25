@@ -3,16 +3,26 @@
 #include "VulkanUtils.h"
 
 #include "VulkanImage.h"
+#include "VulkanBuffer.h"
+#include "VulkanCommandBuffer.h"
 
 namespace Ethane {
 
-	VulkanImage2D::VulkanImage2D(ImageSpecification specification, void* buffer)
+	VulkanImage2D::VulkanImage2D(ImageSpecification specification, void* buffer, uint32_t size)
 		: m_Specification(specification)
 	{
 		ETH_CORE_ASSERT(m_Specification.Width > 0 && m_Specification.Height > 0);
 		ETH_CORE_TRACE("VulkanImage2D::Invalidate ({0})", m_Specification.DebugName);
 
+        if (buffer && size == 0) {
+            ETH_CORE_ERROR("size should be greater than 0");
+        }
+        
         CreateImage();
+        
+        if (buffer) {
+            LoadData(buffer, size);
+        }
 	}
 
 	VulkanImage2D::VulkanImage2D(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers, VkFormat format, VkImageTiling tiling,
@@ -117,6 +127,29 @@ namespace Ethane {
         ImageUtils::CreateImageView(device->GetVulkanDevice(), vulkanFormat, aspectMask, m_Specification.Mips, m_Specification.Layers, m_Info);
     }
 
+    void VulkanImage2D::LoadData(void *buffer, uint32_t size)
+    {
+        // create staging buffer
+        VulkanBuffer stagingBuffer{};
+        stagingBuffer.CreateVulkanBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, true);
+        
+        // copy data to staging buffer
+        stagingBuffer.SetData(buffer, 0, size, 0, 0);
+                
+        // transition
+        VulkanCommandBuffer commandBuffer{VulkanContext::GetDevice()};
+        commandBuffer.AllocateAndBeginSingleUse(QueueFamilyTypes::Graphics);
+        TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        CopyFromBuffer(commandBuffer.GetHandle(), stagingBuffer.GetHandle());
+
+        TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        commandBuffer.EndSingleUse(QueueFamilyTypes::Graphics);
+        
+        // cleanup staging buffer
+        stagingBuffer.Destroy();
+    }
+
 	void VulkanImage2D::CopyFromBuffer(VkCommandBuffer cmdBuffer, VkBuffer buffer)
 	{
 		VkBufferImageCopy region{};
@@ -138,7 +171,7 @@ namespace Ethane {
 		vkCmdCopyBufferToImage(cmdBuffer, buffer, m_Info.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 	}
 
-	void VulkanImage2D::TransitionLayout(VkCommandBuffer cmdBuffer, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
+	void VulkanImage2D::TransitionLayout(VkCommandBuffer cmdBuffer, VkImageLayout oldLayout, VkImageLayout newLayout)
 	{
 		VkImageMemoryBarrier barrier{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
 		barrier.oldLayout = oldLayout;
@@ -176,5 +209,4 @@ namespace Ethane {
 
 		vkCmdPipelineBarrier(cmdBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 	}
-
 }

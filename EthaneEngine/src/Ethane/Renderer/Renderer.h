@@ -35,6 +35,8 @@ namespace Ethane {
         static void AquireMaterialResource();
         static void SetGlobalUniformBuffer(uint32_t binding, const void* data, uint32_t size);
         
+        static void DrawGeometry(Ref<Pipeline> pipeline, Ref<VertexBuffer> vertexbuffer, Ref<IndexBuffer> indexbuffer, Ref<Material> material);
+        static void DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material);
         static void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform);
         
         static const GraphicsContext* GetGraphicsContext() { return s_Context; }

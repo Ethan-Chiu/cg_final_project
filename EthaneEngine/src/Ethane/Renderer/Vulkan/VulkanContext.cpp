@@ -4,6 +4,7 @@
 #include "Vulkan.h"
 #include <GLFW/glfw3.h>
 
+#include "Ethane/Renderer/Image.h"
 #include "VulkanSwapChain.h"
 
 namespace Ethane {
@@ -172,6 +173,9 @@ namespace Ethane {
         uint32_t width = 400, height = 300;
         m_SwapChain = VulkanSwapChain::Create(m_Surface, m_Device.get(), width, height, false);
         m_SwapChain->Init();
+        
+        // Find supported format
+//        FindSupportFormat();
 	}
 
 
@@ -680,5 +684,83 @@ namespace Ethane {
     uint32_t VulkanContext::GetFramesInFlight()
     {
         return m_SwapChain->GetMaxFramesInFlight();
+    }
+
+    void VulkanContext::FindSupportFormat()
+    {
+        auto physicalDevice = m_PhysicalDevice->GetVulkanPhysicalDevice();
+        
+        // Enumerate supported formats
+        std::vector<VkFormat> candidates = {
+            VK_FORMAT_R32_SFLOAT, // 100
+            VK_FORMAT_R16G16_SFLOAT, // 83
+            VK_FORMAT_R32G32_SFLOAT, // 103
+            VK_FORMAT_R8G8B8A8_UNORM, // 37
+            VK_FORMAT_R16G16B16A16_SFLOAT, // 97
+            VK_FORMAT_R32G32B32A32_SFLOAT, // 109
+            VK_FORMAT_R8G8B8_SRGB,
+            VK_FORMAT_R8G8B8_UNORM,
+            VK_FORMAT_B8G8R8_UNORM,
+            VK_FORMAT_B8G8R8A8_UNORM,
+            
+            VK_FORMAT_R8G8B8_UNORM,
+            VK_FORMAT_R8G8B8_SNORM,
+            VK_FORMAT_R8G8B8_USCALED,
+            VK_FORMAT_R8G8B8_SSCALED,
+            VK_FORMAT_R8G8B8_UINT,
+            VK_FORMAT_R8G8B8_SINT,
+            VK_FORMAT_R8G8B8_SRGB,
+            VK_FORMAT_B8G8R8_UNORM,
+            VK_FORMAT_B8G8R8_SNORM,
+            VK_FORMAT_B8G8R8_USCALED,
+            VK_FORMAT_B8G8R8_SSCALED,
+            VK_FORMAT_B8G8R8_UINT,
+            VK_FORMAT_B8G8R8_SINT,
+            VK_FORMAT_B8G8R8_SRGB,
+            
+            VK_FORMAT_R32G32B32_UINT,
+            VK_FORMAT_R32G32B32_SINT,
+            VK_FORMAT_R32G32B32_SFLOAT,
+            
+            VK_FORMAT_R64G64B64_UINT,
+            VK_FORMAT_R64G64B64_SINT,
+            VK_FORMAT_R64G64B64_SFLOAT,
+        };
+        
+        auto m_SupportedSampleFormat = FindAllSupportedFormat(candidates, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+        
+        for (VkFormat format : m_SupportedSampleFormat) {
+            ETH_CORE_WARN("Supported format: {0}", format);
+        }
+        
+        auto allDepthFormats = FindAllSupportedFormat(
+            { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+        );
+        if (allDepthFormats.empty())
+        {
+            ETH_CORE_ASSERT("failed to find supported format!");
+        }
+        m_DepthFormat = allDepthFormats[0];
+        ETH_CORE_INFO("Depth Imgae Format: {0}", m_DepthFormat);
+    }
+
+    std::vector<VkFormat> VulkanContext::FindAllSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+    {
+        std::vector<VkFormat> supportedFormats;
+        for (VkFormat format : candidates) {
+            VkFormatProperties props;
+            vkGetPhysicalDeviceFormatProperties(m_PhysicalDevice->GetVulkanPhysicalDevice(), format, &props);
+
+            if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+                supportedFormats.push_back(format);
+            }
+            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+                supportedFormats.push_back(format);
+            }
+        }
+
+        return supportedFormats;
     }
 }

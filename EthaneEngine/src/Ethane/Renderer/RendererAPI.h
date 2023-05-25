@@ -8,6 +8,8 @@ namespace Ethane {
     class GraphicsContext;
     class TargetImage;
     class RenderTarget;
+    class VertexBuffer;
+    class IndexBuffer;
     class Mesh;
     class Material;
     class Pipeline;
@@ -36,6 +38,8 @@ namespace Ethane {
         virtual void BeginRenderTarget(const RenderTarget* target, bool explicitClear = false) = 0;
         virtual void EndRenderTarget() = 0;
         
+        virtual void DrawGeometry(Ref<Pipeline> pipeline, Ref<VertexBuffer> vertexbuffer, Ref<IndexBuffer> indexbuffer, Ref<Material> material) = 0;
+        virtual void DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material) = 0;
         virtual void DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform) = 0;
         
         virtual TargetImage* GetSwapchainTarget() const = 0;

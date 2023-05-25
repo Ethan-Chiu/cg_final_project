@@ -128,6 +128,8 @@ namespace Ethane {
         bool HasMandatoryExtensions(VkPhysicalDevice physicalDevice, const ContextCreateInfo& info, bool bVerbose);
         bool CheckEntryArray(const std::vector<VkExtensionProperties>& properties, const ContextCreateInfo::EntryArray& requested, bool bVerbose);
         void InitPhysicalFeatures(PhysicalDeviceInfo& info, VkPhysicalDevice physicalDevice, uint32_t versionMajor, uint32_t versionMinor);
+        void FindSupportFormat();
+        std::vector<VkFormat> FindAllSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
         
 	private:
 		GLFWwindow* m_WindowHandle;
@@ -143,6 +145,10 @@ namespace Ethane {
 		std::unordered_set<std::string> m_SupportedDeviceExtensions;
 		std::vector<std::string> m_UsedDeviceExtensions;
 
+        // Image format
+        std::vector<VkFormat> m_SupportedSampleFormat;
+        VkFormat m_DepthFormat;
+        
 		VkSurfaceKHR m_Surface;
 
 		PhysicalDeviceInfo m_PhysicalInfo;

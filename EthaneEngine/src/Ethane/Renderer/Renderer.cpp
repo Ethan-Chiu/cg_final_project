@@ -65,6 +65,16 @@ namespace Ethane {
         s_RendererAPI->EndRenderTarget();
     }
 
+    void Renderer::DrawGeometry(Ref<Pipeline> pipeline, Ref<VertexBuffer> vertexbuffer, Ref<IndexBuffer> indexbuffer, Ref<Material> material)
+    {
+        s_RendererAPI->DrawGeometry(pipeline, vertexbuffer, indexbuffer, material);
+    }
+
+    void Renderer::DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material)
+    {
+        s_RendererAPI->DrawFullscreenQuad(pipeline, material);
+    }
+
     void Renderer::DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform)
     {
         s_RendererAPI->DrawMesh(pipeline, mesh, material, transform);

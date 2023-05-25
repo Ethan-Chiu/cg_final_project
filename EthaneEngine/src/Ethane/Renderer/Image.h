@@ -16,6 +16,7 @@ namespace Ethane {
 		RG16F,
 		RG32F,
 		SRGB,
+        BGR,
         BGRA,
 
 		DEPTH32F,
@@ -61,7 +62,7 @@ namespace Ethane {
 	class Image2D : public Image
 	{
 	public:
-		static Ref<Image2D> Create(ImageSpecification specification, void* buffer = nullptr);
+		static Ref<Image2D> Create(ImageSpecification specification, void* buffer = nullptr, uint32_t size = 0);
 	};
 
     class TargetImage : public Image

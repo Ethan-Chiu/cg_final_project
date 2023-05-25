@@ -9,7 +9,7 @@ namespace Ethane {
 	class VulkanImage2D  : public Image2D
 	{
 	public:
-		VulkanImage2D(ImageSpecification specification, void* buffer = nullptr);
+		VulkanImage2D(ImageSpecification specification, void* buffer = nullptr, uint32_t size = 0);
 		virtual ~VulkanImage2D() override;
 
 		VulkanImage2D(uint32_t width, uint32_t height, uint32_t mip, uint32_t layers,
@@ -23,8 +23,9 @@ namespace Ethane {
         
         void Resize(uint32_t width, uint32_t height);
 
+        void LoadData(void* buffer, uint32_t size);
 		void CopyFromBuffer(VkCommandBuffer cmdBuffer, VkBuffer buffer);
-		void TransitionLayout(VkCommandBuffer cmdBuffer, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+		void TransitionLayout(VkCommandBuffer cmdBuffer, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 		// Getter
 		virtual uint32_t GetWidth() const override { return m_Specification.Width; }

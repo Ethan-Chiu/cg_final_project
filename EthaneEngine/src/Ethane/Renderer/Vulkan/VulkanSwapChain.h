@@ -33,7 +33,7 @@ namespace Ethane{
 		// Getter
 		VkSurfaceKHR GetSurface() const { return m_Surface; }
 		VkFormat GetImageFormat() const { return m_ImageFormat; }
-		VkFormat GetDepthFormat() const { return m_DepthFormat; }
+//		VkFormat GetDepthFormat() const { return m_DepthFormat; }
 		uint32_t GetImageCount() const { return m_ImageCount; } // test
 		uint32_t GetWidth() const { return m_Extent.width; }// test
 		uint32_t GetHeight() const { return m_Extent.height; }// test
@@ -42,20 +42,16 @@ namespace Ethane{
 		uint32_t GetMaxFramesInFlight() const { return m_MaxFramesInFlight; }
         VulkanTargetImage* GetTargetImage() const { return m_TargetImage.get(); }
         const VulkanCommandBuffer* GetCurrentCommandBuffer() const { return &m_GraphicsCommandBuffers[m_CurrentFrame]; }
-        
-        //        VkRenderPass GetRenderPass() const { return m_RenderPass->GetHandle(); } // test
-        //        VkFramebuffer GetCurrentFramebuffer() const { return m_Framebuffers[m_CurrentImageIndex]; } // test
 
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-		VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+//		VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		void CreateCommandBuffers();
 
 		bool Resize();
 		void SetViewportAndScissor();
-//		void BeginRenderPass();
 		bool AcquireNextImage();
 		void Present(VkQueue queue, VkSemaphore signalSemaphore = VK_NULL_HANDLE);
 	private:
@@ -76,12 +72,6 @@ namespace Ethane{
 		std::vector<VkImageView> m_ImageViews;
         
         Scope<VulkanTargetImage> m_TargetImage;
-
-		VkFormat m_DepthFormat;
-//		Ref<VulkanImage2D> m_DepthAttachment;
-
-//		std::vector<VkFramebuffer> m_Framebuffers;
-//		Scope<VulkanRenderPass> m_RenderPass;
         
 		std::vector<VulkanCommandBuffer> m_GraphicsCommandBuffers;
 		std::vector<VkCommandBuffer> m_SecondaryCommandBuffers;

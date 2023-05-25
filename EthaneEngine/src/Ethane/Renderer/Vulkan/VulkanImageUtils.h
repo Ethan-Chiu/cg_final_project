@@ -33,6 +33,9 @@ namespace ImageUtils {
         case ImageFormat::RED32F:          return VK_FORMAT_R32_SFLOAT;
         case ImageFormat::RG16F:           return VK_FORMAT_R16G16_SFLOAT;
         case ImageFormat::RG32F:           return VK_FORMAT_R32G32_SFLOAT;
+        case ImageFormat::SRGB:            return VK_FORMAT_R8G8B8_SRGB;
+        case ImageFormat::RGB:             return VK_FORMAT_R8G8B8_UNORM;
+        case ImageFormat::BGR:             return VK_FORMAT_B8G8R8_UNORM;
         case ImageFormat::RGBA:            return VK_FORMAT_R8G8B8A8_UNORM;
         case ImageFormat::RGBA16F:         return VK_FORMAT_R16G16B16A16_SFLOAT;
         case ImageFormat::RGBA32F:         return VK_FORMAT_R32G32B32A32_SFLOAT;
@@ -55,6 +58,9 @@ namespace ImageUtils {
             case VK_FORMAT_R8G8B8A8_UNORM:          return ImageFormat::RGBA;
             case VK_FORMAT_R16G16B16A16_SFLOAT:     return ImageFormat::RGBA16F;
             case VK_FORMAT_R32G32B32A32_SFLOAT:     return ImageFormat::RGBA32F;
+            case VK_FORMAT_R8G8B8_SRGB:             return ImageFormat::SRGB;
+            case VK_FORMAT_R8G8B8_UNORM:            return ImageFormat::RGB;
+            case VK_FORMAT_B8G8R8_UNORM:            return ImageFormat::BGR;
             case VK_FORMAT_B8G8R8A8_UNORM:          return ImageFormat::BGRA;
             case VK_FORMAT_D32_SFLOAT:              return ImageFormat::DEPTH32F;
             case VK_FORMAT_D24_UNORM_S8_UINT:       return ImageFormat::DEPTH24STENCIL8;

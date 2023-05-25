@@ -52,14 +52,7 @@ namespace Ethane {
 
         m_ImageFormat = surfaceFormat.format;
         m_ImageColorSpace = surfaceFormat.colorSpace;
-        ETH_CORE_INFO("Imgae Format: {0} | Image Color Space: {1}", m_ImageFormat, m_ImageColorSpace);
-
-        m_DepthFormat = FindSupportedFormat(
-            { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
-            VK_IMAGE_TILING_OPTIMAL,
-            VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
-        );
-        ETH_CORE_INFO("Depth Imgae Format: {0}", m_DepthFormat);
+        ETH_CORE_INFO("Swapchain imgae Format: {0} | Image Color Space: {1}", m_ImageFormat, m_ImageColorSpace);
 
         // profiling
         ETH_CORE_TRACE("choose time: {0}ms", timer.ElapsedMillis());
@@ -189,36 +182,6 @@ namespace Ethane {
         } else {
             m_TargetImage->SwapchainUpdate(imageSpec, imageInfos);
         }
-        
-//        m_DepthAttachment = VulkanImage2D::Create(m_Width, m_Height, 1, 1, m_DepthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-//            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_IMAGE_ASPECT_DEPTH_BIT, true);
-
-        // Render pass
-//        std::vector<ImageFormat> attachmentFormat = {ImageUtils::VulkanImageFormatToImageFormat(m_ImageFormat)};
-//        m_RenderPass = VulkanRenderPass::Create(device, attachmentFormat, ImageFormat::None, true, true);
-//        ETH_CORE_TRACE("Swapchain renderpass created");
-        
-        // Framebuffers
-//        m_Framebuffers.resize(m_ImageViews.size());
-
-//        std::array<VkImageView, 1> attachments = {
-//            m_ImageViews[0],
-//            // m_DepthImageView
-//        };
-//        VkFramebufferCreateInfo framebufferInfo{};
-//        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-//        framebufferInfo.renderPass = m_RenderPass->GetHandle();
-//        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-//        framebufferInfo.pAttachments = attachments.data();
-//        framebufferInfo.width = m_Extent.width;
-//        framebufferInfo.height = m_Extent.height;
-//        framebufferInfo.layers = 1;
-
-//        for (size_t i = 0; i < m_ImageViews.size(); i++) {
-//            attachments[0] = m_ImageViews[i];
-//
-//            VK_CHECK_RESULT(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
-//        }
 
         // Synchronization Objects
         if (m_ImageAvailableSemaphores.empty() || m_RenderFinishedSemaphores.empty() || m_InFlightFences.empty())
@@ -300,23 +263,6 @@ namespace Ethane {
         }
     }
 
-    VkFormat VulkanSwapChain::FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-
-        for (VkFormat format : candidates) {
-            VkFormatProperties props;
-            vkGetPhysicalDeviceFormatProperties(m_PhysicalDevice->GetVulkanPhysicalDevice(), format, &props);
-
-            if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
-                return format;
-            }
-            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
-                return format;
-            }
-        }
-
-        ETH_CORE_ASSERT("failed to find supported format!");
-    }
-
     void VulkanSwapChain::CreateCommandBuffers()
     {
         if (m_GraphicsCommandBuffers.empty()) {
@@ -390,8 +336,7 @@ namespace Ethane {
         currentCommandBuffer.Reset();
         currentCommandBuffer.Begin(false, false, false);
 
-        SetViewportAndScissor();
-//        BeginRenderPass();
+//        SetViewportAndScissor();
 
         return true;
     }

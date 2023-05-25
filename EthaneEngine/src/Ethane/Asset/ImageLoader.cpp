@@ -18,7 +18,8 @@ bool ImageLoader::LoadImage(const std::string& filepath, ImageResource& out_reso
     
     out_resource.Width = width;
     out_resource.Height = height;
-    out_resource.Channels = channel;
+    out_resource.OriginalChannels = channel;
+    out_resource.DataSize = width * height * 4;
     
     if (!data) {
         ETH_CORE_ASSERT("Failed to load image!");
@@ -26,7 +27,7 @@ bool ImageLoader::LoadImage(const std::string& filepath, ImageResource& out_reso
     }
     out_resource.Data = data;
     
-    ETH_CORE_TRACE("w: {0}, h: {1}, ch: {2}", out_resource.Width, out_resource.Height, out_resource.Channels);
+    ETH_CORE_TRACE("w: {0}, h: {1}, ch: {2}", out_resource.Width, out_resource.Height, out_resource.OriginalChannels);
     return true;
 }
 

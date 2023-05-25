@@ -17,10 +17,11 @@ namespace Ethane {
         ImageResource imageData;
         ResourceSystem::LoadImage("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/test.png", imageData);
         ImageSpecification imageSpec;
+        imageSpec.Format = ImageFormat::RGBA;
         imageSpec.Width = imageData.Width;
         imageSpec.Height = imageData.Height;
         
-        s_DefaultImage = Image2D::Create(imageSpec, imageData.Data);
+        s_DefaultImage = Image2D::Create(imageSpec, imageData.Data, imageData.DataSize);
         s_DefaultTexture = Texture2D::Create(s_DefaultImage.get());
         
         ResourceSystem::UnloadImage(imageData);

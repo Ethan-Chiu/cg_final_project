@@ -11,9 +11,6 @@
 
 #include "Ethane/Renderer/Mesh.h"
 
-// #include "VulkanShader.h"
-//#include "VulkanTexture.h"
-
 namespace Ethane {
 
 	VulkanRendererAPI::VulkanRendererData* VulkanRendererAPI::s_Data = nullptr;
@@ -209,11 +206,6 @@ namespace Ethane {
 			viewport.y = (float)height;
 			viewport.width = (float)width;
 			viewport.height = -(float)height;
-            
-//            viewport.x = 0.0f;
-//            viewport.y = 0.0f;
-//            viewport.width = (float)width;
-//            viewport.height = (float)height;
 		}
 		else
 		{
@@ -335,4 +327,37 @@ namespace Ethane {
             vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
         }
     }
+
+    void VulkanRendererAPI::DrawGeometry(Ref<Pipeline> pipeline, Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, Ref<Material> material)
+    {
+        Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);
+
+        uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+//        VkCommandBuffer commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(s_RenderCommandBuffer)->GetCommandBuffer(frameIndex);
+
+        auto vulkanMeshVB = std::dynamic_pointer_cast<VulkanVertexBuffer>(vertexBuffer);
+        VkBuffer vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
+        VkDeviceSize offsets[1] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
+
+        auto vulkanMeshIB = std::dynamic_pointer_cast<VulkanIndexBuffer>(indexBuffer);
+        VkBuffer ibBuffer = vulkanMeshIB->GetVulkanBuffer();
+        vkCmdBindIndexBuffer(commandBuffer, ibBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        Ref<VulkanPipeline> vulkanPipeline = std::dynamic_pointer_cast<VulkanPipeline>(pipeline);
+        VkPipelineLayout layout = vulkanPipeline->GetPipelineLayout();
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetVulkanPipeline());
+
+        UpdateMaterialForRendering(vulkanMaterial.get());
+        CmdBindMaterial(commandBuffer, layout, vulkanMaterial.get(), frameIndex);
+
+        vkCmdDrawIndexed(commandBuffer, indexBuffer->GetCount(), 1, 0, 0, 0);
+    }
+
+    void VulkanRendererAPI::DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material)
+    {
+        DrawGeometry(pipeline, s_Data->QuadVertexBuffer, s_Data->QuadIndexBuffer, material);
+    }
+
 }

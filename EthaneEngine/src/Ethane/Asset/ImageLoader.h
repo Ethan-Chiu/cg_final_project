@@ -11,8 +11,9 @@ namespace Ethane {
 struct ImageResource {
     uint32_t Width;
     uint32_t Height;
-    uint32_t Channels;
+    uint32_t OriginalChannels;
     void* Data;
+    uint32_t DataSize;
 };
 
 class ImageLoader

@@ -77,14 +77,13 @@ namespace Ethane{
 		stagingBuffer.SetData(data, 0, imageSize, 0, 0);
 	
 		// transition
-		VkFormat format = VK_FORMAT_B8G8R8A8_UNORM;
         VulkanCommandBuffer commandBuffer{device};
 		commandBuffer.AllocateAndBeginSingleUse(QueueFamilyTypes::Graphics);
-		m_Image->TransitionLayout(commandBuffer.GetHandle(), format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		m_Image->TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 		m_Image->CopyFromBuffer(commandBuffer.GetHandle(), stagingBuffer.GetHandle());
 
-		m_Image->TransitionLayout(commandBuffer.GetHandle(), format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		m_Image->TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		commandBuffer.EndSingleUse(QueueFamilyTypes::Graphics);
 
 		// cleanup staging buffer
