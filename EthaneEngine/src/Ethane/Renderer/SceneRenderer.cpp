@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Ethane/Systems/ShaderSystem.h"
-
+#include "Ethane/Systems/TextureSystem.h"
 
 namespace Ethane {
 
@@ -59,6 +59,8 @@ namespace Ethane {
             ComputePipelineSpecification pipelineSpec;
             auto shader = ShaderSystem::Get("test_compute");
             m_ComputeMat = Material::Create(shader.get());
+            m_SampleTex = TextureSystem::GetTexture("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/test.png", ImageUsage::Storage);
+            m_ComputeMat->SetImage("inputTexture", m_SampleTex);
             m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
             pipelineSpec.Shader = shader;
             m_MorphingPipeline = ComputePipeline::Create(pipelineSpec);
@@ -142,10 +144,6 @@ namespace Ethane {
             
             m_GeoColor = Renderer::GetSwapchainTarget();
             m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
-//			m_GeoFramebuffer->Resize(m_ViewportWidth, m_ViewportHeight);
-//			->Resize(m_ViewportWidth, m_ViewportHeight);
-
-//			m_CompositeMaterial->Set("u_Texture", std::dynamic_pointer_cast<VulkanFramebuffer>(geoFramebuffer)->GetTexture());
 		}
 
 
@@ -174,13 +172,13 @@ namespace Ethane {
         Renderer::SetGlobalUniformBuffer(0, (void*)&(cameraData.ViewProjection), sizeof(glm::mat4));
 	}
 
-	void SceneRenderer::SubmitMesh(Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform)
+	void SceneRenderer::SubmitMesh(Mesh* mesh, Material* material, const glm::mat4& transform)
 	{
 		// TODO: Culling, sorting, etc.
 		m_DrawList.push_back({ mesh, transform, material});
 	}
 
-	void SceneRenderer::SubmitSelectedMesh(Ref<Mesh> mesh, const glm::mat4& transform) //, Ref<Material> material
+	void SceneRenderer::SubmitSelectedMesh(Mesh* mesh, const glm::mat4& transform) //, Ref<Material> material
 	{
 		m_SelectedMeshDrawList.push_back({ mesh, transform }); // , material
 	}
@@ -202,7 +200,7 @@ namespace Ethane {
 //		// Render entities
 		for (auto& dc : m_DrawList)
 		{
-			Renderer::DrawMesh(m_GeometryPipeline, dc.Mesh, dc.Material, dc.Transform);
+			Renderer::DrawMesh(m_GeometryPipeline, dc.MeshPtr, dc.MaterialPtr, dc.Transform);
 		}
         
 

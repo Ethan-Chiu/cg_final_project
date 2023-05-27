@@ -28,6 +28,7 @@ namespace Ethane {
         virtual uint32_t GetFlags() const = 0;
 
         virtual bool SetImage(const std::string& name, const TargetImage* image) = 0;
+        virtual bool SetImage(const std::string& name, const Texture2D* image) = 0;
         
         virtual const Shader* GetShader() const = 0;
 	private:

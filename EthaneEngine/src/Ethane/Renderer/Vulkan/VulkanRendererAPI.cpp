@@ -290,7 +290,7 @@ namespace Ethane {
 		vkCmdEndRenderPass(commandBuffer);
 	}
 
-    void VulkanRendererAPI::DrawMesh(Ref<Pipeline> pipeline, Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform)
+    void VulkanRendererAPI::DrawMesh(Ref<Pipeline> pipeline, Mesh* mesh, Material* material, const glm::mat4& transform)
     {
         ETH_CORE_ASSERT(mesh);
         
@@ -298,7 +298,7 @@ namespace Ethane {
         VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
 //        VkCommandBuffer commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(s_RenderCommandBuffer)->GetCommandBuffer(frameIndex);
 
-        Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);
+        VulkanMaterial* vulkanMaterial = dynamic_cast<VulkanMaterial*>(material);
 
         auto vulkanMeshVB = std::dynamic_pointer_cast<VulkanVertexBuffer>(mesh->m_VertexBuffer);
         VkBuffer vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
@@ -317,8 +317,8 @@ namespace Ethane {
         if (lineWidth != 1.0f)
             vkCmdSetLineWidth(commandBuffer, lineWidth);
 
-        UpdateMaterialForRendering(vulkanMaterial.get());
-        CmdBindMaterial(commandBuffer, layout, vulkanMaterial.get(), frameIndex);
+        UpdateMaterialForRendering(vulkanMaterial);
+        CmdBindMaterial(commandBuffer, layout, vulkanMaterial, frameIndex);
 
         auto& submeshes = mesh->m_Submeshes;
         for (auto& submesh : submeshes)

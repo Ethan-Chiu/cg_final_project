@@ -91,7 +91,6 @@ namespace Ethane {
 		std::vector<Submesh> m_Submeshes;
 		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
-//		Ref<Shader> m_MeshShader;
 		Ref<VertexBuffer> m_VertexBuffer;
 		Ref<IndexBuffer> m_IndexBuffer;
 

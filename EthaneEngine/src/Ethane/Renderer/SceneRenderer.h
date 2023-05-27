@@ -29,8 +29,8 @@ namespace Ethane {
 		void BeginScene(const Camera& camera, const glm::mat4& viewMatrix);
 		void EndScene();
 
-		void SubmitMesh(Ref<Mesh> mesh, Ref<Material> material, const glm::mat4& transform = glm::mat4(1.0f));
-		void SubmitSelectedMesh(Ref<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
+		void SubmitMesh(Mesh* mesh, Material* material, const glm::mat4& transform = glm::mat4(1.0f));
+		void SubmitSelectedMesh(Mesh* mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
 
 		// Getter
 		SceneRendererOptions& GetOptions() { return m_Options; }
@@ -51,12 +51,6 @@ namespace Ethane {
 		bool m_NeedResize = false;
 
 		Ref<Scene> m_Scene;
-
-        TargetImage* m_GeoColor = nullptr;
-        Ref<Image2D> m_GeoDepth = nullptr;
-        Scope<RenderTarget> m_GeoTarget = nullptr;
-        
-        
 
 		struct UBGlobal
 		{
@@ -104,16 +98,19 @@ namespace Ethane {
 			char Padding3[3] = { 0,0,0 };
 		} RendererDataUB;
 
-        
+        TargetImage* m_GeoColor = nullptr;
+        Ref<Image2D> m_GeoDepth = nullptr;
+        Scope<RenderTarget> m_GeoTarget = nullptr;
 		Ref<Pipeline> m_GeometryPipeline;
-        Ref<Material> m_ComputeMat;
-        Ref<ComputePipeline> m_MorphingPipeline;
+        Texture2D* m_SampleTex = nullptr;
+        Ref<Material> m_ComputeMat = nullptr;
+        Ref<ComputePipeline> m_MorphingPipeline = nullptr;
         
 		struct DrawCommand
 		{
-			Ref<Mesh> Mesh;
+			Mesh* MeshPtr = nullptr;
 			glm::mat4 Transform;
-			Ref<Material> Material;
+			Material* MaterialPtr = nullptr;
 		};
 		std::vector<DrawCommand> m_DrawList;
 		std::vector<DrawCommand> m_SelectedMeshDrawList;

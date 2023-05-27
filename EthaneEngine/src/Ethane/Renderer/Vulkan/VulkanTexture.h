@@ -23,11 +23,7 @@ namespace Ethane {
         VulkanImage2D* GetImage() const { return m_Image; }
 		VkImageView GetImageView() { return m_Image->GetImageInfo().ImageView; }
 		VkSampler GetImageSampler() { return m_TextureSampler; }
-
-//		virtual Ref<Image2D> GetImage() const { return std::dynamic_pointer_cast<Image2D>(m_Image); }
-
-		// TODO: remove
-//		virtual bool operator==(const TextureOld& other) const { return this->m_Path == ((VulkanTexture2D&)other).m_Path; };
+        
 	private:
 		void CreateTextureSampler();
 		void UpdateDescriptorImageInfo();

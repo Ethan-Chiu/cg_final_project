@@ -133,7 +133,10 @@ namespace Ethane {
 		// uniform buffer and texture sampler
 		for (auto&& resource : m_ResourceBindings) {
             auto& wds = resource.WriteDescriptors[frameIndex];
-            if (resource.CacheImageInfos.size() > 1) {
+            
+            // if point to different resources based on currrent image index
+            if (resource.CacheImageInfos.size() > 1)
+            {
                 wds.dstArrayElement = 0;
                 wds.pImageInfo = &(resource.CacheImageInfos[iamgeIndex]);
             }
@@ -166,4 +169,27 @@ namespace Ethane {
         return found;
     }
 
+    bool VulkanMaterial::SetImage(const std::string& name, const Texture2D* image)
+    {
+        bool found = false;
+        for(auto& resource: m_ResourceBindings)
+        {
+            if(resource.Name == name){
+                found = true;
+                uint32_t framesInFlight = VulkanContext::GetFramesInFlight();
+                const VulkanTexture2D* vulkantexture = dynamic_cast<const VulkanTexture2D*>(image);
+                resource.CacheImageInfos.clear();
+                resource.CacheImageInfos.push_back(vulkantexture->GetDescriptorImageInfo());
+                for (uint32_t frame = 0; frame < framesInFlight; ++frame) {
+                    auto& wds = resource.WriteDescriptors[frame];
+                    wds.dstArrayElement = 0;
+                    wds.pImageInfo = &resource.CacheImageInfos[0];
+                }
+                break;
+            }
+        }
+        ETH_CORE_ASSERT(found, "resource not found");
+        return found;
+    }
+    
 }

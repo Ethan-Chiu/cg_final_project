@@ -67,27 +67,7 @@ namespace Ethane{
 
 	void VulkanTexture2D::SetData(void* data, uint32_t imageSize)
 	{
-		const auto device = VulkanContext::GetDevice();
-
-		// create staging buffer
-        VulkanBuffer stagingBuffer{};
-		stagingBuffer.CreateVulkanBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, true);
-
-		// copy data to staging buffer
-		stagingBuffer.SetData(data, 0, imageSize, 0, 0);
-	
-		// transition
-        VulkanCommandBuffer commandBuffer{device};
-		commandBuffer.AllocateAndBeginSingleUse(QueueFamilyTypes::Graphics);
-		m_Image->TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
-		m_Image->CopyFromBuffer(commandBuffer.GetHandle(), stagingBuffer.GetHandle());
-
-		m_Image->TransitionLayout(commandBuffer.GetHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		commandBuffer.EndSingleUse(QueueFamilyTypes::Graphics);
-
-		// cleanup staging buffer
-		stagingBuffer.Destroy();
+        m_Image->LoadData(data, imageSize);
 	}
 
 	void VulkanTexture2D::CreateTextureSampler() {
@@ -123,9 +103,9 @@ namespace Ethane{
 		//TODO: fix
 		//if (m_Specification.Format == ImageFormat::DEPTH24STENCIL8 || m_Specification.Format == ImageFormat::DEPTH32F)
 		//	m_DescriptorInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-		//else if (m_Specification.Usage == ImageUsage::Storage)
-		//	m_DescriptorInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-		//else
+		if (m_Image->GetSpecification().Usage == ImageUsage::Storage)
+			m_DescriptorInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+		else
 			m_DescriptorInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 
