@@ -33,6 +33,8 @@ namespace Ethane {
 
 		void ApplyMaterial();
 
+        virtual bool SetImage(const std::string& name, const TargetImage* image) override;
+        
 		// Getter
 		virtual uint32_t GetFlags() const override { return m_MaterialFlags; }
 		virtual bool HasFlag(MaterialFlag flag) const { return (uint32_t)flag & m_MaterialFlags; }
@@ -59,11 +61,10 @@ namespace Ethane {
 			std::string Name;
 			uint32_t Set;
             VkDescriptorBufferInfo CacheBufferInfo;
+            std::vector<VkDescriptorImageInfo> CacheImageInfos;
 			std::vector<VkWriteDescriptorSet> WriteDescriptors; // frame
 		};
 		std::vector<ResourceBinding> m_ResourceBindings;
-
-		std::vector<Ref<Image>> m_Images;
 
 		VkDescriptorPool m_Pool;
 		std::vector < std::vector < VkDescriptorSet>> m_DescriptorSets; // frame -> set

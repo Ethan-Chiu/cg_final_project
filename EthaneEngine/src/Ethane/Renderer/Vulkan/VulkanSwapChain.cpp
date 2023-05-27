@@ -106,7 +106,7 @@ namespace Ethane {
         swapchainCreateInfo.imageColorSpace = m_ImageColorSpace;
         swapchainCreateInfo.imageExtent = m_Extent;
         swapchainCreateInfo.imageArrayLayers = 1;
-        swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // TODO: make this configurable?
         const auto& indices = m_PhysicalDevice->GetQueueFamilyIndices();
         if (indices.Graphics.value() != indices.Present.value()) {
             uint32_t queueFamilyIndices[] = { indices.Graphics.value(), indices.Present.value() };
@@ -184,12 +184,14 @@ namespace Ethane {
         }
 
         // Synchronization Objects
-        if (m_ImageAvailableSemaphores.empty() || m_RenderFinishedSemaphores.empty() || m_InFlightFences.empty())
+        if (m_ImageAvailableSemaphores.empty() || m_RenderFinishedSemaphores.empty() || m_ComputeFinishedSemaphores.empty() || m_InFlightFences.empty() || m_ComputeInFlightFences.empty())
         {
             ETH_CORE_TRACE("Create Synchronization Objects");
             m_ImageAvailableSemaphores.resize(m_MaxFramesInFlight);
             m_RenderFinishedSemaphores.resize(m_MaxFramesInFlight);
+            m_ComputeFinishedSemaphores.resize(m_MaxFramesInFlight);
             m_InFlightFences.resize(m_MaxFramesInFlight);
+            m_ComputeInFlightFences.resize(m_MaxFramesInFlight);
             m_ImagesInFlight.resize(m_Images.size(), VK_NULL_HANDLE);
 
             VkSemaphoreCreateInfo semaphoreInfo{};
@@ -202,7 +204,9 @@ namespace Ethane {
             for (size_t i = 0; i < m_MaxFramesInFlight; i++) {
                 VK_CHECK_RESULT(vkCreateSemaphore(device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]));
                 VK_CHECK_RESULT(vkCreateSemaphore(device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]));
+                VK_CHECK_RESULT(vkCreateSemaphore(device, &semaphoreInfo, nullptr, &m_ComputeFinishedSemaphores[i]));
                 VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &m_InFlightFences[i]));
+                VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &m_ComputeInFlightFences[i]));
             }
         }
 
@@ -213,6 +217,7 @@ namespace Ethane {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         CreateCommandBuffers();
+        CreateComputeCommandBuffers();
 
         ETH_CORE_INFO("SwapChain created");
     }
@@ -279,6 +284,22 @@ namespace Ethane {
         ETH_CORE_INFO("Vulkan command buffers created.");
     }
 
+    void VulkanSwapChain::CreateComputeCommandBuffers()
+    {
+        if (m_ComputeCommandBuffers.empty()) {
+            m_ComputeCommandBuffers.resize(m_MaxFramesInFlight, VulkanCommandBuffer(m_Device));
+        }
+
+        for (uint32_t i = 0; i < m_MaxFramesInFlight; ++i) {
+            if (m_ComputeCommandBuffers[i].GetHandle()) {
+                m_ComputeCommandBuffers[i].Free(m_Device->GetComputeCommandPool());
+            }
+            m_ComputeCommandBuffers[i].Allocate(m_Device->GetComputeCommandPool(), true);
+        }
+
+        ETH_CORE_INFO("Vulkan command buffers created.");
+    }
+
     void VulkanSwapChain::OnResize(uint32_t width, uint32_t height)
     {
         // NOTE: width == 0 or height == 0 will not occur
@@ -323,9 +344,11 @@ namespace Ethane {
             return false;
         }
 
-        // TODO: check result
-        vkWaitForFences(device, 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
+        VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX));
         VK_CHECK_RESULT(vkResetFences(device, 1, &m_InFlightFences[m_CurrentFrame]));
+        
+//        VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_ComputeInFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX));
+//        VK_CHECK_RESULT(vkResetFences(device, 1, &m_ComputeInFlightFences[m_CurrentFrame]));
 
 
         if (!AcquireNextImage()) {
@@ -335,50 +358,13 @@ namespace Ethane {
         VulkanCommandBuffer currentCommandBuffer = m_GraphicsCommandBuffers[m_CurrentFrame];
         currentCommandBuffer.Reset();
         currentCommandBuffer.Begin(false, false, false);
-
-//        SetViewportAndScissor();
+        
+//        VulkanCommandBuffer currentComputeCommandBuffer = m_ComputeCommandBuffers[m_CurrentFrame];
+//        currentComputeCommandBuffer.Reset();
+//        currentComputeCommandBuffer.Begin(false, false, false);
 
         return true;
     }
-
-    void VulkanSwapChain::SetViewportAndScissor()
-    {
-        VulkanCommandBuffer currentCommandBuffer = m_GraphicsCommandBuffers[m_CurrentFrame];
-
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = (float)m_Extent.width;
-        viewport.height = (float)m_Extent.height;
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(currentCommandBuffer.GetHandle(), 0, 1, &viewport);
-
-        VkRect2D scissor{};
-        scissor.offset = { 0, 0 };
-        scissor.extent = m_Extent;
-        vkCmdSetScissor(currentCommandBuffer.GetHandle(), 0, 1, &scissor);
-    }
-
-//    void VulkanSwapChain::BeginRenderPass()
-//    {
-//        VulkanCommandBuffer currentCommandBuffer = m_GraphicsCommandBuffers[m_CurrentFrame];
-//
-//        std::array<VkClearValue, 1> clearValues{};
-//        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-//#if depth
-//        clearValues[1].depthStencil = { 1.0f, 0 };
-//#endif
-//
-//        VkRenderPassBeginInfo renderPassInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
-//        renderPassInfo.renderPass = m_RenderPass->GetHandle();
-//        renderPassInfo.framebuffer = m_Framebuffers[m_CurrentImageIndex];
-//        renderPassInfo.renderArea.offset = { 0, 0 };
-//        renderPassInfo.renderArea.extent = m_Extent;
-//        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());;
-//        renderPassInfo.pClearValues = clearValues.data();
-//        vkCmdBeginRenderPass(currentCommandBuffer.GetHandle(), &renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
-//    }
 
     void VulkanSwapChain::RegisterSecondaryCmdBuffer(VkCommandBuffer secondaryBuffer)
     {
@@ -397,27 +383,52 @@ namespace Ethane {
             m_SecondaryCommandBuffers.clear();
         }
 
-//        vkCmdEndRenderPass(currentCmdBufferHandle);
         VK_CHECK_RESULT(vkEndCommandBuffer(currentCmdBufferHandle));
 
+//        VulkanCommandBuffer currentComputeCommandBuffer = m_ComputeCommandBuffers[m_CurrentFrame];
+//        VkCommandBuffer currentComputeCmdBufferHandle = currentComputeCommandBuffer.GetHandle();
+//        VK_CHECK_RESULT(vkEndCommandBuffer(currentComputeCmdBufferHandle));
 
-        VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
-
-        VkSemaphore waitSemaphores[] = { m_ImageAvailableSemaphores[m_CurrentFrame] };
-        submitInfo.waitSemaphoreCount = 1;
-        submitInfo.pWaitSemaphores = waitSemaphores;
-
-        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-        submitInfo.pWaitDstStageMask = waitStages;
-
-        VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame] };
-        submitInfo.signalSemaphoreCount = 1;
-        submitInfo.pSignalSemaphores = signalSemaphores;
-
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &currentCmdBufferHandle;
-
-        VK_CHECK_RESULT(vkQueueSubmit(m_Device->GetGraphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrame]));
+        {
+            VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
+            
+            VkSemaphore waitSemaphores[] = { m_ImageAvailableSemaphores[m_CurrentFrame] };
+            submitInfo.waitSemaphoreCount = 1;
+            submitInfo.pWaitSemaphores = waitSemaphores;
+            
+            VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+            submitInfo.pWaitDstStageMask = waitStages;
+            
+            VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame] };
+            submitInfo.signalSemaphoreCount = 1;
+            submitInfo.pSignalSemaphores = signalSemaphores;
+            
+            submitInfo.commandBufferCount = 1;
+            submitInfo.pCommandBuffers = &currentCmdBufferHandle;
+            
+                VK_CHECK_RESULT(vkQueueSubmit(m_Device->GetGraphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrame]));
+        }
+        
+//        {
+//            VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
+//
+//            VkSemaphore waitSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame] };
+//            submitInfo.waitSemaphoreCount = 1;
+//            submitInfo.pWaitSemaphores = waitSemaphores;
+//
+//            VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+//            submitInfo.pWaitDstStageMask = waitStages;
+//
+//            VkSemaphore signalSemaphores[] = { m_ComputeFinishedSemaphores[m_CurrentFrame] };
+//            submitInfo.signalSemaphoreCount = 1;
+//            submitInfo.pSignalSemaphores = signalSemaphores;
+//
+//            submitInfo.commandBufferCount = 1;
+//            submitInfo.pCommandBuffers = &currentCmdBufferHandle;
+//
+//            VK_CHECK_RESULT(vkQueueSubmit(m_Device->GetComputeQueue(), 1, &submitInfo, m_ComputeInFlightFences[m_CurrentFrame]));
+//        }
+//
 
         Present(m_Device->GetGraphicsQueue(), m_RenderFinishedSemaphores[m_CurrentFrame]);
 
@@ -477,15 +488,6 @@ namespace Ethane {
 
         vkDeviceWaitIdle(device);
 
-//        for (auto framebuffer : m_Framebuffers)
-//        {
-//            vkDestroyFramebuffer(device, framebuffer, nullptr);
-//        }
-//
-//        m_RenderPass->Destroy();
-
-//        m_DepthAttachment->Destroy();
-
         for (auto imageView : m_ImageViews)
         {
             vkDestroyImageView(device, imageView, nullptr);
@@ -510,8 +512,10 @@ namespace Ethane {
         ETH_CORE_INFO("Destroying Vulkan swapchain sync objects...");
         for (size_t i = 0; i < m_MaxFramesInFlight; i++) {
             vkDestroySemaphore(device, m_RenderFinishedSemaphores[i], nullptr);
+            vkDestroySemaphore(device, m_ComputeFinishedSemaphores[i], nullptr);
             vkDestroySemaphore(device, m_ImageAvailableSemaphores[i], nullptr);
             vkDestroyFence(device, m_InFlightFences[i], nullptr);
+            vkDestroyFence(device, m_ComputeInFlightFences[i], nullptr);
         }
 
         m_TargetImage = nullptr;

@@ -8,6 +8,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanTexture.h"
 #include "VulkanImage.h"
+#include "VulkanTargetImage.h"
 #include "VulkanPipeline.h"
 //#include "VulkanUniformBuffer.h"
 
@@ -31,8 +32,6 @@ namespace Ethane {
 			m_Name = material->GetName();
 
         const VulkanMaterial* vulkanMaterial = static_cast<const VulkanMaterial*>(material);
-		
-		m_Images = vulkanMaterial->m_Images;
 	}
 
 	VulkanMaterial::~VulkanMaterial()
@@ -80,8 +79,8 @@ namespace Ethane {
 				VkWriteDescriptorSet wds = wdsMeta.WriteDescriptor;
 				if(wds.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
 				{
+                    resource.CacheBufferInfo = VulkanShaderSystem::GetUniformBufferInfo(set, wds.dstBinding, this);
 					for (uint32_t frame = 0; frame < framesInFlight; ++frame) {
-						resource.CacheBufferInfo = VulkanShaderSystem::GetUniformBufferInfo(set, wds.dstBinding, this);
 						wds.dstArrayElement = 0;
 						wds.pBufferInfo = &resource.CacheBufferInfo;
 						resource.WriteDescriptors.push_back(wds);
@@ -89,13 +88,28 @@ namespace Ethane {
 
 				} else if(wds.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 				{
+                    auto tex = TextureSystem::GetDefaultTexture();
+                    resource.CacheImageInfos.push_back(std::dynamic_pointer_cast<VulkanTexture2D>(tex)->GetDescriptorImageInfo());
 					for (uint32_t frame = 0; frame < framesInFlight; ++frame) {
-						auto tex = TextureSystem::GetDefaultTexture();
 						wds.dstArrayElement = 0;
-						wds.pImageInfo = &(std::dynamic_pointer_cast<VulkanTexture2D>(tex)->GetDescriptorImageInfo());
+                        wds.pImageInfo = &resource.CacheImageInfos[0];
 						resource.WriteDescriptors.push_back(wds);
 					}
-				}
+				} else if(wds.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
+                {
+                    for (uint32_t frame = 0; frame < framesInFlight; ++frame) {
+                        wds.dstArrayElement = 0;
+                        wds.pBufferInfo = nullptr;
+                        resource.WriteDescriptors.push_back(wds);
+                    }
+                } else if(wds.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+                {
+                    for (uint32_t frame = 0; frame < framesInFlight; ++frame) {
+                        wds.dstArrayElement = 0;
+                        wds.pImageInfo = nullptr;
+                        resource.WriteDescriptors.push_back(wds);
+                    }
+                }
 			}
 		}
 
@@ -111,13 +125,18 @@ namespace Ethane {
 	{
 		auto device = VulkanContext::GetDevice()->GetVulkanDevice();
 		uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
+        uint32_t iamgeIndex = VulkanContext::GetSwapchain()->GetCurrentImageIndex();
 
 		std::vector<VkDescriptorImageInfo> arrayImageInfos;
 		std::vector<VkWriteDescriptorSet> writeDescriptors{};
-
-		// update uniform buffer and texture sampler
+        
+		// uniform buffer and texture sampler
 		for (auto&& resource : m_ResourceBindings) {
-			auto& wds = resource.WriteDescriptors[frameIndex];
+            auto& wds = resource.WriteDescriptors[frameIndex];
+            if (resource.CacheImageInfos.size() > 1) {
+                wds.dstArrayElement = 0;
+                wds.pImageInfo = &(resource.CacheImageInfos[iamgeIndex]);
+            }
             writeDescriptors.emplace_back(wds).dstSet = m_DescriptorSets[frameIndex][resource.Set];
 		}
 		vkUpdateDescriptorSets(device, static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
@@ -125,5 +144,26 @@ namespace Ethane {
 		m_WriteDescriptors[frameIndex].clear();
 		m_DescriptorArrays.clear();
 	}
+
+    bool VulkanMaterial::SetImage(const std::string& name, const TargetImage* image)
+    {
+        bool found = false;
+        for(auto& resource: m_ResourceBindings)
+        {
+            if(resource.Name == name){
+                found = true;
+                uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
+                const VulkanTargetImage* vulkanTargetImage = dynamic_cast<const VulkanTargetImage*>(image);
+                resource.CacheImageInfos.clear();
+                resource.CacheImageInfos.resize(imageCount);
+                for (uint32_t img = 0; img < imageCount; ++img) {
+                    resource.CacheImageInfos[img] = vulkanTargetImage->GetDescriptorImageInfo(img);
+                }
+                break;
+            }
+        }
+        ETH_CORE_ASSERT(found, "resource not found");
+        return found;
+    }
 
 }

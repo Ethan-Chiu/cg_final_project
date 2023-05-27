@@ -144,4 +144,13 @@ namespace Ethane {
         m_Specification = specification;
         m_Infos = std::move(infos);
     }
+
+    VkDescriptorImageInfo VulkanTargetImage::GetDescriptorImageInfo(uint32_t idx) const
+    {
+        VkDescriptorImageInfo decriptorImageInfo;
+        decriptorImageInfo.imageLayout = m_Layout;
+        decriptorImageInfo.imageView = m_Infos[idx].ImageView;
+        decriptorImageInfo.sampler = nullptr;
+        return decriptorImageInfo;
+    }
 }

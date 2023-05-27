@@ -218,8 +218,8 @@ namespace Ethane {
 		}
 	}
 
-	void VulkanPipeline::Bind(const VulkanCommandBuffer* cmdBuffer, VkPipelineBindPoint bindPoint)
+	void VulkanPipeline::Bind(VkCommandBuffer cmdBuffer, VkPipelineBindPoint bindPoint)
 	{
-		vkCmdBindPipeline(cmdBuffer->GetHandle(), bindPoint, m_GraphicsPipeline);
+		vkCmdBindPipeline(cmdBuffer, bindPoint, m_GraphicsPipeline);
 	}
 }

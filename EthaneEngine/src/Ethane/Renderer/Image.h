@@ -45,6 +45,38 @@ namespace Ethane {
 		std::string DebugName;
 	};
 
+    enum class ImageLayout
+    {
+        Undefined,
+        General,
+        PresentSRC,
+    };
+
+    enum class AccessMask
+    {
+        None,
+        ShaderRead,
+        ShaderWrite,
+        ColorRead,
+        ColorWrite,
+        TransferRead,
+        TransferWrite,
+        MemoryRead,
+        MemoryWrite,
+    };
+
+    enum class PipelineStage
+    {
+        None,
+        PipeTop,
+        VertexShader,
+        FragmentShader,
+        ComputeShader,
+        Transfer,
+        PipeBottom,
+    };
+
+
 	class Image
 	{
 	public:

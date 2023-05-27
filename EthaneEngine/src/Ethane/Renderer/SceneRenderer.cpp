@@ -58,6 +58,8 @@ namespace Ethane {
         {
             ComputePipelineSpecification pipelineSpec;
             auto shader = ShaderSystem::Get("test_compute");
+            m_ComputeMat = Material::Create(shader.get());
+            m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
             pipelineSpec.Shader = shader;
             m_MorphingPipeline = ComputePipeline::Create(pipelineSpec);
         }
@@ -137,6 +139,9 @@ namespace Ethane {
 			m_NeedResize = false;
 		
             m_GeoTarget->Resize(m_ViewportWidth, m_ViewportHeight);
+            
+            m_GeoColor = Renderer::GetSwapchainTarget();
+            m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
 //			m_GeoFramebuffer->Resize(m_ViewportWidth, m_ViewportHeight);
 //			->Resize(m_ViewportWidth, m_ViewportHeight);
 
@@ -199,6 +204,7 @@ namespace Ethane {
 		{
 			Renderer::DrawMesh(m_GeometryPipeline, dc.Mesh, dc.Material, dc.Transform);
 		}
+        
 
         Renderer::EndRenderTarget();
 	}
@@ -219,9 +225,13 @@ namespace Ethane {
 	{
 //		VulkanRendererAPI::BeginRenderCommandBuffer(m_CommandBuffer);
 
-		GeometryPass();
+//		GeometryPass();
 
-		CompositePass();
+//		CompositePass();
+        
+        Renderer::TransitionLayout(m_GeoColor, ImageLayout::Undefined, ImageLayout::General, AccessMask::None, PipelineStage::PipeTop, AccessMask::MemoryWrite, PipelineStage::ComputeShader);
+        Renderer::BeginCompute(m_MorphingPipeline, m_ComputeMat, m_ViewportWidth/8, m_ViewportHeight/8, 1);
+        Renderer::TransitionLayout(m_GeoColor, ImageLayout::General, ImageLayout::PresentSRC, AccessMask::MemoryWrite, PipelineStage::ComputeShader, AccessMask::None, PipelineStage::PipeBottom);
 
 //		VulkanRendererAPI::EndRenderCommandBuffer();
 //		m_CommandBuffer->Submit();
@@ -232,6 +242,7 @@ namespace Ethane {
     void SceneRenderer::Shutdown()
     {
         m_MorphingPipeline->Destroy();
+        m_ComputeMat->Destroy();
         m_GeometryPipeline->Destroy();
         m_GeoTarget->Destroy();
         m_GeoDepth->Destroy();

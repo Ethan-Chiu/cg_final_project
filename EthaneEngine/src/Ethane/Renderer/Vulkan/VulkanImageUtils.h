@@ -69,4 +69,53 @@ namespace ImageUtils {
         ETH_CORE_WARN("Image format is {0}", format);
         return ImageFormat::None;
     }
+
+    inline VkImageLayout VulkanImageLayout(ImageLayout layout)
+    {
+        switch (layout)
+        {
+            case ImageLayout::Undefined:          return VK_IMAGE_LAYOUT_UNDEFINED;
+            case ImageLayout::General:            return VK_IMAGE_LAYOUT_GENERAL;
+            case ImageLayout::PresentSRC:         return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        }
+        ETH_CORE_ASSERT(false);
+        ETH_CORE_WARN("Image layout is {0}", (uint8_t)layout);
+        return VK_IMAGE_LAYOUT_UNDEFINED;
+    }
+
+    inline VkAccessFlagBits VulkanAccessMask(AccessMask mask)
+    {
+        switch (mask)
+        {
+            case AccessMask::None:                          return VK_ACCESS_NONE;
+            case AccessMask::ShaderRead:                    return VK_ACCESS_SHADER_READ_BIT;
+            case AccessMask::ShaderWrite:                   return VK_ACCESS_SHADER_WRITE_BIT;
+            case AccessMask::ColorRead:                     return VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+            case AccessMask::ColorWrite:                    return VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            case AccessMask::TransferRead:                  return VK_ACCESS_TRANSFER_READ_BIT;
+            case AccessMask::TransferWrite:                 return VK_ACCESS_TRANSFER_WRITE_BIT;
+            case AccessMask::MemoryRead:                    return VK_ACCESS_MEMORY_READ_BIT;
+            case AccessMask::MemoryWrite:                   return VK_ACCESS_MEMORY_WRITE_BIT;
+        }
+        ETH_CORE_ASSERT(false);
+        ETH_CORE_WARN("Access mask is {0}", (uint8_t)mask);
+        return VK_ACCESS_NONE;
+    }
+
+    inline VkPipelineStageFlagBits VulkanPipelineStage(PipelineStage stage)
+    {
+        switch (stage)
+        {
+            case PipelineStage::None:                       return VK_PIPELINE_STAGE_NONE;
+            case PipelineStage::PipeTop:                    return VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            case PipelineStage::VertexShader:               return VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+            case PipelineStage::FragmentShader:             return VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            case PipelineStage::ComputeShader:              return VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+            case PipelineStage::Transfer:                   return VK_PIPELINE_STAGE_TRANSFER_BIT;
+            case PipelineStage::PipeBottom:                 return VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+        }
+        ETH_CORE_ASSERT(false);
+        ETH_CORE_WARN("Pipeline stage is {0}", (uint8_t)stage);
+        return VK_PIPELINE_STAGE_NONE;
+    }
 }}

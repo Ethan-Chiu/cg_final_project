@@ -106,6 +106,7 @@ namespace Ethane {
 
         
 		Ref<Pipeline> m_GeometryPipeline;
+        Ref<Material> m_ComputeMat;
         Ref<ComputePipeline> m_MorphingPipeline;
         
 		struct DrawCommand

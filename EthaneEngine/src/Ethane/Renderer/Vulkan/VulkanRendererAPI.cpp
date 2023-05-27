@@ -4,6 +4,7 @@
 #include "VulkanSwapChain.h"
 
 #include "VulkanPipeline.h"
+#include "VulkanComputePipeline.h"
 #include "VulkanVertexBuffer.h"
 #include "VulkanIndexBuffer.h"
 
@@ -164,12 +165,12 @@ namespace Ethane {
         }
     }
 
-    void VulkanRendererAPI::CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VulkanMaterial* material, uint32_t frameIndex)
+    void VulkanRendererAPI::CmdBindMaterial(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VulkanMaterial* material, uint32_t frameIndex, VkPipelineBindPoint bindpoint)
     {
         ETH_PROFILE_FUNCTION();
         std::vector<VkDescriptorSet> descriptorSet = material->GetDescriptorSets(frameIndex);
         if (!descriptorSet.empty())
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, (uint32_t)(descriptorSet.size()), descriptorSet.data(), 0, nullptr);
+            vkCmdBindDescriptorSets(commandBuffer, bindpoint, pipelineLayout, 0, (uint32_t)(descriptorSet.size()), descriptorSet.data(), 0, nullptr);
     }
 
 	void VulkanRendererAPI::BeginRenderTarget(const RenderTarget* render_target, bool explicitClear)
@@ -358,6 +359,56 @@ namespace Ethane {
     void VulkanRendererAPI::DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material)
     {
         DrawGeometry(pipeline, s_Data->QuadVertexBuffer, s_Data->QuadIndexBuffer, material);
+    }
+
+    void VulkanRendererAPI::TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage)
+    {
+        uint32_t imageIndex = VulkanContext::GetSwapchain()->GetCurrentImageIndex();
+        
+        VkImageMemoryBarrier barrier{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+        barrier.oldLayout = ImageUtils::VulkanImageLayout(oldLayout);
+        barrier.newLayout = ImageUtils::VulkanImageLayout(newLayout);
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.image = dynamic_cast<VulkanTargetImage*>(targetImage)->GetImageInfo(imageIndex).Image;
+
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = 1;
+
+        VkPipelineStageFlags sourceStage;
+        VkPipelineStageFlags destinationStage;
+
+        
+        barrier.srcAccessMask = ImageUtils::VulkanAccessMask(srcAccessMask);
+        sourceStage = ImageUtils::VulkanPipelineStage(srcStage);
+        
+        barrier.dstAccessMask = ImageUtils::VulkanAccessMask(dstAccessMask);
+        destinationStage = ImageUtils::VulkanPipelineStage(dstStage);
+
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle(); // TODO: compute command buffer
+        vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+        
+//        dynamic_cast<VulkanTargetImage*>(targetImage)->SetImageLayout(ImageUtils::VulkanImageLayout(newLayout));
+    }
+
+    void VulkanRendererAPI::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z)
+    {
+        Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);
+        
+        uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
+        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        
+        Ref<VulkanComputePipeline> vulkanPipeline = std::dynamic_pointer_cast<VulkanComputePipeline>(computePipeline);
+        VkPipelineLayout layout = vulkanPipeline->GetPipelineLayout();
+        vulkanPipeline->Bind(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE);
+        
+        UpdateMaterialForRendering(vulkanMaterial.get());
+        CmdBindMaterial(commandBuffer, layout, vulkanMaterial.get(), frameIndex, VK_PIPELINE_BIND_POINT_COMPUTE);
+        
+        vkCmdDispatch(commandBuffer, worker_x, worker_y, worker_z);
     }
 
 }

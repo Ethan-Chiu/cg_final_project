@@ -27,6 +27,9 @@ namespace Ethane {
         m_ActiveScene = CreateRef<Scene>();
         m_ViewportRenderer = CreateRef<SceneRenderer>(m_ActiveScene);
         
+        auto& rendererConfig = Renderer::GetRendererConfig();
+        m_ViewportRenderer->SetViewportSize(rendererConfig.DefaultWindowWidth, rendererConfig.DefaultWindowHeight);
+        
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
         m_EditorCamera.SetViewportSize(Renderer::GetRendererConfig().DefaultWindowWidth, Renderer::GetRendererConfig().DefaultWindowHeight);
         

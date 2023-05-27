@@ -80,6 +80,16 @@ namespace Ethane {
         s_RendererAPI->DrawMesh(pipeline, mesh, material, transform);
     }
 
+    void Renderer::TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage)
+    {
+        s_RendererAPI->TransitionLayout(targetImage,  oldLayout, newLayout, srcAccessMask, srcStage, dstAccessMask, dstStage);
+    }
+
+    void Renderer::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z)
+    {
+        s_RendererAPI->BeginCompute(computePipeline, material, worker_x, worker_y, worker_z);
+    }
+
     TargetImage* Renderer::GetSwapchainTarget()
     {
         return s_RendererAPI->GetSwapchainTarget();

@@ -33,15 +33,15 @@ namespace Ethane{
 		// Getter
 		VkSurfaceKHR GetSurface() const { return m_Surface; }
 		VkFormat GetImageFormat() const { return m_ImageFormat; }
-//		VkFormat GetDepthFormat() const { return m_DepthFormat; }
-		uint32_t GetImageCount() const { return m_ImageCount; } // test
-		uint32_t GetWidth() const { return m_Extent.width; }// test
-		uint32_t GetHeight() const { return m_Extent.height; }// test
-		uint32_t GetCurrentFrameIndex() const { return m_CurrentFrame; }// test
+		uint32_t GetImageCount() const { return m_ImageCount; }
+		uint32_t GetWidth() const { return m_Extent.width; }
+		uint32_t GetHeight() const { return m_Extent.height; }
+		uint32_t GetCurrentFrameIndex() const { return m_CurrentFrame; }
         uint32_t GetCurrentImageIndex() const { return m_CurrentImageIndex; }
 		uint32_t GetMaxFramesInFlight() const { return m_MaxFramesInFlight; }
         VulkanTargetImage* GetTargetImage() const { return m_TargetImage.get(); }
         const VulkanCommandBuffer* GetCurrentCommandBuffer() const { return &m_GraphicsCommandBuffers[m_CurrentFrame]; }
+        const VulkanCommandBuffer* GetCurrentComputeCommandBuffer() const { return &m_GraphicsCommandBuffers[m_CurrentFrame]; }
 
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
@@ -49,9 +49,9 @@ namespace Ethane{
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 //		VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		void CreateCommandBuffers();
+        void CreateComputeCommandBuffers();
 
 		bool Resize();
-		void SetViewportAndScissor();
 		bool AcquireNextImage();
 		void Present(VkQueue queue, VkSemaphore signalSemaphore = VK_NULL_HANDLE);
 	private:
@@ -74,6 +74,7 @@ namespace Ethane{
         Scope<VulkanTargetImage> m_TargetImage;
         
 		std::vector<VulkanCommandBuffer> m_GraphicsCommandBuffers;
+        std::vector<VulkanCommandBuffer> m_ComputeCommandBuffers;
 		std::vector<VkCommandBuffer> m_SecondaryCommandBuffers;
 
 		bool m_VSync = false;
@@ -81,8 +82,10 @@ namespace Ethane{
 		uint32_t m_MaxFramesInFlight = 2;
 		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
 		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
+        std::vector<VkSemaphore> m_ComputeFinishedSemaphores;
 		std::vector<VkFence> m_InFlightFences;
 		std::vector<VkFence> m_ImagesInFlight;
+        std::vector<VkFence> m_ComputeInFlightFences;
 
 		uint32_t m_CurrentFrame = 0;
 		uint32_t m_CurrentImageIndex = 0;

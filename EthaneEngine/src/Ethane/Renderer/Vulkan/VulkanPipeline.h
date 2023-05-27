@@ -17,7 +17,7 @@ namespace Ethane {
 		
 		void Destroy() override;
 
-		void Bind(const VulkanCommandBuffer* cmdBuffer, VkPipelineBindPoint bindPoint);
+		void Bind(VkCommandBuffer cmdBuffer, VkPipelineBindPoint bindPoint);
 
 		// Getter
 		VkPipeline GetVulkanPipeline() { return m_GraphicsPipeline; }

@@ -34,9 +34,13 @@ namespace Ethane {
 
         ImageUtils::VulkanImageInfo& GetImageInfo(uint32_t idx) { return m_Infos[idx]; }
         const ImageUtils::VulkanImageInfo& GetImageInfo(uint32_t idx) const { return m_Infos[idx]; }
+        
+        VkDescriptorImageInfo GetDescriptorImageInfo(uint32_t idx) const;
             
     protected:
         void SwapchainUpdate(ImageSpecification specification, const std::vector<ImageUtils::VulkanImageInfo>& infos);
+        
+//        void SetImageLayout(VkImageLayout layout) { m_Layout = layout; }
         
     private:
         void CreateTargetImages();
@@ -44,9 +48,13 @@ namespace Ethane {
     private:
         ImageSpecification m_Specification;
         bool m_SwapchainTarget = false;
+        
+        VkImageLayout m_Layout = VK_IMAGE_LAYOUT_GENERAL;
+        
         std::vector<ImageUtils::VulkanImageInfo> m_Infos;
         std::vector<VkDeviceMemory> m_ImageMemory;
     
     friend class VulkanSwapChain;
+    friend class VulkanRendererAPI;
     };
 }

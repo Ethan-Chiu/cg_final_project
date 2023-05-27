@@ -193,6 +193,15 @@ namespace Ethane {
 	{
 		spirv_cross::Compiler compiler(shaderBinary);
 		spirv_cross::ShaderResources res = compiler.get_shader_resources();
+        
+        if(stage == VK_SHADER_STAGE_COMPUTE_BIT)
+        {
+            for (uint32_t i = 0; i < 3; i++)
+            {
+                uint32_t localsize = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, i);
+                ETH_CORE_INFO("local_size_{0}: {1}", i, localsize);
+            }
+        }
 
 		// ETH_CORE_TRACE("VulkanShader::Reflect - {0} {1}", Utils::GLShaderStageToString(stage), m_FilePath);
 
@@ -293,7 +302,7 @@ namespace Ethane {
                 shaderDescriptorSets.resize(descriptorSet + 1);
             
             ShaderDescriptorSetData& shaderDescriptorSet = shaderDescriptorSets[descriptorSet];
-            auto& imageSampler = shaderDescriptorSet.StorageSamplers[binding];
+            auto& imageSampler = shaderDescriptorSet.StorageImage[binding];
             imageSampler.DescriptorSet = descriptorSet;
             imageSampler.Name = name;
             imageSampler.ShaderStage = stage;

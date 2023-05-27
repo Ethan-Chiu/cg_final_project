@@ -31,7 +31,7 @@ namespace Ethane {
     }
 
     void VulkanComputePipeline::Create()
-{
+    {
         // Shader Stage
         Ref<VulkanShader> vulkanShader = std::dynamic_pointer_cast<VulkanShader>(m_Specification.Shader);
         VkDevice device = m_Device->GetVulkanDevice();
@@ -58,8 +58,8 @@ namespace Ethane {
         }
     }
 
-    void VulkanComputePipeline::Bind(const VulkanCommandBuffer* cmdBuffer, VkPipelineBindPoint bindPoint)
+    void VulkanComputePipeline::Bind(VkCommandBuffer cmdBuffer, VkPipelineBindPoint bindPoint)
     {
-        vkCmdBindPipeline(cmdBuffer->GetHandle(), bindPoint, m_ComputePipeline);
+        vkCmdBindPipeline(cmdBuffer, bindPoint, m_ComputePipeline);
     }
 }
