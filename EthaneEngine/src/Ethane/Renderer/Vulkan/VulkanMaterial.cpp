@@ -10,7 +10,7 @@
 #include "VulkanImage.h"
 #include "VulkanTargetImage.h"
 #include "VulkanPipeline.h"
-//#include "VulkanUniformBuffer.h"
+#include "VulkanStorageBuffer.h"
 
 #include "ShaderUtils/VulkanShaderSystem.h"
 
@@ -140,6 +140,11 @@ namespace Ethane {
                 wds.dstArrayElement = 0;
                 wds.pImageInfo = &(resource.CacheImageInfos[iamgeIndex]);
             }
+            else if (resource.CacheBufferInfo.buffer != nullptr)
+            {
+                wds.dstArrayElement = 0;
+                wds.pBufferInfo = &(resource.CacheBufferInfo);
+            }
             writeDescriptors.emplace_back(wds).dstSet = m_DescriptorSets[frameIndex][resource.Set];
 		}
 		vkUpdateDescriptorSets(device, static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
@@ -185,6 +190,22 @@ namespace Ethane {
                     wds.dstArrayElement = 0;
                     wds.pImageInfo = &resource.CacheImageInfos[0];
                 }
+                break;
+            }
+        }
+        ETH_CORE_ASSERT(found, "resource not found");
+        return found;
+    }
+
+    bool VulkanMaterial::SetData(const std::string& name, const StorageBuffer* buffer)
+    {
+        bool found = false;
+        for(auto& resource: m_ResourceBindings)
+        {
+            if(resource.Name == name){
+                found = true;
+                uint32_t framesInFlight = VulkanContext::GetFramesInFlight();
+                resource.CacheBufferInfo = dynamic_cast<const VulkanStorageBuffer*>(buffer)->GetBufferInfo();
                 break;
             }
         }

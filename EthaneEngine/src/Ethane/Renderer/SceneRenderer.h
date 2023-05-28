@@ -98,11 +98,26 @@ namespace Ethane {
 			char Padding3[3] = { 0,0,0 };
 		} RendererDataUB;
 
+        
+        struct Line {
+            glm::vec2 Start;
+            glm::vec2 End;
+            
+            Line(glm::vec2 s, glm::vec2 e) : Start(s), End(e) {}
+        };
+        
+        std::vector<Line> m_LineDataOne;
+        std::vector<Line> m_LineDataTwo;
+        
+        Ref<StorageBuffer> m_StoreOne = nullptr;
+        Ref<StorageBuffer> m_StoreTwo = nullptr;
+        
         TargetImage* m_GeoColor = nullptr;
         Ref<Image2D> m_GeoDepth = nullptr;
         Scope<RenderTarget> m_GeoTarget = nullptr;
 		Ref<Pipeline> m_GeometryPipeline;
-        Texture2D* m_SampleTex = nullptr;
+        Texture2D* m_SampleTexOne = nullptr;
+        Texture2D* m_SampleTexTwo = nullptr;
         Ref<Material> m_ComputeMat = nullptr;
         Ref<ComputePipeline> m_MorphingPipeline = nullptr;
         

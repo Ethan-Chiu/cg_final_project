@@ -2,7 +2,6 @@
 #include "RendererAPI.h"
 #include "VertexBuffer.h"
 
-#include "Vulkan/VulkanContext.h"
 #include "Vulkan/VulkanVertexBuffer.h"
 
 namespace Ethane {

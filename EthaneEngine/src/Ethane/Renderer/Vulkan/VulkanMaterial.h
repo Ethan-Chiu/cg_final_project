@@ -36,6 +36,8 @@ namespace Ethane {
         virtual bool SetImage(const std::string& name, const TargetImage* image) override;
         virtual bool SetImage(const std::string& name, const Texture2D* image) override;
         
+        virtual bool SetData(const std::string& name, const StorageBuffer* buffer) override;
+        
 		// Getter
 		virtual uint32_t GetFlags() const override { return m_MaterialFlags; }
 		virtual bool HasFlag(MaterialFlag flag) const { return (uint32_t)flag & m_MaterialFlags; }

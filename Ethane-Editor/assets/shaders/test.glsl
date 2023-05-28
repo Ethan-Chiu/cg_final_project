@@ -1,7 +1,7 @@
 #type vertex
 #version 450 core
 
-layout(binding = 0) uniform UniformBufferObject{
+layout(binding = 1) uniform UniformBufferObject{
 	mat4 viewproj;
 } ubo;
 
@@ -37,7 +37,7 @@ void main() {
 #type fragment
 #version 450 core
 
-layout(binding = 1) uniform sampler2D u_Texture;
+layout(binding = 2) uniform sampler2D u_Texture;
 
 // layout(location = 0) in vec3 v_Color;
 layout(location = 0) in vec2 v_TexCoord;

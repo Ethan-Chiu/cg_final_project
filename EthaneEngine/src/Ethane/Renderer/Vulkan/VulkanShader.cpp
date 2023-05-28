@@ -139,7 +139,7 @@ namespace Ethane {
             {
                 VkDescriptorSetLayoutBinding& layoutBinding = layoutBindings.emplace_back();
                 layoutBinding.binding = binding;
-                layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
                 layoutBinding.descriptorCount = 1;
                 layoutBinding.stageFlags = storageBuffer.ShaderStage;
                 layoutBinding.pImmutableSamplers = nullptr;

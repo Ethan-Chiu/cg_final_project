@@ -3,6 +3,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "StorageBuffer.h"
 
 namespace Ethane {
 
@@ -29,6 +30,8 @@ namespace Ethane {
 
         virtual bool SetImage(const std::string& name, const TargetImage* image) = 0;
         virtual bool SetImage(const std::string& name, const Texture2D* image) = 0;
+        
+        virtual bool SetData(const std::string& name, const StorageBuffer* buffer) = 0;
         
         virtual const Shader* GetShader() const = 0;
 	private:

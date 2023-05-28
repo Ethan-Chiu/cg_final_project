@@ -56,68 +56,25 @@ namespace Ethane {
 		}
 
         {
+            m_LineDataOne.push_back(Line(glm::vec2{0, 0}, glm::vec2(30, 30)));
+            m_LineDataTwo.push_back(Line(glm::vec2{30, 30}, glm::vec2(60, 60)));
+            
+            m_StoreOne = StorageBuffer::Create((void*)(m_LineDataOne.data()), (uint32_t)(m_LineDataOne.size() * sizeof(Line)));
+            m_StoreTwo = StorageBuffer::Create((void*)(m_LineDataTwo.data()), (uint32_t)(m_LineDataTwo.size() * sizeof(Line)));
+            
             ComputePipelineSpecification pipelineSpec;
             auto shader = ShaderSystem::Get("test_compute");
             m_ComputeMat = Material::Create(shader.get());
-            m_SampleTex = TextureSystem::GetTexture("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/test.png", ImageUsage::Storage);
-            m_ComputeMat->SetImage("inputTexture", m_SampleTex);
+            m_SampleTexOne = TextureSystem::GetTexture("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/1.jpg", ImageUsage::Storage);
+            m_SampleTexTwo = TextureSystem::GetTexture("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/2.jpg", ImageUsage::Storage);
+            m_ComputeMat->SetImage("inputTextureOne", m_SampleTexOne);
+            m_ComputeMat->SetImage("inputTextureTwo", m_SampleTexTwo);
             m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
+            m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
+            m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
             pipelineSpec.Shader = shader;
             m_MorphingPipeline = ComputePipeline::Create(pipelineSpec);
         }
-        
-		// Grid
-//		{
-//			m_GridShader = ShaderLibrary::Get("Grid");
-//			const float gridScale = 16.025f;
-//			const float gridSize = 0.025f;
-//			m_GridMaterial = Material::Create(m_GridShader);
-//
-//			PipelineSpecification pipelineSpec;
-//			pipelineSpec.Shader = m_GridShader;
-//			pipelineSpec.Layout = {
-//				{ ShaderDataType::Float3, "a_Position" },
-//				{ ShaderDataType::Float2, "a_TexCoord" }
-//			};
-//			pipelineSpec.RenderPass = m_GeometryPipeline->GetSpecification().RenderPass;
-//			m_GridPipeline = Pipeline::Create(pipelineSpec);
-//		}
-
-		// Composite
-		{
-//			FramebufferSpecification compFramebufferSpec;
-//			compFramebufferSpec.ClearColor = { 0.5f, 0.1f, 0.1f, 1.0f };
-//			compFramebufferSpec.DebugName = "SceneComposite";
-//			// TODO: width and height
-//			compFramebufferSpec.Width = 1600;
-//			compFramebufferSpec.Height = 900;
-//
-//			compFramebufferSpec.Attachments = { ImageFormat::RGBA };
-//
-//			Ref<Framebuffer> framebuffer = Framebuffer::Create(compFramebufferSpec);
-//
-//			RenderPassSpecification renderPassSpec;
-//			renderPassSpec.TargetFramebuffer = framebuffer;
-//			// renderPassSpec.DebugName = "SceneComposite";
-//
-//			PipelineSpecification pipelineSpecification;
-//			pipelineSpecification.Layout = {
-//				{ ShaderDataType::Float3, "a_Position" },
-//				{ ShaderDataType::Float2, "a_TexCoord" }
-//			};
-//			// pipelineSpecification.BackfaceCulling = false;
-//			pipelineSpecification.Shader = ShaderLibrary::Get("SceneComposite");
-//			pipelineSpecification.RenderPass = RenderPass::Create(renderPassSpec);
-//			m_CompositePipeline = Pipeline::Create(pipelineSpecification);
-//
-//			// TODO: test
-//			if (m_Texture2D == nullptr)
-//				m_Texture2D = Texture2D::Create("assets/textures/test.png");
-//			m_CompositeMaterial = Material::Create(ShaderLibrary::Get("SceneComposite"), "Composite material");
-//
-//			auto geoFramebuffer = m_GeometryPipeline->GetSpecification().RenderPass->GetSpecification().TargetFramebuffer;
-//			m_CompositeMaterial->Set("u_Texture", std::dynamic_pointer_cast<VulkanFramebuffer>(geoFramebuffer)->GetTexture());
-		}
 	}
 
 	void SceneRenderer::SetViewportSize(uint32_t width, uint32_t height)
@@ -169,13 +126,16 @@ namespace Ethane {
 		localUB.DiffuseColor = glm::vec4(1, 1, 1, 1);
 		localUB.Shininess = 32;
 
-        Renderer::SetGlobalUniformBuffer(0, (void*)&(cameraData.ViewProjection), sizeof(glm::mat4));
+        float time = 0.5;
+        
+        Renderer::SetGlobalUniformBuffer(0, (void*)&(time), sizeof(float));
+        Renderer::SetGlobalUniformBuffer(1, (void*)&(cameraData.ViewProjection), sizeof(glm::mat4));
 	}
 
 	void SceneRenderer::SubmitMesh(Mesh* mesh, Material* material, const glm::mat4& transform)
 	{
 		// TODO: Culling, sorting, etc.
-		m_DrawList.push_back({ mesh, transform, material});
+//		m_DrawList.push_back({ mesh, transform, material});
 	}
 
 	void SceneRenderer::SubmitSelectedMesh(Mesh* mesh, const glm::mat4& transform) //, Ref<Material> material
