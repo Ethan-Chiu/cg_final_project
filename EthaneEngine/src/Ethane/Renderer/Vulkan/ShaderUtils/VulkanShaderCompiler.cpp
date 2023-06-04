@@ -6,6 +6,8 @@
 #include <shaderc/shaderc.hpp>
 #include <spirv_cross/spirv_glsl.hpp>
 
+#include "ShaderIncluder.hpp"
+
 #include "Ethane/Core/timer.h"
 #include "VulkanShaderSystem.h"
 
@@ -128,11 +130,12 @@ namespace Ethane {
 
 		shaderc::Compiler compiler;
 		shaderc::CompileOptions options;
-		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_1); // TODO select the right version
 		options.SetWarningsAsErrors();
 		options.SetGenerateDebugInfo();
-		const bool optimize = false;
-
+        options.SetIncluder(std::make_unique<ShaderIncluder>());
+        
+        const bool optimize = false;
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
@@ -157,7 +160,15 @@ namespace Ethane {
 			}
 			else
 			{
-				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::VkShaderStageToShaderC(stage), params.FilePath.c_str(), options);
+                shaderc::PreprocessedSourceCompilationResult pre_result =
+                        compiler.PreprocessGlsl(source, Utils::VkShaderStageToShaderC(stage), params.FilePath.c_str(), options);
+                if(pre_result.GetCompilationStatus() != shaderc_compilation_status_success)
+                {
+                    ETH_CORE_ERROR(pre_result.GetErrorMessage());
+                }
+                std::string pre_passed_source(pre_result.begin());
+                
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(pre_passed_source, Utils::VkShaderStageToShaderC(stage), params.FilePath.c_str(), options);
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
 				{
 					ETH_CORE_ERROR(module.GetErrorMessage());

@@ -19,6 +19,10 @@ namespace Ethane {
     
         bool OnResize(WindowResizeEvent& e);
         
+        bool OnMousePressed(MouseButtonPressedEvent& e);
+        bool OnMouseReleased(MouseButtonReleasedEvent& e);
+        bool OnKeyPressed(KeyPressedEvent& e);
+        
     private:
         Ref<Scene> m_ActiveScene;
         Ref<SceneRenderer> m_ViewportRenderer;
@@ -27,6 +31,10 @@ namespace Ethane {
         Ref<Material> m_Mat;
         
         EditorCamera m_EditorCamera;
+        
+        uint8_t m_CurrentState = 1;
+        std::vector<Line> m_LineDataOne;
+        std::vector<Line> m_LineDataTwo;
 	};
 
 }

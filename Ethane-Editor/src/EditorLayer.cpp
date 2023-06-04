@@ -38,6 +38,11 @@ namespace Ethane {
         m_Mesh->Upload();
         m_Mat = Material::Create(ShaderSystem::Get("test").get());
         newEntity.AddComponent<MeshComponent>(m_Mesh, m_Mat);
+        
+        m_LineDataOne.push_back(Line({0, 0}, {30, 30}));
+        m_LineDataTwo.push_back(Line({30, 30}, {60, 60}));
+        m_ViewportRenderer->SetLineOneData(m_LineDataOne);
+        m_ViewportRenderer->SetLineTwoData(m_LineDataTwo);
 	}
 
 	void EditorLayer::OnDetach()
@@ -60,6 +65,9 @@ namespace Ethane {
         
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowResizeEvent>(ETH_BIND_EVENT_FN(EditorLayer::OnResize));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(ETH_BIND_EVENT_FN(EditorLayer::OnMousePressed));
+        dispatcher.Dispatch<MouseButtonReleasedEvent>(ETH_BIND_EVENT_FN(EditorLayer::OnMouseReleased));
+        dispatcher.Dispatch<KeyPressedEvent>(ETH_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -73,4 +81,68 @@ namespace Ethane {
         m_EditorCamera.SetViewportSize(e.GetWidth(), e.GetHeight());
         return false;
     }
+
+    bool EditorLayer::OnMousePressed(MouseButtonPressedEvent& e)
+    {
+        if(e.GetMouseButton() == Mouse::ButtonLeft)
+        {
+            const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
+            glm::vec2 pos = Renderer::ToPixel(mouse);
+            ETH_CORE_INFO("{0} {1}", pos.x, pos.y);
+            
+            if (m_CurrentState == 1) {
+                m_LineDataOne.push_back(Line(pos, pos));
+            } else if (m_CurrentState == 2) {
+                m_LineDataTwo.push_back(Line(pos, pos));
+            }
+        }
+        return false;
+    }
+
+    bool EditorLayer::OnMouseReleased(MouseButtonReleasedEvent &e)
+    {
+        if(e.GetMouseButton() == Mouse::ButtonLeft)
+        {
+            const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
+            glm::vec2 pos = Renderer::ToPixel(mouse);
+            ETH_CORE_INFO("{0} {1}", pos.x, pos.y);
+            
+            if (m_CurrentState == 1) {
+                m_LineDataOne.back().End = pos;
+                m_ViewportRenderer->SetLineOneData(m_LineDataOne);
+            } else if (m_CurrentState == 2) {
+                m_LineDataTwo.back().End = pos;
+                m_ViewportRenderer->SetLineTwoData(m_LineDataTwo);
+            }
+        }
+        return false;
+    }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+    {
+        //Shortcuts
+        if(e.GetRepeatCount() > 0)
+            return false;
+    
+        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+        bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+        switch (e.GetKeyCode())
+        {
+            case Key::D1:
+            {
+                m_CurrentState = 1;
+                break;
+            }
+            case Key::D2:
+            {
+                m_CurrentState = 2;
+                ETH_CORE_INFO("set to 2");
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
 }

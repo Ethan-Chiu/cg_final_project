@@ -16,6 +16,13 @@ namespace Ethane {
 		bool ShowGrid = true;
 	};
 
+    struct Line {
+        glm::vec2 Start;
+        glm::vec2 End;
+
+        Line(glm::vec2 s, glm::vec2 e) : Start(s), End(e) {}
+    };
+
 	class SceneRenderer
 	{
 	public:
@@ -32,6 +39,17 @@ namespace Ethane {
 		void SubmitMesh(Mesh* mesh, Material* material, const glm::mat4& transform = glm::mat4(1.0f));
 		void SubmitSelectedMesh(Mesh* mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
 
+        // temp
+        void SetLineOneData(const std::vector<Line>& data) {
+            m_StoreOne->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
+            m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
+        }
+        
+        void SetLineTwoData(const std::vector<Line>& data) {
+            m_StoreTwo->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
+            m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
+        }
+        
 		// Getter
 		SceneRendererOptions& GetOptions() { return m_Options; }
 
@@ -74,40 +92,11 @@ namespace Ethane {
 			glm::mat4 View;
 		} CameraDataUB;
 
-		struct UBScreenData
-		{
-			glm::vec2 InvFullResolution;
-			glm::vec2 FullResolution;
-		} ScreenDataUB;
-
-		struct UBRendererData
-		{
-			glm::vec4 CascadeSplits;
-			uint32_t TilesCountX{ 0 };
-			bool ShowCascades = false;
-			char Padding0[3] = { 0,0,0 }; // Bools are 4-bytes in GLSL
-			bool SoftShadows = true;
-			char Padding1[3] = { 0,0,0 };
-			float LightSize = 0.5f;
-			float MaxShadowDistance = 200.0f;
-			float ShadowFade = 1.0f;
-			bool CascadeFading = true;
-			char Padding2[3] = { 0,0,0 };
-			float CascadeTransitionFade = 1.0f;
-			bool ShowLightComplexity = false;
-			char Padding3[3] = { 0,0,0 };
-		} RendererDataUB;
-
-        
-        struct Line {
-            glm::vec2 Start;
-            glm::vec2 End;
-            
-            Line(glm::vec2 s, glm::vec2 e) : Start(s), End(e) {}
-        };
-        
-        std::vector<Line> m_LineDataOne;
-        std::vector<Line> m_LineDataTwo;
+        struct UBO
+        {
+            alignas(4) float time;
+            alignas(4) u_int32_t currentSample;
+        } ubo;
         
         Ref<StorageBuffer> m_StoreOne = nullptr;
         Ref<StorageBuffer> m_StoreTwo = nullptr;

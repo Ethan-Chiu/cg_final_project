@@ -13,6 +13,7 @@ namespace Ethane {
 	{
         uint32_t DefaultWindowWidth;
         uint32_t DefaultWindowHeight;
+        glm::vec2 RatioPixel = {1, 1};
 	};
 
 	class Renderer
@@ -41,6 +42,9 @@ namespace Ethane {
         
         static void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage);
         static void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z);
+        
+        
+        static glm::vec2 ToPixel(const glm::vec2& coord) { return coord * s_Config.RatioPixel; }
         
         static const GraphicsContext* GetGraphicsContext() { return s_Context; }
         

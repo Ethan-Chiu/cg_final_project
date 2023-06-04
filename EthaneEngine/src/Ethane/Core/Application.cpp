@@ -29,7 +29,8 @@ namespace Ethane
         
         RendererConfig config = {
             m_Window->GetWidth(),
-            m_Window->GetHeight()
+            m_Window->GetHeight(),
+            glm::vec2(m_Window->GetWidth()/400, m_Window->GetHeight()/300)
         };
         Renderer::Init(m_Window->GetGraphicsContext(), config);
         

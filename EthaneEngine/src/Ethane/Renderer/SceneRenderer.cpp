@@ -56,11 +56,11 @@ namespace Ethane {
 		}
 
         {
-            m_LineDataOne.push_back(Line(glm::vec2{0, 0}, glm::vec2(30, 30)));
-            m_LineDataTwo.push_back(Line(glm::vec2{30, 30}, glm::vec2(60, 60)));
+//            m_LineDataOne.push_back(Line(glm::vec2{0, 0}, glm::vec2(30, 30)));
+//            m_LineDataTwo.push_back(Line(glm::vec2{30, 30}, glm::vec2(60, 60)));
             
-            m_StoreOne = StorageBuffer::Create((void*)(m_LineDataOne.data()), (uint32_t)(m_LineDataOne.size() * sizeof(Line)));
-            m_StoreTwo = StorageBuffer::Create((void*)(m_LineDataTwo.data()), (uint32_t)(m_LineDataTwo.size() * sizeof(Line)));
+            m_StoreOne = StorageBuffer::Create(30 * sizeof(Line));
+            m_StoreTwo = StorageBuffer::Create(30 * sizeof(Line));
             
             ComputePipelineSpecification pipelineSpec;
             auto shader = ShaderSystem::Get("test_compute");
@@ -70,8 +70,11 @@ namespace Ethane {
             m_ComputeMat->SetImage("inputTextureOne", m_SampleTexOne);
             m_ComputeMat->SetImage("inputTextureTwo", m_SampleTexTwo);
             m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
-            m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
-            m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
+            if(m_StoreOne != nullptr && m_StoreTwo != nullptr)
+            {
+                m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
+                m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
+            }
             pipelineSpec.Shader = shader;
             m_MorphingPipeline = ComputePipeline::Create(pipelineSpec);
         }
@@ -126,9 +129,10 @@ namespace Ethane {
 		localUB.DiffuseColor = glm::vec4(1, 1, 1, 1);
 		localUB.Shininess = 32;
 
-        float time = 0.5;
+        ubo.time = 0.5;
+        ubo.currentSample++;
         
-        Renderer::SetGlobalUniformBuffer(0, (void*)&(time), sizeof(float));
+        Renderer::SetGlobalUniformBuffer(0, (void*)&(ubo), sizeof(UBO));
         Renderer::SetGlobalUniformBuffer(1, (void*)&(cameraData.ViewProjection), sizeof(glm::mat4));
 	}
 
