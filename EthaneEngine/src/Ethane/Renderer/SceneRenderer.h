@@ -17,10 +17,12 @@ namespace Ethane {
 	};
 
     struct Line {
-        glm::vec2 Start;
-        glm::vec2 End;
+        alignas(8) glm::vec2 Start = glm::vec2();
+        alignas(8) glm::vec2 End = glm::vec2();
+        alignas(16) float Len = 0;
 
-        Line(glm::vec2 s, glm::vec2 e) : Start(s), End(e) {}
+        Line(glm::vec2 s, glm::vec2 e, float len) : Start(s), End(e), Len(len) {}
+        Line() = default;
     };
 
 	class SceneRenderer
@@ -41,13 +43,19 @@ namespace Ethane {
 
         // temp
         void SetLineOneData(const std::vector<Line>& data) {
+            m_LineOne = data;
             m_StoreOne->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
             m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
         }
         
         void SetLineTwoData(const std::vector<Line>& data) {
+            m_LineTwo = data;
             m_StoreTwo->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
             m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
+        }
+        
+        void SetCurrentState(uint8_t state) {
+            m_CurrentState = state;
         }
         
 		// Getter
@@ -94,12 +102,19 @@ namespace Ethane {
 
         struct UBO
         {
-            alignas(4) float time;
+            alignas(4) float ratio;
             alignas(4) u_int32_t currentSample;
+            alignas(4) u_int32_t lineNum;
         } ubo;
+        
+        uint8_t m_CurrentState = 1;
+        
+        std::vector<Line> m_LineOne = {};
+        std::vector<Line> m_LineTwo = {};
         
         Ref<StorageBuffer> m_StoreOne = nullptr;
         Ref<StorageBuffer> m_StoreTwo = nullptr;
+        Ref<StorageBuffer> m_StoreThree = nullptr;
         
         TargetImage* m_GeoColor = nullptr;
         Ref<Image2D> m_GeoDepth = nullptr;

@@ -21,8 +21,8 @@ namespace Ethane {
 
 	void EditorLayer::OnAttach()
 	{
-        ShaderSystem::Load("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
-        ShaderSystem::Load("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/shaders/test_compute.glsl");
+        ShaderSystem::Load("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
+        ShaderSystem::Load("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/shaders/test_compute.glsl");
         
         m_ActiveScene = CreateRef<Scene>();
         m_ViewportRenderer = CreateRef<SceneRenderer>(m_ActiveScene);
@@ -34,15 +34,15 @@ namespace Ethane {
         m_EditorCamera.SetViewportSize(Renderer::GetRendererConfig().DefaultWindowWidth, Renderer::GetRendererConfig().DefaultWindowHeight);
         
         auto newEntity = m_ActiveScene->CreateEntity("Cube");
-        m_Mesh = AssetManager::GetAssetMesh("/Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/resources/meshes/default/Cube.fbx"); // TODO
+        m_Mesh = AssetManager::GetAssetMesh("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/resources/meshes/default/Cube.fbx"); // TODO
         m_Mesh->Upload();
         m_Mat = Material::Create(ShaderSystem::Get("test").get());
         newEntity.AddComponent<MeshComponent>(m_Mesh, m_Mat);
         
-        m_LineDataOne.push_back(Line({0, 0}, {30, 30}));
-        m_LineDataTwo.push_back(Line({30, 30}, {60, 60}));
-        m_ViewportRenderer->SetLineOneData(m_LineDataOne);
-        m_ViewportRenderer->SetLineTwoData(m_LineDataTwo);
+//        m_LineDataOne.push_back(Line({60, 60}, {90, 90}, 30*1.414));
+//        m_LineDataTwo.push_back(Line({30, 30}, {60, 60}, 30*1.414));
+//        m_ViewportRenderer->SetLineOneData(m_LineDataOne);
+//        m_ViewportRenderer->SetLineTwoData(m_LineDataTwo);
 	}
 
 	void EditorLayer::OnDetach()
@@ -91,9 +91,9 @@ namespace Ethane {
             ETH_CORE_INFO("{0} {1}", pos.x, pos.y);
             
             if (m_CurrentState == 1) {
-                m_LineDataOne.push_back(Line(pos, pos));
+                m_LineDataOne.push_back(Line(pos, pos, 0));
             } else if (m_CurrentState == 2) {
-                m_LineDataTwo.push_back(Line(pos, pos));
+                m_LineDataTwo.push_back(Line(pos, pos, 0));
             }
         }
         return false;
@@ -108,10 +108,14 @@ namespace Ethane {
             ETH_CORE_INFO("{0} {1}", pos.x, pos.y);
             
             if (m_CurrentState == 1) {
-                m_LineDataOne.back().End = pos;
+                Line& l = m_LineDataOne.back();
+                l.End = pos;
+                l.Len = glm::distance(l.Start, l.End);
                 m_ViewportRenderer->SetLineOneData(m_LineDataOne);
             } else if (m_CurrentState == 2) {
-                m_LineDataTwo.back().End = pos;
+                Line& l = m_LineDataTwo.back();
+                l.End = pos;
+                l.Len = glm::distance(l.Start, l.End);
                 m_ViewportRenderer->SetLineTwoData(m_LineDataTwo);
             }
         }
@@ -131,11 +135,20 @@ namespace Ethane {
             case Key::D1:
             {
                 m_CurrentState = 1;
+                m_ViewportRenderer->SetCurrentState(m_CurrentState);
                 break;
             }
             case Key::D2:
             {
                 m_CurrentState = 2;
+                m_ViewportRenderer->SetCurrentState(m_CurrentState);
+                ETH_CORE_INFO("set to 2");
+                break;
+            }
+            case Key::Enter:
+            {
+                m_CurrentState = 0;
+                m_ViewportRenderer->SetCurrentState(m_CurrentState);
                 ETH_CORE_INFO("set to 2");
                 break;
             }

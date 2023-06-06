@@ -30,11 +30,11 @@ endif
 PCH = src/ethpch.h
 PCH_PLACEHOLDER = $(OBJDIR)/$(notdir $(PCH))
 GCH = $(PCH_PLACEHOLDER).gch
-INCLUDES += -Isrc -isystem vendor/spdlog/include -isystem vendor/GLFW/include -isystem vendor/Glad/include -isystem vendor/glm -isystem vendor/stb_image -isystem vendor/entt/include -isystem ../../../../VulkanSDK/1.3.204.1/macOS/Include -isystem vendor/assimp/include -isystem vendor/yaml-cpp/include
+INCLUDES += -Isrc -isystem vendor/spdlog/include -isystem vendor/GLFW/include -isystem vendor/Glad/include -isystem vendor/glm -isystem vendor/stb_image -isystem vendor/entt/include -isystem ../../../../../../VulkanSDK/1.3.204.1/macOS/Include -isystem vendor/assimp/include -isystem vendor/yaml-cpp/include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-ALL_LDFLAGS += $(LDFLAGS) -L../../../../VulkanSDK/1.3.204.1/macOS/Lib -Lvendor/assimp/macos/lib -Lvendor/yaml-cpp/build -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
+ALL_LDFLAGS += $(LDFLAGS) -L../../../../../../VulkanSDK/1.3.204.1/macOS/Lib -Lvendor/assimp/macos/lib -Lvendor/yaml-cpp/build -m64 -dynamiclib -Wl,-install_name,@rpath/libEthaneEngine.dylib
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -89,6 +89,7 @@ GENERATED += $(OBJDIR)/Application.o
 GENERATED += $(OBJDIR)/AssetManager.o
 GENERATED += $(OBJDIR)/EditorCamera.o
 GENERATED += $(OBJDIR)/Entity.o
+GENERATED += $(OBJDIR)/FileUtils.o
 GENERATED += $(OBJDIR)/GraphicsContext.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/ImageLoader.o
@@ -112,6 +113,7 @@ GENERATED += $(OBJDIR)/SceneCamera.o
 GENERATED += $(OBJDIR)/SceneRenderer.o
 GENERATED += $(OBJDIR)/SceneSerializer.o
 GENERATED += $(OBJDIR)/Shader.o
+GENERATED += $(OBJDIR)/ShaderIncluder.o
 GENERATED += $(OBJDIR)/ShaderSystem.o
 GENERATED += $(OBJDIR)/StorageBuffer.o
 GENERATED += $(OBJDIR)/Texture.o
@@ -152,6 +154,7 @@ OBJECTS += $(OBJDIR)/Application.o
 OBJECTS += $(OBJDIR)/AssetManager.o
 OBJECTS += $(OBJDIR)/EditorCamera.o
 OBJECTS += $(OBJDIR)/Entity.o
+OBJECTS += $(OBJDIR)/FileUtils.o
 OBJECTS += $(OBJDIR)/GraphicsContext.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/ImageLoader.o
@@ -175,6 +178,7 @@ OBJECTS += $(OBJDIR)/SceneCamera.o
 OBJECTS += $(OBJDIR)/SceneRenderer.o
 OBJECTS += $(OBJDIR)/SceneSerializer.o
 OBJECTS += $(OBJDIR)/Shader.o
+OBJECTS += $(OBJDIR)/ShaderIncluder.o
 OBJECTS += $(OBJDIR)/ShaderSystem.o
 OBJECTS += $(OBJDIR)/StorageBuffer.o
 OBJECTS += $(OBJDIR)/Texture.o
@@ -364,6 +368,9 @@ $(OBJDIR)/Texture.o: src/Ethane/Renderer/Texture.cpp
 $(OBJDIR)/VertexBuffer.o: src/Ethane/Renderer/VertexBuffer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ShaderIncluder.o: src/Ethane/Renderer/Vulkan/ShaderUtils/ShaderIncluder.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VulkanShaderCompiler.o: src/Ethane/Renderer/Vulkan/ShaderUtils/VulkanShaderCompiler.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -455,6 +462,9 @@ $(OBJDIR)/ShaderSystem.o: src/Ethane/Systems/ShaderSystem.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TextureSystem.o: src/Ethane/Systems/TextureSystem.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/FileUtils.o: src/Ethane/Utils/FileUtils.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ethpch.o: src/ethpch.cpp

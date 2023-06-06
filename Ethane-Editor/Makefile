@@ -27,7 +27,7 @@ endif
 ifeq ($(origin AR), default)
   AR = ar
 endif
-INCLUDES += -isystem ../EthaneEngine/src -isystem ../EthaneEngine/vendor/spdlog/include -isystem ../EthaneEngine/vendor/GLFW/include -isystem ../EthaneEngine/vendor/Glad/include -isystem ../EthaneEngine/vendor/glm -isystem ../EthaneEngine/vendor/stb_image -isystem ../EthaneEngine/vendor/entt/include -isystem ../../../../VulkanSDK/1.3.204.1/macOS/Include -isystem ../EthaneEngine/vendor/assimp/include -isystem ../EthaneEngine/vendor/yaml-cpp/include
+INCLUDES += -isystem ../EthaneEngine/src -isystem ../EthaneEngine/vendor/spdlog/include -isystem ../EthaneEngine/vendor/GLFW/include -isystem ../EthaneEngine/vendor/Glad/include -isystem ../EthaneEngine/vendor/glm -isystem ../EthaneEngine/vendor/stb_image -isystem ../EthaneEngine/vendor/entt/include -isystem ../../../../../../VulkanSDK/1.3.204.1/macOS/Include -isystem ../EthaneEngine/vendor/assimp/include -isystem ../EthaneEngine/vendor/yaml-cpp/include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)

@@ -12,6 +12,7 @@ scripts/__pycache__
 .DS_Store
 EthaneProfile-Startup.json
 EthaneEngine/vendor/assimp/macos/lib/libassimp.a
+*~
 
 # Ethane files
 *.log
