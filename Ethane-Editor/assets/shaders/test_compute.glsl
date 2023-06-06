@@ -95,10 +95,11 @@ void main() {
                 sum_2 += imageTwoRefLines[i].start + u * Q_P + (v / imageTwoRefLines[i].len) * Perp_Q_P;
             }
         }
-        sum_1 /= ubo.lineNum;
-        sum_2 /= ubo.lineNum;
-        
         if (screen_pos.x < width && screen_pos.y < height) {
+            sum_1.x = clamp(sum_1.x / ubo.lineNum, 0, width-1);
+            sum_1.y = clamp(sum_1.y / ubo.lineNum, 0, height-1);
+            sum_2.x = clamp(sum_2.x / ubo.lineNum, 0, width-1);
+            sum_2.y = clamp(sum_2.y / ubo.lineNum, 0, height-1);
             int x_floor = int(floor(sum_1.x));
             int y_floor = int(floor(sum_1.y));
             int x_ceil = min(x_floor + 1, width - 1);
