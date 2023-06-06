@@ -6,6 +6,7 @@
 //
 
 #include "ethpch.h"
+#include "Ethane/Asset/AssetManager.h"
 #include "TextureSystem.h"
 #include "ResourceSystem.h"
 #include "Ethane/Renderer/Renderer.h"
@@ -15,7 +16,7 @@ namespace Ethane {
     bool TextureSystem::Init()
     {
         ImageResource imageData;
-        ResourceSystem::LoadImage("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/textures/test.png", imageData);
+        ResourceSystem::LoadImage(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/assets/textures/test.png", imageData);
         ImageSpecification imageSpec;
         imageSpec.Format = ImageFormat::RGBA;
         imageSpec.Width = imageData.Width;

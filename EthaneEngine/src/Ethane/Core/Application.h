@@ -7,6 +7,8 @@
 #include "LayerStack.h"
 #include "Ethane/Core/Timestep.h"
 
+#include "Ethane/ImGui/ImGuiLayer.h"
+
 int main(int argc, char** argv);
 
 namespace Ethane
@@ -51,6 +53,8 @@ namespace Ethane
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		float m_LastFrameTime = 0.0f;
+        
+        ImGuiLayer* m_ImGuiLayer = nullptr;
 	private:
 		static Application* s_Instance;
 	};

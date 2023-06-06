@@ -49,6 +49,7 @@ namespace Ethane {
     {
         Undefined,
         General,
+        ShaderRead,
         PresentSRC,
     };
 

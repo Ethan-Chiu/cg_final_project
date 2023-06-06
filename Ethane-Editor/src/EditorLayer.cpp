@@ -21,8 +21,8 @@ namespace Ethane {
 
 	void EditorLayer::OnAttach()
 	{
-        ShaderSystem::Load("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
-        ShaderSystem::Load("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/shaders/test_compute.glsl");
+        ShaderSystem::Load(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/assets/shaders/test.glsl");
+        ShaderSystem::Load(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/assets/shaders/test_compute.glsl");
         
         m_ActiveScene = CreateRef<Scene>();
         m_ViewportRenderer = CreateRef<SceneRenderer>(m_ActiveScene);
@@ -34,7 +34,7 @@ namespace Ethane {
         m_EditorCamera.SetViewportSize(Renderer::GetRendererConfig().DefaultWindowWidth, Renderer::GetRendererConfig().DefaultWindowHeight);
         
         auto newEntity = m_ActiveScene->CreateEntity("Cube");
-        m_Mesh = AssetManager::GetAssetMesh("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/resources/meshes/default/Cube.fbx"); // TODO
+        m_Mesh = AssetManager::GetAssetMesh(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/resources/meshes/default/Cube.fbx"); // TODO
         m_Mesh->Upload();
         m_Mat = Material::Create(ShaderSystem::Get("test").get());
         newEntity.AddComponent<MeshComponent>(m_Mesh, m_Mat);

@@ -106,7 +106,7 @@ namespace Ethane {
         swapchainCreateInfo.imageColorSpace = m_ImageColorSpace;
         swapchainCreateInfo.imageExtent = m_Extent;
         swapchainCreateInfo.imageArrayLayers = 1;
-        swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT; // TODO: make this configurable?
+        swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT; // TODO: make this configurable?
         const auto& indices = m_PhysicalDevice->GetQueueFamilyIndices();
         if (indices.Graphics.value() != indices.Present.value()) {
             uint32_t queueFamilyIndices[] = { indices.Graphics.value(), indices.Present.value() };

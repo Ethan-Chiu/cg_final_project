@@ -42,6 +42,7 @@ struct RenderTargetSpecification
     RenderTargetAttachmentSpecification Attachments;
     
     bool SwapChainTarget = false;
+    bool Present = false;
     bool ClearOnLoad = true;
     bool Blend = true;
 };

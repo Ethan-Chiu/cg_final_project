@@ -41,7 +41,7 @@ namespace Ethane {
             attachmentIndex++;
         }
         
-        m_RenderPass = VulkanRenderPass::Create(device, m_AttachmentFormats, m_DepthAttachmentFormat, m_Specification.ClearOnLoad, m_Specification.IsTargetImage);
+        m_RenderPass = VulkanRenderPass::Create(device, m_AttachmentFormats, m_DepthAttachmentFormat, m_Specification.ClearOnLoad, m_Specification.Present);
         
         if (m_Specification.IsTargetImage)
         {

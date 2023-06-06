@@ -22,6 +22,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 group "Dependencies"
 	include "EthaneEngine/vendor/GLFW"
 	include "EthaneEngine/vendor/Glad"
+    include "EthaneEngine/vendor/imgui"
 
 group ""
     project "EthaneEngine"
@@ -68,6 +69,7 @@ project "EthaneEngine"
         "%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGui}",
     }
 
 	includedirs
@@ -82,6 +84,7 @@ project "EthaneEngine"
 		"GLFW",
 		"Glad",
 		"yaml-cpp",
+        "ImGui",
 	}
  
     filter "action:xcode4"
@@ -174,7 +177,8 @@ project "Ethane-Editor"
         "%{IncludeDir.entt}",
         "%{IncludeDir.VulkanSDK}",
 		"%{IncludeDir.Assimp}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGui}",
     }
 
 	includedirs

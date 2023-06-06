@@ -11,18 +11,21 @@ endif
 ifeq ($(config),debug)
   GLFW_config = debug
   Glad_config = debug
+  ImGui_config = debug
   EthaneEngine_config = debug
   Ethane_Editor_config = debug
 
 else ifeq ($(config),release)
   GLFW_config = release
   Glad_config = release
+  ImGui_config = release
   EthaneEngine_config = release
   Ethane_Editor_config = release
 
 else ifeq ($(config),dist)
   GLFW_config = dist
   Glad_config = dist
+  ImGui_config = dist
   EthaneEngine_config = dist
   Ethane_Editor_config = dist
 
@@ -30,13 +33,13 @@ else
   $(error "invalid configuration $(config)")
 endif
 
-PROJECTS := GLFW Glad EthaneEngine Ethane-Editor
+PROJECTS := GLFW Glad ImGui EthaneEngine Ethane-Editor
 
 .PHONY: all clean help $(PROJECTS) Dependencies
 
 all: $(PROJECTS)
 
-Dependencies: GLFW Glad
+Dependencies: GLFW Glad ImGui
 
 GLFW:
 ifneq (,$(GLFW_config))
@@ -50,7 +53,13 @@ ifneq (,$(Glad_config))
 	@${MAKE} --no-print-directory -C EthaneEngine/vendor/Glad -f Makefile config=$(Glad_config)
 endif
 
-EthaneEngine: GLFW Glad
+ImGui:
+ifneq (,$(ImGui_config))
+	@echo "==== Building ImGui ($(ImGui_config)) ===="
+	@${MAKE} --no-print-directory -C EthaneEngine/vendor/imgui -f Makefile config=$(ImGui_config)
+endif
+
+EthaneEngine: GLFW Glad ImGui
 ifneq (,$(EthaneEngine_config))
 	@echo "==== Building EthaneEngine ($(EthaneEngine_config)) ===="
 	@${MAKE} --no-print-directory -C EthaneEngine -f Makefile config=$(EthaneEngine_config)
@@ -65,6 +74,7 @@ endif
 clean:
 	@${MAKE} --no-print-directory -C EthaneEngine/vendor/GLFW -f Makefile clean
 	@${MAKE} --no-print-directory -C EthaneEngine/vendor/Glad -f Makefile clean
+	@${MAKE} --no-print-directory -C EthaneEngine/vendor/imgui -f Makefile clean
 	@${MAKE} --no-print-directory -C EthaneEngine -f Makefile clean
 	@${MAKE} --no-print-directory -C Ethane-Editor -f Makefile clean
 
@@ -81,6 +91,7 @@ help:
 	@echo "   clean"
 	@echo "   GLFW"
 	@echo "   Glad"
+	@echo "   ImGui"
 	@echo "   EthaneEngine"
 	@echo "   Ethane-Editor"
 	@echo ""

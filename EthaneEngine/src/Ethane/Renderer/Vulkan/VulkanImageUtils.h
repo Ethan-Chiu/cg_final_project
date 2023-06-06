@@ -76,6 +76,7 @@ namespace ImageUtils {
         {
             case ImageLayout::Undefined:          return VK_IMAGE_LAYOUT_UNDEFINED;
             case ImageLayout::General:            return VK_IMAGE_LAYOUT_GENERAL;
+            case ImageLayout::ShaderRead:         return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             case ImageLayout::PresentSRC:         return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
         }
         ETH_CORE_ASSERT(false);

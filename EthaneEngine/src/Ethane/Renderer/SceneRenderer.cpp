@@ -3,6 +3,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Ethane/Asset/AssetManager.h"
 #include "Ethane/Systems/ShaderSystem.h"
 #include "Ethane/Systems/TextureSystem.h"
 
@@ -67,9 +68,9 @@ namespace Ethane {
             ComputePipelineSpecification pipelineSpec;
             auto shader = ShaderSystem::Get("test_compute");
             m_ComputeMat = Material::Create(shader.get());
-            // /Users/ethan/ethans_folder/Program_dev/cg_final_project/Ethane-Editor/assets/textures/2.jpg
-            m_SampleTexOne = TextureSystem::GetTexture("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/textures/1.jpg", ImageUsage::Storage);
-            m_SampleTexTwo = TextureSystem::GetTexture("/Users/201jimmy/Desktop/Jimmy/111-2/cg/cg_final_project/Ethane-Editor/assets/textures/2.jpg", ImageUsage::Storage);
+            
+            m_SampleTexOne = TextureSystem::GetTexture(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/assets/textures/1.jpg", ImageUsage::Storage);
+            m_SampleTexTwo = TextureSystem::GetTexture(AssetManager::GetBaseDirPath() + "cg_final_project/Ethane-Editor/assets/textures/2.jpg", ImageUsage::Storage);
             m_ComputeMat->SetImage("inputTextureOne", m_SampleTexOne);
             m_ComputeMat->SetImage("inputTextureTwo", m_SampleTexTwo);
             m_ComputeMat->SetImage("colorBuffer", m_GeoColor);
@@ -228,7 +229,7 @@ namespace Ethane {
         
         Renderer::TransitionLayout(m_GeoColor, ImageLayout::Undefined, ImageLayout::General, AccessMask::None, PipelineStage::PipeTop, AccessMask::MemoryWrite, PipelineStage::ComputeShader);
         Renderer::BeginCompute(m_MorphingPipeline, m_ComputeMat, m_ViewportWidth/8, m_ViewportHeight/8, 1);
-        Renderer::TransitionLayout(m_GeoColor, ImageLayout::General, ImageLayout::PresentSRC, AccessMask::MemoryWrite, PipelineStage::ComputeShader, AccessMask::None, PipelineStage::PipeBottom);
+        Renderer::TransitionLayout(m_GeoColor, ImageLayout::General, ImageLayout::ShaderRead, AccessMask::MemoryWrite, PipelineStage::ComputeShader, AccessMask::None, PipelineStage::PipeBottom);
 
 //		VulkanRendererAPI::EndRenderCommandBuffer();
 //		m_CommandBuffer->Submit();

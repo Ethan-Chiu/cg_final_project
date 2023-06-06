@@ -10,3 +10,6 @@
 [submodule "EthaneEngine/vendor/yaml-cpp"]
 	path = EthaneEngine/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "EthaneEngine/vendor/imgui"]
+	path = EthaneEngine/vendor/imgui
+	url = https://github.com/Ethan-Chiu/imgui_forked.git

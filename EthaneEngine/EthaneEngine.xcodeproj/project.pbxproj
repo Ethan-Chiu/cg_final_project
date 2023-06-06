@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0073B21BF472FB8D795E105B /* LayerStack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BEF40C3800311F573D49703 /* LayerStack.cpp */; };
 		0150C26DC30953DF6A2420AD /* WindowsPlatformUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6EBB3556AE7CC874C9A0995 /* WindowsPlatformUtils.cpp */; };
+		029E19B77686916998D43FF7 /* ImGuiLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6496D3BF2B24CB319926F1FF /* ImGuiLayer.cpp */; };
 		09F9344FFDF87DC182E3928F /* Pipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B03A0997F44DDAC9E81F5FD7 /* Pipeline.cpp */; };
 		0A575D201A3C895206B01360 /* ImageLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09E56DE8ABCF09DAA2F61C28 /* ImageLoader.cpp */; };
 		11AE8E05D83C8577463EAC45 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C4FEB0D21C6AA3F9063014D /* Window.cpp */; };
@@ -31,6 +32,7 @@
 		52430E5937DA158BFB1F2499 /* VulkanBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47D6B012E7E81F3F5C57941 /* VulkanBuffer.cpp */; };
 		53907229B017769B38BA3069 /* MacosWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75A0C8D18585F50371F97F11 /* MacosWindow.cpp */; };
 		53D75307ADD869F9751F6147 /* IndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 187C1BCF33488A813719220F /* IndexBuffer.cpp */; };
+		558790BF8F52477144AD96FF /* VulkanImGuiLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD2A51A781DFA819364E4FE7 /* VulkanImGuiLayer.cpp */; };
 		5725BB342E78E666A7E65174 /* ShaderIncluder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB9A579CA2FF128E2DB6E5DC /* ShaderIncluder.cpp */; };
 		5BB0C969FF17F71B164DAFA9 /* VulkanIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13C7B811AC3FA583D8269651 /* VulkanIndexBuffer.cpp */; };
 		6090C9794627D0AB096CDFB9 /* libGLFW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 172B87E1712C9ED338739621 /* libGLFW.a */; };
@@ -38,6 +40,7 @@
 		661CEB61FE94D8D32A7BC9A1 /* WindowsInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 992ECF093352C43BE378A549 /* WindowsInput.cpp */; };
 		68D5C6B175607923F04544F1 /* RenderPass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31797CD91096970BEC9FF319 /* RenderPass.cpp */; };
 		6923B6B97ADAF6ABF048E4F9 /* MacosInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33FECD61A7E74513CA34F3A1 /* MacosInput.cpp */; };
+		6ADA7EDDDEC2F68F0110A51D /* ImGuiBuild.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0BCE785674ADEF7D54D05C5 /* ImGuiBuild.cpp */; };
 		6C8222D34B24BE450006C113 /* VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCD35DBDC70190D16C4CC1B /* VertexBuffer.cpp */; };
 		6F85488712EC76392A222EC7 /* VulkanRendererAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FF58C4F286D79C154546A8F /* VulkanRendererAPI.cpp */; };
 		713678D803C442CA6C9CE718 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BACC980CF188B320DBC2FC0 /* IOKit.framework */; };
@@ -71,6 +74,7 @@
 		D59EE9477D1484F925D98F87 /* VulkanTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AB33D0FE955D8819E37DB4F /* VulkanTexture.cpp */; };
 		E34098635068A6D551FB96A3 /* UUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1356348B60B92ABDD6D82ACB /* UUID.cpp */; };
 		E6F7C808F6DCF43AE3507E48 /* SceneCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEFB583060E4F422580C0670 /* SceneCamera.cpp */; };
+		EA0614A5455164D733834AE5 /* libImGui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B70ACDADC8C20D9F3E2FFBED /* libImGui.a */; };
 		EBD8E94289B9E9F461382F82 /* AssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFB71EAEFBBD25C4CF0B02A /* AssetManager.cpp */; };
 		EE15C9CF457B3CC1F789580F /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8160B437B359FEE92D393A77 /* Layer.cpp */; };
 		F155C73FF0F8AA712B4D5D7F /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7127FC27C88D6F197A9B8A67 /* FileUtils.cpp */; };
@@ -94,12 +98,26 @@
 			remoteGlobalIDString = 1B45B54D49EC093FA32D638D;
 			remoteInfo = libGlad.a;
 		};
+		588D649D43798A8F8B5F52DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E19C4EDD3901C1CFEB0FDD1D /* vendor/imgui/ImGui.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B27392EA23FEAB5CD2FFD12A;
+			remoteInfo = libImGui.a;
+		};
 		7AC179D2A0E7A98407EEA012 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 11BF275CF6062F8E79F35D9C /* vendor/GLFW/GLFW.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = FB2B399FFE9C0BD18008AFDF;
 			remoteInfo = libGLFW.a;
+		};
+		AAC7D73695B3FD28DD99C576 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E19C4EDD3901C1CFEB0FDD1D /* vendor/imgui/ImGui.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F03FB590F3B087C2751D2BD0;
+			remoteInfo = libImGui.a;
 		};
 		CCFBEC6BF3221C1D5A2912AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -195,6 +213,7 @@
 		2B68ED5F1F6836D1A4534B9F /* mixed_product.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = mixed_product.hpp; path = vendor/glm/glm/gtx/mixed_product.hpp; sourceTree = "<group>"; };
 		2BF4E0EF2B97C42165EC772F /* type_mat2x2.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_mat2x2.hpp; path = vendor/glm/glm/detail/type_mat2x2.hpp; sourceTree = "<group>"; };
 		2C07BD4B3DBEFD3DB32CEB8B /* VulkanMaterial.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanMaterial.cpp; path = src/Ethane/Renderer/Vulkan/VulkanMaterial.cpp; sourceTree = "<group>"; };
+		2C257B11C49D6883F0845951 /* VulkanImGuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VulkanImGuiLayer.h; path = src/Ethane/Renderer/Vulkan/ImGui/VulkanImGuiLayer.h; sourceTree = "<group>"; };
 		2C599B6B865AB25D4DA1A9AB /* matrix_double3x4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_double3x4.hpp; path = vendor/glm/glm/ext/matrix_double3x4.hpp; sourceTree = "<group>"; };
 		2CFB71EAEFBBD25C4CF0B02A /* AssetManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AssetManager.cpp; path = src/Ethane/Asset/AssetManager.cpp; sourceTree = "<group>"; };
 		2DD6143B1ECD822D8AD1027B /* color_encoding.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = color_encoding.hpp; path = vendor/glm/glm/gtx/color_encoding.hpp; sourceTree = "<group>"; };
@@ -313,6 +332,7 @@
 		63E17BD542FE96071F07F215 /* qualifier.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = qualifier.hpp; path = vendor/glm/glm/detail/qualifier.hpp; sourceTree = "<group>"; };
 		646071D5437D8C071F86E815 /* EditorCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EditorCamera.h; path = src/Ethane/Renderer/EditorCamera.h; sourceTree = "<group>"; };
 		6492DB7F7F5F4A31832FE1BF /* SceneRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SceneRenderer.h; path = src/Ethane/Renderer/SceneRenderer.h; sourceTree = "<group>"; };
+		6496D3BF2B24CB319926F1FF /* ImGuiLayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImGuiLayer.cpp; path = src/Ethane/ImGui/ImGuiLayer.cpp; sourceTree = "<group>"; };
 		6587BC21F815861360EE2A61 /* extend.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = extend.hpp; path = vendor/glm/glm/gtx/extend.hpp; sourceTree = "<group>"; };
 		660363532C915AC59A938193 /* intersect.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = intersect.hpp; path = vendor/glm/glm/gtx/intersect.hpp; sourceTree = "<group>"; };
 		664F9A1FF8DD641161B6085F /* easing.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = easing.hpp; path = vendor/glm/glm/gtx/easing.hpp; sourceTree = "<group>"; };
@@ -382,6 +402,7 @@
 		8021C15BDCA8C5CD654B7F9B /* VulkanIndexBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VulkanIndexBuffer.h; path = src/Ethane/Renderer/Vulkan/VulkanIndexBuffer.h; sourceTree = "<group>"; };
 		814C010F7B0DBD81B50CBF4F /* pca.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = pca.inl; path = vendor/glm/glm/gtx/pca.inl; sourceTree = "<group>"; };
 		8159E75365A0EF85E98E1D93 /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Material.h; path = src/Ethane/Renderer/Material.h; sourceTree = "<group>"; };
+		815AFDA9EE830C1BF015FBE9 /* ImGuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImGuiLayer.h; path = src/Ethane/ImGui/ImGuiLayer.h; sourceTree = "<group>"; };
 		8160B437B359FEE92D393A77 /* Layer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Layer.cpp; path = src/Ethane/Core/Layer.cpp; sourceTree = "<group>"; };
 		81891A59DE101ECB66B2D899 /* VulkanRendererAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VulkanRendererAPI.h; path = src/Ethane/Renderer/Vulkan/VulkanRendererAPI.h; sourceTree = "<group>"; };
 		82748E4B356A97FD868CF48B /* func_exponential.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = func_exponential.inl; path = vendor/glm/glm/detail/func_exponential.inl; sourceTree = "<group>"; };
@@ -466,6 +487,7 @@
 		A0348EA963A0505BA243F4E9 /* Timer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timer.h; path = src/Ethane/Core/Timer.h; sourceTree = "<group>"; };
 		A03AC28FFA3BD981C182D0CF /* number_precision.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = number_precision.inl; path = vendor/glm/glm/gtx/number_precision.inl; sourceTree = "<group>"; };
 		A04C83AC9143F19EFD4771EC /* type_precision.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_precision.inl; path = vendor/glm/glm/gtc/type_precision.inl; sourceTree = "<group>"; };
+		A0BCE785674ADEF7D54D05C5 /* ImGuiBuild.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImGuiBuild.cpp; path = src/Ethane/ImGui/ImGuiBuild.cpp; sourceTree = "<group>"; };
 		A0C821DF850F2A1108FC581F /* EntryPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EntryPoint.h; path = src/Ethane/Core/EntryPoint.h; sourceTree = "<group>"; };
 		A140399667CE3108D5D057D6 /* constants.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = constants.hpp; path = vendor/glm/glm/gtc/constants.hpp; sourceTree = "<group>"; };
 		A14DFAD5954D44471A385915 /* normalize_dot.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = normalize_dot.inl; path = vendor/glm/glm/gtx/normalize_dot.inl; sourceTree = "<group>"; };
@@ -536,6 +558,7 @@
 		BBD72DC5514DECF7BFEA4405 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Mesh.cpp; path = src/Ethane/Renderer/Mesh.cpp; sourceTree = "<group>"; };
 		BC4C8A035E3625F5555D3843 /* transform2.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = transform2.inl; path = vendor/glm/glm/gtx/transform2.inl; sourceTree = "<group>"; };
 		BCE775C34F753FB5B84DE403 /* common.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = common.hpp; path = vendor/glm/glm/gtx/common.hpp; sourceTree = "<group>"; };
+		BD2A51A781DFA819364E4FE7 /* VulkanImGuiLayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VulkanImGuiLayer.cpp; path = src/Ethane/Renderer/Vulkan/ImGui/VulkanImGuiLayer.cpp; sourceTree = "<group>"; };
 		BDB2212D9CCF3B5F78D8976D /* type_vec4.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_vec4.inl; path = vendor/glm/glm/detail/type_vec4.inl; sourceTree = "<group>"; };
 		BDDCECE19C7F885351618B21 /* scalar_reciprocal.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = scalar_reciprocal.hpp; path = vendor/glm/glm/ext/scalar_reciprocal.hpp; sourceTree = "<group>"; };
 		BDDE65ABB1DDAF1D36C8C3EB /* matrix_int3x4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_int3x4.hpp; path = vendor/glm/glm/ext/matrix_int3x4.hpp; sourceTree = "<group>"; };
@@ -613,6 +636,7 @@
 		E10A9BD311EE93C52506CA13 /* vec4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = vec4.hpp; path = vendor/glm/glm/vec4.hpp; sourceTree = "<group>"; };
 		E17E84D3C09B9F059CA4FB13 /* type_vec2.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_vec2.hpp; path = vendor/glm/glm/detail/type_vec2.hpp; sourceTree = "<group>"; };
 		E18A8F33E12D72651B822573 /* type_mat2x4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_mat2x4.hpp; path = vendor/glm/glm/detail/type_mat2x4.hpp; sourceTree = "<group>"; };
+		E19C4EDD3901C1CFEB0FDD1D /* libImGui.a */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ImGui.xcodeproj"; path = vendor/imgui/ImGui.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E24FCBC374DD95B5DDB63A03 /* normal.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = normal.hpp; path = vendor/glm/glm/gtx/normal.hpp; sourceTree = "<group>"; };
 		E35E8995F343B5C7DFB73FD5 /* _swizzle_func.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = _swizzle_func.hpp; path = vendor/glm/glm/detail/_swizzle_func.hpp; sourceTree = "<group>"; };
 		E47AE9BB866485AD7D8B97FB /* PlatformUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PlatformUtils.h; path = src/Ethane/Utils/PlatformUtils.h; sourceTree = "<group>"; };
@@ -697,6 +721,7 @@
 				713678D803C442CA6C9CE718 /* IOKit.framework in Frameworks */,
 				6090C9794627D0AB096CDFB9 /* libGLFW.a in Frameworks */,
 				B9CA2C199F61334B62A64259 /* libGlad.a in Frameworks */,
+				EA0614A5455164D733834AE5 /* libImGui.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -956,6 +981,14 @@
 			name = glm;
 			sourceTree = "<group>";
 		};
+		3684523D5CAA81EFC3B1787D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B70ACDADC8C20D9F3E2FFBED /* libImGui.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3AACD9096A3EA7FB454BE749 /* detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -1023,6 +1056,25 @@
 			name = detail;
 			sourceTree = "<group>";
 		};
+		3C3DC75F808C6CD1C2B3A59F /* ImGui */ = {
+			isa = PBXGroup;
+			children = (
+				BD2A51A781DFA819364E4FE7 /* VulkanImGuiLayer.cpp */,
+				2C257B11C49D6883F0845951 /* VulkanImGuiLayer.h */,
+			);
+			name = ImGui;
+			sourceTree = "<group>";
+		};
+		3C40A77935A6A8EB294205B9 /* ImGui */ = {
+			isa = PBXGroup;
+			children = (
+				A0BCE785674ADEF7D54D05C5 /* ImGuiBuild.cpp */,
+				6496D3BF2B24CB319926F1FF /* ImGuiLayer.cpp */,
+				815AFDA9EE830C1BF015FBE9 /* ImGuiLayer.h */,
+			);
+			name = ImGui;
+			sourceTree = "<group>";
+		};
 		568A766959FB489BDB67ECA9 /* Ethane */ = {
 			isa = PBXGroup;
 			children = (
@@ -1030,6 +1082,7 @@
 				6CA1B3156D54B007E1368155 /* Core */,
 				242D3C111D933D83112E9A51 /* Debug */,
 				2C51052D173D2B1F5F22F36D /* Events */,
+				3C40A77935A6A8EB294205B9 /* ImGui */,
 				6A2773776ADA7069DEBC41B7 /* Math */,
 				BC78928DEC0A617FC717A0CD /* Platform */,
 				6CFD66F19C8F35E3779C7531 /* Renderer */,
@@ -1245,6 +1298,7 @@
 			children = (
 				11BF275CF6062F8E79F35D9C /* GLFW.xcodeproj */,
 				1197FB54F5DF038679CC3194 /* Glad.xcodeproj */,
+				E19C4EDD3901C1CFEB0FDD1D /* ImGui.xcodeproj */,
 			);
 			name = Projects;
 			sourceTree = "<group>";
@@ -1494,6 +1548,7 @@
 		F094026B3DF6F89DB415F8AB /* Vulkan */ = {
 			isa = PBXGroup;
 			children = (
+				3C3DC75F808C6CD1C2B3A59F /* ImGui */,
 				DF35C939A1F629ABFF2B0779 /* ShaderUtils */,
 				0E7CB77765E22A6917F045B7 /* Vulkan.h */,
 				D47D6B012E7E81F3F5C57941 /* VulkanBuffer.cpp */,
@@ -1562,6 +1617,7 @@
 			dependencies = (
 				EEF851DBE85E534DDBF9B01B /* PBXTargetDependency */,
 				B500CA83AE66CBF5A20228C3 /* PBXTargetDependency */,
+				243C8F464A62BEF8B169B586 /* PBXTargetDependency */,
 			);
 			name = EthaneEngine;
 			productName = EthaneEngine;
@@ -1587,6 +1643,10 @@
 					ProductGroup = C7488D7AC0AE8EECB449EBBA /* Products */;
 					ProjectRef = 1197FB54F5DF038679CC3194 /* Glad.xcodeproj */;
 				},
+				{
+					ProductGroup = 3684523D5CAA81EFC3B1787D /* Products */;
+					ProjectRef = E19C4EDD3901C1CFEB0FDD1D /* ImGui.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1608,6 +1668,13 @@
 			fileType = archive.ar;
 			path = libGlad.a;
 			remoteRef = 01D9077A27FF372C8F062DBA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B70ACDADC8C20D9F3E2FFBED /* libImGui.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libImGui.a;
+			remoteRef = 588D649D43798A8F8B5F52DD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1635,6 +1702,8 @@
 				1C4A5799AED8218B17B0C5D9 /* Log.cpp in Sources */,
 				E34098635068A6D551FB96A3 /* UUID.cpp in Sources */,
 				11AE8E05D83C8577463EAC45 /* Window.cpp in Sources */,
+				6ADA7EDDDEC2F68F0110A51D /* ImGuiBuild.cpp in Sources */,
+				029E19B77686916998D43FF7 /* ImGuiLayer.cpp in Sources */,
 				9EEA87CA0C12963C0DA5860A /* Math.cpp in Sources */,
 				6923B6B97ADAF6ABF048E4F9 /* MacosInput.cpp in Sources */,
 				53907229B017769B38BA3069 /* MacosWindow.cpp in Sources */,
@@ -1657,6 +1726,7 @@
 				4CDD36015E9475F3D4026441 /* StorageBuffer.cpp in Sources */,
 				FB9B96056FF5DAF7EDD96445 /* Texture.cpp in Sources */,
 				6C8222D34B24BE450006C113 /* VertexBuffer.cpp in Sources */,
+				558790BF8F52477144AD96FF /* VulkanImGuiLayer.cpp in Sources */,
 				5725BB342E78E666A7E65174 /* ShaderIncluder.cpp in Sources */,
 				4B4056E02E3BDD1243544D20 /* VulkanShaderCompiler.cpp in Sources */,
 				985BBB34B9F7F866B26E9174 /* VulkanShaderSystem.cpp in Sources */,
@@ -1698,6 +1768,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		243C8F464A62BEF8B169B586 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libImGui.a;
+			targetProxy = AAC7D73695B3FD28DD99C576 /* PBXContainerItemProxy */;
+		};
 		B500CA83AE66CBF5A20228C3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libGlad.a;
@@ -1746,7 +1821,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LIBRARY_SEARCH_PATHS = (
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Lib,
+					../../../../VulkanSDK/1.3.204.1/macOS/Lib,
 					vendor/assimp/macos/lib,
 					"vendor/yaml-cpp/build",
 				);
@@ -1771,9 +1846,10 @@
 					vendor/glm,
 					vendor/stb_image,
 					vendor/entt/include,
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
 					vendor/assimp/include,
 					"vendor/yaml-cpp/include",
+					vendor/imgui,
 					"$(inherited)",
 				);
 				USER_HEADER_SEARCH_PATHS = (
@@ -1816,7 +1892,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LIBRARY_SEARCH_PATHS = (
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Lib,
+					../../../../VulkanSDK/1.3.204.1/macOS/Lib,
 					vendor/assimp/macos/lib,
 					"vendor/yaml-cpp/build",
 				);
@@ -1841,9 +1917,10 @@
 					vendor/glm,
 					vendor/stb_image,
 					vendor/entt/include,
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
 					vendor/assimp/include,
 					"vendor/yaml-cpp/include",
+					vendor/imgui,
 					"$(inherited)",
 				);
 				USER_HEADER_SEARCH_PATHS = (
@@ -1873,7 +1950,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LIBRARY_SEARCH_PATHS = (
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Lib,
+					../../../../VulkanSDK/1.3.204.1/macOS/Lib,
 					vendor/assimp/macos/lib,
 					"vendor/yaml-cpp/build",
 				);
@@ -1898,9 +1975,10 @@
 					vendor/glm,
 					vendor/stb_image,
 					vendor/entt/include,
-					../../../../../../VulkanSDK/1.3.204.1/macOS/Include,
+					../../../../VulkanSDK/1.3.204.1/macOS/Include,
 					vendor/assimp/include,
 					"vendor/yaml-cpp/include",
+					vendor/imgui,
 					"$(inherited)",
 				);
 				USER_HEADER_SEARCH_PATHS = (

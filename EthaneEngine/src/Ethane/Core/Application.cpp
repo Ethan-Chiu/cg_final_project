@@ -41,6 +41,9 @@ namespace Ethane
         ShaderSystem::Init();
         
         AssetManager::Init();
+        
+        m_ImGuiLayer = ImGuiLayer::Create();
+        PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -89,6 +92,9 @@ namespace Ethane
 	{
 		ETH_PROFILE_FUNCTION();
 
+        uint64_t frameCount = 0;
+        float frameTime = 0;
+        
 		while (true)
 		{
 			ETH_PROFILE_SCOPE("RunLoop");
@@ -97,6 +103,10 @@ namespace Ethane
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
+            frameCount++;
+            frameTime += timestep;
+            ETH_CORE_INFO("fps: {0}", 1/(frameTime/frameCount));
+            
 			m_Window->PollEvent();
 			if (!m_Running) break;
 
@@ -111,6 +121,18 @@ namespace Ethane
 						for (Layer* layer : m_LayerStack)
 							layer->OnUpdate(timestep);
 					}
+                    
+                    if (m_ImGuiLayer)
+                    {
+                        m_ImGuiLayer->Begin();
+                        {
+                            ETH_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+                            for (Layer* layer : m_LayerStack)
+                                layer->OnImGuiRender();
+                        }
+                        m_ImGuiLayer->End();
+                    }
 
                     Renderer::EndFrame();
 					m_Window->EndFrame();
