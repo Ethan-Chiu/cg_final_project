@@ -25,6 +25,7 @@
 #include "Ethane/Renderer/Texture.h"
 #include "Ethane/Renderer/Mesh.h"
 #include "Ethane/Renderer/RenderPass.h"
+#include "Ethane/Renderer/RenderCommandBuffer.h"
 //-------Scene--------
 #include "Ethane/Scene/Scene.h"
 #include "Ethane/Scene/Entity.h"
@@ -39,4 +40,7 @@
 #include "Ethane/Systems/ResourceSystem.h"
 #include "Ethane/Systems/ShaderSystem.h"
 #include "Ethane/Systems/TextureSystem.h"
+//-------Math--------
+#include "Ethane/Math/Math.h"
+#include "Ethane/Math/BVH.h"
 //--------------------

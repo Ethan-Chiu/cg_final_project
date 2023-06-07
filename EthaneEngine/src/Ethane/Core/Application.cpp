@@ -92,8 +92,8 @@ namespace Ethane
 	{
 		ETH_PROFILE_FUNCTION();
 
-        uint64_t frameCount = 0;
-        float frameTime = 0;
+//        uint64_t frameCount = 0;
+//        float frameTime = 0;
         
 		while (true)
 		{
@@ -103,9 +103,9 @@ namespace Ethane
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-            frameCount++;
-            frameTime += timestep;
-            ETH_CORE_INFO("fps: {0}", 1/(frameTime/frameCount));
+//            frameCount++;
+//            frameTime += timestep;
+//            ETH_CORE_INFO("fps: {0}", 1/(frameTime/frameCount));
             
 			m_Window->PollEvent();
 			if (!m_Running) break;

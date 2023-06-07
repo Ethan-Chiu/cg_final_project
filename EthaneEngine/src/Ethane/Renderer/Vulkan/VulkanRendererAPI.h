@@ -7,6 +7,7 @@
 #include "VulkanRenderCommandBuffer.h"
 #include "VulkanRenderTarget.h"
 #include "VulkanMaterial.h"
+#include "VulkanRenderCommandBuffer.h"
 
 namespace Ethane {
 
@@ -74,11 +75,11 @@ namespace Ethane {
         
 		void DrawMesh(Ref<Pipeline> pipeline, Mesh* mesh, Material* material, const glm::mat4& transform) override;
         
-        void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage) override;
-        void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z) override;
+        void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer) override;
+        void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer) override;
         
 	private:
-        Scope<VulkanRenderCommandBuffer> m_RenderCommandBuffer = nullptr;
+//        Scope<VulkanRenderCommandBuffer> m_RenderCommandBuffer = nullptr;
 
 		static VulkanRendererData* s_Data;
 	};

@@ -15,6 +15,7 @@ namespace Ethane {
     class Pipeline;
     class ComputePipeline;
     class Shader;
+    class RenderCommandBuffer;
     enum class ImageLayout;
     enum class AccessMask;
     enum class PipelineStage;
@@ -46,8 +47,8 @@ namespace Ethane {
         virtual void DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material) = 0;
         virtual void DrawMesh(Ref<Pipeline> pipeline, Mesh* mesh, Material* material, const glm::mat4& transform) = 0;
         
-        virtual void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage) = 0;
-        virtual void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z) = 0;
+        virtual void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer) = 0;
+        virtual void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer) = 0;
         
         virtual TargetImage* GetSwapchainTarget() const = 0;
         

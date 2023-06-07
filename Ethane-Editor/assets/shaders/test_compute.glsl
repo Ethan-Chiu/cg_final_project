@@ -7,6 +7,8 @@ layout (binding = 0) uniform ParameterUBO {
     float ratio;
 	uint currentSample;
     uint lineNum;
+    float time;
+    vec3 camPos;
 } ubo;
 
 
@@ -52,7 +54,6 @@ void main() {
     ivec2 image_size = imageSize(inputTextureOne);
     int width = image_size.x;
     int height = image_size.y;
-    bool isLine = false;
     
     vec2 sum_1 = vec2(0);
     vec2 sum_2 = vec2(0);

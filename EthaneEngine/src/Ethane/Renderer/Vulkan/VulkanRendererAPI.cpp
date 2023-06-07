@@ -84,12 +84,12 @@ namespace Ethane {
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0, };
 		s_Data->QuadIndexBuffer = CreateRef<VulkanIndexBuffer>(indices, 6 * sizeof(uint32_t));
         
-        m_RenderCommandBuffer = CreateScope<VulkanRenderCommandBuffer>();
+//        m_RenderCommandBuffer = CreateScope<VulkanRenderCommandBuffer>();
 	}
 
     void VulkanRendererAPI::Shutdown()
     {
-        m_RenderCommandBuffer->Destroy();
+//        m_RenderCommandBuffer->Destroy();
         
         s_Data->QuadVertexBuffer->Destroy();
         s_Data->QuadIndexBuffer->Destroy();
@@ -127,7 +127,7 @@ namespace Ethane {
     void VulkanRendererAPI::EndFrame()
     {
         EndRenderCommandBuffer();
-        m_RenderCommandBuffer->Submit();
+//        m_RenderCommandBuffer->Submit();
     }
 
     VulkanTargetImage* VulkanRendererAPI::GetSwapchainTarget() const
@@ -137,12 +137,12 @@ namespace Ethane {
 
 	void VulkanRendererAPI::BeginRenderCommandBuffer()
 	{
-        m_RenderCommandBuffer->Begin();
+//        m_RenderCommandBuffer->Begin();
 	}
 
 	void VulkanRendererAPI::EndRenderCommandBuffer()
 	{
-        m_RenderCommandBuffer->End();
+//        m_RenderCommandBuffer->End();
 	}
 
     void VulkanRendererAPI::RegisterShader(const Shader* shader)
@@ -361,7 +361,7 @@ namespace Ethane {
         DrawGeometry(pipeline, s_Data->QuadVertexBuffer, s_Data->QuadIndexBuffer, material);
     }
 
-    void VulkanRendererAPI::TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage)
+    void VulkanRendererAPI::TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer)
     {
         uint32_t imageIndex = VulkanContext::GetSwapchain()->GetCurrentImageIndex();
         
@@ -387,19 +387,28 @@ namespace Ethane {
         
         barrier.dstAccessMask = ImageUtils::VulkanAccessMask(dstAccessMask);
         destinationStage = ImageUtils::VulkanPipelineStage(dstStage);
-
-        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle(); // TODO: compute command buffer
+        
+        VkCommandBuffer commandBuffer;
+        if (renderCmdBuffer == nullptr)
+            commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        else
+            commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(renderCmdBuffer)->GetCommandBuffer()->GetHandle();
+        
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
         
 //        dynamic_cast<VulkanTargetImage*>(targetImage)->SetImageLayout(ImageUtils::VulkanImageLayout(newLayout));
     }
 
-    void VulkanRendererAPI::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z)
+    void VulkanRendererAPI::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer)
     {
         Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);
         
         uint32_t frameIndex = VulkanContext::GetSwapchain()->GetCurrentFrameIndex();
-        VkCommandBuffer commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        VkCommandBuffer commandBuffer;
+        if (renderCmdBuffer == nullptr)
+            commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        else
+            commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(renderCmdBuffer)->GetCommandBuffer()->GetHandle();
         
         Ref<VulkanComputePipeline> vulkanPipeline = std::dynamic_pointer_cast<VulkanComputePipeline>(computePipeline);
         VkPipelineLayout layout = vulkanPipeline->GetPipelineLayout();

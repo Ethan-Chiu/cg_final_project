@@ -78,4 +78,9 @@ namespace Ethane::Math {
 		return true;
 	}
 
+    AABB SurroundingBox(AABB box0, AABB box1)
+    {
+        return {glm::min(box0.Min, box1.Min), glm::max(box0.Max, box1.Max)};
+    }
+
 }

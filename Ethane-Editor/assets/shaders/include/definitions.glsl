@@ -15,11 +15,6 @@ struct light {
     float area;
 };
 
-struct sphere {
-    vec4 s;
-    uint materialIndex;
-};
-
 struct bvhNode {
     vec3 min;
     vec3 max;

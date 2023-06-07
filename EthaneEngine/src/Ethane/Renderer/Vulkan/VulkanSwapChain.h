@@ -86,10 +86,14 @@ namespace Ethane{
 		std::vector<VkFence> m_InFlightFences;
 		std::vector<VkFence> m_ImagesInFlight;
         std::vector<VkFence> m_ComputeInFlightFences;
+        
+        VkFence m_RayTraceFence;
 
 		uint32_t m_CurrentFrame = 0;
 		uint32_t m_CurrentImageIndex = 0;
 
+        uint32_t m_Frame = 0;
+        
         bool m_NeedResize = false;
 		bool m_IsRecreating = false;
 	};

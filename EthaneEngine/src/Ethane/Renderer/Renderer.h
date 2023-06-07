@@ -6,6 +6,7 @@
 #include "RenderTarget.h"
 #include "Pipeline.h"
 #include "Mesh.h"
+#include "RenderCommandBuffer.h"
 
 namespace Ethane {
 	
@@ -40,9 +41,8 @@ namespace Ethane {
         static void DrawFullscreenQuad(Ref<Pipeline> pipeline, Ref<Material> material);
         static void DrawMesh(Ref<Pipeline> pipeline, Mesh* mesh, Material* material, const glm::mat4& transform);
         
-        static void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage);
-        static void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z);
-        
+        static void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer = nullptr);
+        static void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer = nullptr);
         
         static glm::vec2 ToPixel(const glm::vec2& coord) { return coord * s_Config.RatioPixel; }
         

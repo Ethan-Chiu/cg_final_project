@@ -75,6 +75,7 @@ namespace Ethane {
 		// Getter
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<Triangle> GetTrianglesCacheInSubmesh(uint32_t index) const { return m_TriangleCache.at(index); }
+        const std::unordered_map<uint32_t, std::vector<Triangle>>& GetTriangles() const { return m_TriangleCache; };
 		Ref<VertexBuffer> GetVertexBuffer() { return m_VertexBuffer; }
 		Ref<IndexBuffer> GetIndexBuffer() { return m_IndexBuffer; }
 		uint64_t GetVertexNum() const { return m_StaticVertices.size(); };

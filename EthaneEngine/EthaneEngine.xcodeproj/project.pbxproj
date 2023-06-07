@@ -58,6 +58,7 @@
 		9F1963943766494665AD49D4 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB07D3FCFF56796E417DB23C /* Entity.cpp */; };
 		A3014F9181A3EB033685EDD1 /* RenderTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9950D5B998F3B8EBD3486BF9 /* RenderTarget.cpp */; };
 		A7DC1E7D98D38C6F04D70CBD /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F978450591C52AB7C00C2B45 /* Application.cpp */; };
+		A8AFA35570145E47FACC3195 /* RenderCommandBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 914F243D7EB6B6EF1BB0AA7D /* RenderCommandBuffer.cpp */; };
 		AA30F92DBBE8391F3156276D /* SceneRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FE955F2E7647817C24D5 /* SceneRenderer.cpp */; };
 		AC339B010793BFB349D76141 /* VulkanSwapChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ED20E299B59129B23FBCC69 /* VulkanSwapChain.cpp */; };
 		AE8256D3627E70054430AD13 /* VulkanRenderPass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A8936DBD4E31FCD111B851B /* VulkanRenderPass.cpp */; };
@@ -228,6 +229,7 @@
 		31A06B6910BD859BECC6E1A9 /* type_vec2.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_vec2.inl; path = vendor/glm/glm/detail/type_vec2.inl; sourceTree = "<group>"; };
 		31F5EAFB22ED58ED8EF0D93B /* std_based_type.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = std_based_type.inl; path = vendor/glm/glm/gtx/std_based_type.inl; sourceTree = "<group>"; };
 		33FECD61A7E74513CA34F3A1 /* MacosInput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MacosInput.cpp; path = src/Ethane/Platform/MacOS/MacosInput.cpp; sourceTree = "<group>"; };
+		342AFD085C65B5BA44014348 /* BVH.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BVH.h; path = src/Ethane/Math/BVH.h; sourceTree = "<group>"; };
 		3442C26BCE9CAB5D0AD510AB /* matrix_uint2x2_sized.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_uint2x2_sized.hpp; path = vendor/glm/glm/ext/matrix_uint2x2_sized.hpp; sourceTree = "<group>"; };
 		3497F101133A8C73C81C8F41 /* quaternion_common.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = quaternion_common.inl; path = vendor/glm/glm/ext/quaternion_common.inl; sourceTree = "<group>"; };
 		34A4158B8EA52C7D55EC23CB /* exterior_product.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = exterior_product.inl; path = vendor/glm/glm/gtx/exterior_product.inl; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 		577F085BCBD94D4D49BCD69B /* vector_uint4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = vector_uint4.hpp; path = vendor/glm/glm/ext/vector_uint4.hpp; sourceTree = "<group>"; };
 		57980894EA25D28652FE76D4 /* random.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = random.inl; path = vendor/glm/glm/gtc/random.inl; sourceTree = "<group>"; };
 		5803F139CC5E362B4A41BF79 /* vector_angle.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vector_angle.inl; path = vendor/glm/glm/gtx/vector_angle.inl; sourceTree = "<group>"; };
+		581F39E70B1543995C37A027 /* RenderCommandBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderCommandBuffer.h; path = src/Ethane/Renderer/RenderCommandBuffer.h; sourceTree = "<group>"; };
 		5841713DCC9BB62F4A7F3F7D /* euler_angles.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = euler_angles.hpp; path = vendor/glm/glm/gtx/euler_angles.hpp; sourceTree = "<group>"; };
 		589AF3229CE99894DF10D162 /* round.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = round.inl; path = vendor/glm/glm/gtc/round.inl; sourceTree = "<group>"; };
 		599CA6B7F77DA769CEFBECF7 /* type_quat_simd.inl */ = {isa = PBXFileReference; lastKnownFileType = text; name = type_quat_simd.inl; path = vendor/glm/glm/detail/type_quat_simd.inl; sourceTree = "<group>"; };
@@ -441,6 +444,7 @@
 		90A2DB65ED29DFD775CC99A5 /* matrix_int4x2_sized.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_int4x2_sized.hpp; path = vendor/glm/glm/ext/matrix_int4x2_sized.hpp; sourceTree = "<group>"; };
 		90D06F2784CFB89909BACD67 /* matrix_int2x3.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_int2x3.hpp; path = vendor/glm/glm/ext/matrix_int2x3.hpp; sourceTree = "<group>"; };
 		90F6FEC2E85C71B49A6A8D02 /* bitfield.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = bitfield.hpp; path = vendor/glm/glm/gtc/bitfield.hpp; sourceTree = "<group>"; };
+		914F243D7EB6B6EF1BB0AA7D /* RenderCommandBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RenderCommandBuffer.cpp; path = src/Ethane/Renderer/RenderCommandBuffer.cpp; sourceTree = "<group>"; };
 		917C5195C4FB9107DCF56FD5 /* matrix_float3x3_precision.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_float3x3_precision.hpp; path = vendor/glm/glm/ext/matrix_float3x3_precision.hpp; sourceTree = "<group>"; };
 		9190FFBFA1DDE3B19FCAADFF /* matrix_double4x2_precision.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_double4x2_precision.hpp; path = vendor/glm/glm/ext/matrix_double4x2_precision.hpp; sourceTree = "<group>"; };
 		91965789EB976E7BB2DE65C9 /* matrix_double2x4.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = matrix_double2x4.hpp; path = vendor/glm/glm/ext/matrix_double2x4.hpp; sourceTree = "<group>"; };
@@ -1152,6 +1156,7 @@
 			isa = PBXGroup;
 			children = (
 				627A01548445AE86C0FAD794 /* AABB.h */,
+				342AFD085C65B5BA44014348 /* BVH.h */,
 				B401DA920164D0C47783D0D2 /* Math.cpp */,
 				432ABADC64F6680EA1AB911C /* Math.h */,
 				0639C3E02E747C9216100A20 /* Ray.h */,
@@ -1205,6 +1210,8 @@
 				4B498B0F98AC81410ECB814F /* Mesh.h */,
 				B03A0997F44DDAC9E81F5FD7 /* Pipeline.cpp */,
 				987696A17CBD9ED300AACCE1 /* Pipeline.h */,
+				914F243D7EB6B6EF1BB0AA7D /* RenderCommandBuffer.cpp */,
+				581F39E70B1543995C37A027 /* RenderCommandBuffer.h */,
 				31797CD91096970BEC9FF319 /* RenderPass.cpp */,
 				6DCF4A63B1E31B95A5B4A0A3 /* RenderPass.h */,
 				9950D5B998F3B8EBD3486BF9 /* RenderTarget.cpp */,
@@ -1717,6 +1724,7 @@
 				F992D3E1ED921D53727D3221 /* Material.cpp in Sources */,
 				2903465DEF913DCF5D93649D /* Mesh.cpp in Sources */,
 				09F9344FFDF87DC182E3928F /* Pipeline.cpp in Sources */,
+				A8AFA35570145E47FACC3195 /* RenderCommandBuffer.cpp in Sources */,
 				68D5C6B175607923F04544F1 /* RenderPass.cpp in Sources */,
 				A3014F9181A3EB033685EDD1 /* RenderTarget.cpp in Sources */,
 				44171AF138166463BD017931 /* Renderer.cpp in Sources */,

@@ -12,6 +12,7 @@ namespace Ethane {
 			:m_Projection(projection) {}
 		virtual ~Camera() = default;
 
+        virtual glm::vec3 GetPosition() const { return glm::vec3(0); };
 		const glm::mat4& GetProjection() const { return m_Projection; }
 	protected:
 		glm::mat4 m_Projection = glm::mat4(1.0f);

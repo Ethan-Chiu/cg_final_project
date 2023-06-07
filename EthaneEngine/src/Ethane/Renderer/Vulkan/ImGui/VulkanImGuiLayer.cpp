@@ -32,8 +32,6 @@ namespace Ethane {
 	{
 		auto device = VulkanContext::GetDevice()->GetVulkanDevice();
 
-		VkDescriptorPool descriptorPool;
-
 		// Create Descriptor Pool
 		VkDescriptorPoolSize pool_sizes[] =
 		{
@@ -55,7 +53,7 @@ namespace Ethane {
 		pool_info.maxSets = 100 * IM_ARRAYSIZE(pool_sizes);
 		pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
-		VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &descriptorPool));
+		VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &m_DescriptorPool));
 
         RendererConfig rendererConfig = Renderer::GetRendererConfig();
         const VulkanSwapChain* swapChain = VulkanContext::GetSwapchain();
@@ -114,7 +112,7 @@ namespace Ethane {
 		init_info.QueueFamily = VulkanContext::GetPhysicalDevice()->GetQueueFamilyIndices().Graphics.value();
 		init_info.Queue = VulkanContext::GetDevice()->GetGraphicsQueue();
 		init_info.PipelineCache = nullptr;
-		init_info.DescriptorPool = descriptorPool;
+		init_info.DescriptorPool = m_DescriptorPool;
 		init_info.Allocator = nullptr;
 		init_info.MinImageCount = 2;
 		init_info.ImageCount = swapChain->GetImageCount();
@@ -153,7 +151,12 @@ namespace Ethane {
 
 	void VulkanImGuiLayer::Cleanup()
 	{
-		auto device = VulkanContext::GetDevice()->GetVulkanDevice();
+        m_Target->Destroy();
+        
+        auto device = VulkanContext::GetDevice()->GetVulkanDevice();
+        
+        vkDeviceWaitIdle(device);
+        vkDestroyDescriptorPool(device, m_DescriptorPool, nullptr);
 	}
 
 	void VulkanImGuiLayer::OnDetach()
@@ -169,12 +172,28 @@ namespace Ethane {
 
 	void VulkanImGuiLayer::OnEvent(Event& e)
 	{
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<WindowResizeEvent>(ETH_BIND_EVENT_FN(VulkanImGuiLayer::OnResize));
 	}
+
+    bool VulkanImGuiLayer::OnResize(WindowResizeEvent& e)
+    {
+        m_NeedResize = true;
+        m_Width = e.GetWidth();
+        m_Height = e.GetHeight();
+        return false;
+    }
 
 	void VulkanImGuiLayer::Begin()
 	{
 		ETH_PROFILE_FUNCTION();
 
+        if(m_NeedResize)
+        {
+            m_Target->Resize(m_Width, m_Height);
+            m_NeedResize = false;
+        }
+        
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();

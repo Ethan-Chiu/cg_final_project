@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ethane.h"
+#include "RTScene.h"
 
 namespace Ethane {
 
@@ -27,14 +28,38 @@ namespace Ethane {
         Ref<Scene> m_ActiveScene;
         Ref<SceneRenderer> m_ViewportRenderer;
         
+        uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+        
         Ref<Mesh> m_Mesh;
         Ref<Material> m_Mat;
         
-        EditorCamera m_EditorCamera;
+        RTScene m_RTScene;
+        TargetImage* m_Color;
+        Ref<Material> m_RTMat = nullptr;
+        Ref<ComputePipeline> m_RTPipeline = nullptr;
+        Ref<StorageBuffer> m_TriangleStore = nullptr;
+        Ref<StorageBuffer> m_MaterialStore = nullptr;
+        Ref<StorageBuffer> m_BvhStore = nullptr;
+        Ref<StorageBuffer> m_LightStore = nullptr;
         
+        std::vector<Line> m_LineOne = {};
+        std::vector<Line> m_LineTwo = {};
+        Texture2D* m_SampleTexOne = nullptr;
+        Texture2D* m_SampleTexTwo = nullptr;
+        Ref<Material> m_ComputeMat = nullptr;
+        Ref<ComputePipeline> m_MorphingPipeline = nullptr;
+        Ref<StorageBuffer> m_StoreOne = nullptr;
+        Ref<StorageBuffer> m_StoreTwo = nullptr;
+        Ref<StorageBuffer> m_StoreThree = nullptr;
         uint8_t m_CurrentState = 1;
-        std::vector<Line> m_LineDataOne;
-        std::vector<Line> m_LineDataTwo;
+        
+        uint32_t m_Frame = 0;
+        Ref<RenderCommandBuffer> m_RTCommandBuffer;
+//        std::vector
+        
+        bool m_NeedResize = false;
+        
+        EditorCamera m_EditorCamera;
 	};
 
 }

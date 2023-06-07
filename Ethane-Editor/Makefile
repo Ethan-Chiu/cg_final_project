@@ -84,8 +84,10 @@ OBJECTS :=
 
 GENERATED += $(OBJDIR)/EditorLayer.o
 GENERATED += $(OBJDIR)/EthaneEditorApp.o
+GENERATED += $(OBJDIR)/RTScene.o
 OBJECTS += $(OBJDIR)/EditorLayer.o
 OBJECTS += $(OBJDIR)/EthaneEditorApp.o
+OBJECTS += $(OBJDIR)/RTScene.o
 
 # Rules
 # #############################################
@@ -153,6 +155,9 @@ $(OBJDIR)/EditorLayer.o: src/EditorLayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EthaneEditorApp.o: src/EthaneEditorApp.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/RTScene.o: src/RTScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

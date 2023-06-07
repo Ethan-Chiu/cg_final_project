@@ -40,23 +40,6 @@ namespace Ethane {
 
 		void SubmitMesh(Mesh* mesh, Material* material, const glm::mat4& transform = glm::mat4(1.0f));
 		void SubmitSelectedMesh(Mesh* mesh, const glm::mat4& transform = glm::mat4(1.0f)); //, Ref<Material> Material = nullptr
-
-        // temp
-        void SetLineOneData(const std::vector<Line>& data) {
-            m_LineOne = data;
-            m_StoreOne->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
-            m_ComputeMat->SetData("ImageOneRefLines", m_StoreOne.get());
-        }
-        
-        void SetLineTwoData(const std::vector<Line>& data) {
-            m_LineTwo = data;
-            m_StoreTwo->SetData((void*)(data.data()), (uint32_t)(data.size() * sizeof(Line)));
-            m_ComputeMat->SetData("ImageTwoRefLines", m_StoreTwo.get());
-        }
-        
-        void SetCurrentState(uint8_t state) {
-            m_CurrentState = state;
-        }
         
 		// Getter
 		SceneRendererOptions& GetOptions() { return m_Options; }
@@ -77,7 +60,7 @@ namespace Ethane {
 		bool m_NeedResize = false;
 
 		Ref<Scene> m_Scene;
-
+    public:
 		struct UBGlobal
 		{
 			glm::mat4 ViewProjection;
@@ -105,25 +88,16 @@ namespace Ethane {
             alignas(4) float ratio;
             alignas(4) u_int32_t currentSample;
             alignas(4) u_int32_t lineNum;
+            alignas(4) float time;
+            glm::vec3 camPos;
         } ubo;
         
-        uint8_t m_CurrentState = 1;
+        UBO& GetGlobalUBO() { return ubo; }
         
-        std::vector<Line> m_LineOne = {};
-        std::vector<Line> m_LineTwo = {};
-        
-        Ref<StorageBuffer> m_StoreOne = nullptr;
-        Ref<StorageBuffer> m_StoreTwo = nullptr;
-        Ref<StorageBuffer> m_StoreThree = nullptr;
-        
-        TargetImage* m_GeoColor = nullptr;
+    private:
         Ref<Image2D> m_GeoDepth = nullptr;
         Scope<RenderTarget> m_GeoTarget = nullptr;
 		Ref<Pipeline> m_GeometryPipeline;
-        Texture2D* m_SampleTexOne = nullptr;
-        Texture2D* m_SampleTexTwo = nullptr;
-        Ref<Material> m_ComputeMat = nullptr;
-        Ref<ComputePipeline> m_MorphingPipeline = nullptr;
         
 		struct DrawCommand
 		{

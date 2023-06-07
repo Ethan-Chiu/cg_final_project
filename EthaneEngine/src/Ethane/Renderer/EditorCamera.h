@@ -30,7 +30,7 @@ namespace Ethane{
 		glm::vec3 GetUpDirection() const;
 		glm::vec3 GetRightDirection() const;
 		glm::vec3 GetForwardDirection() const;
-		const glm::vec3& GetPosition() const { return m_Position; }
+        virtual glm::vec3 GetPosition() const override { return m_Position; }
 		glm::quat GetOrientation() const;
 
 		float GetPitch() const { return m_Pitch; }

@@ -105,6 +105,7 @@ GENERATED += $(OBJDIR)/Material.o
 GENERATED += $(OBJDIR)/Math.o
 GENERATED += $(OBJDIR)/Mesh.o
 GENERATED += $(OBJDIR)/Pipeline.o
+GENERATED += $(OBJDIR)/RenderCommandBuffer.o
 GENERATED += $(OBJDIR)/RenderPass.o
 GENERATED += $(OBJDIR)/RenderTarget.o
 GENERATED += $(OBJDIR)/Renderer.o
@@ -173,6 +174,7 @@ OBJECTS += $(OBJDIR)/Material.o
 OBJECTS += $(OBJDIR)/Math.o
 OBJECTS += $(OBJDIR)/Mesh.o
 OBJECTS += $(OBJDIR)/Pipeline.o
+OBJECTS += $(OBJDIR)/RenderCommandBuffer.o
 OBJECTS += $(OBJDIR)/RenderPass.o
 OBJECTS += $(OBJDIR)/RenderTarget.o
 OBJECTS += $(OBJDIR)/Renderer.o
@@ -351,6 +353,9 @@ $(OBJDIR)/Mesh.o: src/Ethane/Renderer/Mesh.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Pipeline.o: src/Ethane/Renderer/Pipeline.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/RenderCommandBuffer.o: src/Ethane/Renderer/RenderCommandBuffer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) -include $(PCH_PLACEHOLDER) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/RenderPass.o: src/Ethane/Renderer/RenderPass.cpp

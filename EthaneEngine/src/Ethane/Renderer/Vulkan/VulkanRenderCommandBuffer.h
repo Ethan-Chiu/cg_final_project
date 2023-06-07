@@ -1,31 +1,30 @@
 #pragma once
 
 #include "VulkanContext.h"
+#include "Ethane/Renderer/RenderCommandBuffer.h"
 #include "VulkanCommandBuffer.h"
 
 namespace Ethane {
 
-	class VulkanRenderCommandBuffer
+	class VulkanRenderCommandBuffer : public RenderCommandBuffer
 	{
 	public:
-		VulkanRenderCommandBuffer(uint32_t count = 0, std::string debugName = "");
+		VulkanRenderCommandBuffer(bool isInFlight, const std::string& debugName = "");
 		~VulkanRenderCommandBuffer() = default;
         
-        void Destroy();
+        void Destroy() override;
         
-		void Begin();
-        void End();
-        void Submit();
+		void Begin() override;
+        void End() override;
+        void Wait() override;
+        void Submit() override;
 
 		// Getter
-		const VulkanCommandBuffer* GetCommandBuffer(uint32_t frameIndex) const
-		{
-			ETH_CORE_ASSERT(frameIndex < m_CommandBuffers.size());
-			return &m_CommandBuffers[frameIndex];
-		}
+        const VulkanCommandBuffer* GetCommandBuffer() const;
 
 	private:
 		std::string m_DebugName;
+        bool m_IsInFlight;
 		VkCommandPool m_CommandPool = nullptr;
 		std::vector<VulkanCommandBuffer> m_CommandBuffers;
 		std::vector<VkFence> m_WaitFences;
