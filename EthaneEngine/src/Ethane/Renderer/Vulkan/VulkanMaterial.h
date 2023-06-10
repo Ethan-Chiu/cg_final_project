@@ -34,6 +34,7 @@ namespace Ethane {
 		void ApplyMaterial();
 
         virtual bool SetImage(const std::string& name, const TargetImage* image) override;
+        virtual bool SetImage(const std::string& name, const Image2D* image, ImageLayout layout) override;
         virtual bool SetImage(const std::string& name, const Texture2D* image) override;
         
         virtual bool SetData(const std::string& name, const StorageBuffer* buffer) override;

@@ -351,41 +351,6 @@ namespace Ethane {
             Resize();
             return false;
         }
-        
-        
-        // TESTING
-//        if(m_Frame % 5 == 0)
-//        {
-//            VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_RayTraceFence, VK_TRUE, UINT64_MAX));
-//            VK_CHECK_RESULT(vkResetFences(device, 1, &m_RayTraceFence));
-//
-//            VulkanCommandBuffer currentCommandBuffer;
-//            currentCommandBuffer.Reset();
-//            currentCommandBuffer.Begin(false, false, false);
-//
-//            // Raytrace on other image
-//
-//            VkCommandBuffer currentCmdBufferHandle = currentCommandBuffer.GetHandle();
-//            VK_CHECK_RESULT(vkEndCommandBuffer(currentCmdBufferHandle));
-//
-//            VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
-//
-//            VkSemaphore waitSemaphores[] = {};
-//            submitInfo.waitSemaphoreCount = 0;
-//            submitInfo.pWaitSemaphores = nullptr;
-//
-//            VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-//            submitInfo.pWaitDstStageMask = waitStages;
-//
-//            VkSemaphore signalSemaphores[] = {};
-//            submitInfo.signalSemaphoreCount = 0;
-//            submitInfo.pSignalSemaphores = nullptr;
-//
-//            submitInfo.commandBufferCount = 1;
-//            submitInfo.pCommandBuffers = &currentCmdBufferHandle;
-//
-//            VK_CHECK_RESULT(vkQueueSubmit(m_Device->GetGraphicsQueue(), 1, &submitInfo, m_RayTraceFence));
-//        }
     
         VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX));
         VK_CHECK_RESULT(vkResetFences(device, 1, &m_InFlightFences[m_CurrentFrame]));

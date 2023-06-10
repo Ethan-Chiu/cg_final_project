@@ -399,6 +399,42 @@ namespace Ethane {
 //        dynamic_cast<VulkanTargetImage*>(targetImage)->SetImageLayout(ImageUtils::VulkanImageLayout(newLayout));
     }
 
+    void VulkanRendererAPI::TransitionLayout(Image2D* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer)
+    {
+        VkImageMemoryBarrier barrier{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+        barrier.oldLayout = ImageUtils::VulkanImageLayout(oldLayout);
+        barrier.newLayout = ImageUtils::VulkanImageLayout(newLayout);
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.image = dynamic_cast<VulkanImage2D*>(targetImage)->GetImageInfo().Image;
+
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = 1;
+
+        VkPipelineStageFlags sourceStage;
+        VkPipelineStageFlags destinationStage;
+
+        
+        barrier.srcAccessMask = ImageUtils::VulkanAccessMask(srcAccessMask);
+        sourceStage = ImageUtils::VulkanPipelineStage(srcStage);
+        
+        barrier.dstAccessMask = ImageUtils::VulkanAccessMask(dstAccessMask);
+        destinationStage = ImageUtils::VulkanPipelineStage(dstStage);
+        
+        VkCommandBuffer commandBuffer;
+        if (renderCmdBuffer == nullptr)
+            commandBuffer = VulkanContext::GetSwapchain()->GetCurrentCommandBuffer()->GetHandle();
+        else
+            commandBuffer = std::dynamic_pointer_cast<VulkanRenderCommandBuffer>(renderCmdBuffer)->GetCommandBuffer()->GetHandle();
+        
+        vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+        
+    //        dynamic_cast<VulkanTargetImage*>(targetImage)->SetImageLayout(ImageUtils::VulkanImageLayout(newLayout));
+    }
+
     void VulkanRendererAPI::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer)
     {
         Ref<VulkanMaterial> vulkanMaterial = std::dynamic_pointer_cast<VulkanMaterial>(material);

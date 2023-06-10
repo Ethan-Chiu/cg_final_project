@@ -43,4 +43,6 @@
 //-------Math--------
 #include "Ethane/Math/Math.h"
 #include "Ethane/Math/BVH.h"
+
+#include "Ethane/Core/Timer.h"
 //--------------------

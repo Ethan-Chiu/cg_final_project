@@ -85,6 +85,11 @@ namespace Ethane {
         s_RendererAPI->TransitionLayout(targetImage,  oldLayout, newLayout, srcAccessMask, srcStage, dstAccessMask, dstStage, renderCmdBuffer);
     }
 
+    void Renderer::TransitionLayout(Image2D* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer)
+    {
+        s_RendererAPI->TransitionLayout(targetImage,  oldLayout, newLayout, srcAccessMask, srcStage, dstAccessMask, dstStage, renderCmdBuffer);
+    }
+
     void Renderer::BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer)
     {
         s_RendererAPI->BeginCompute(computePipeline, material, worker_x, worker_y, worker_z, renderCmdBuffer);

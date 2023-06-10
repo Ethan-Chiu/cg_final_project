@@ -202,8 +202,6 @@ namespace Ethane {
 	void VulkanImGuiLayer::End()
 	{
 		ETH_PROFILE_FUNCTION();
-
-        ImGui::ShowDemoWindow();
         
 		ImGui::Render();
 		

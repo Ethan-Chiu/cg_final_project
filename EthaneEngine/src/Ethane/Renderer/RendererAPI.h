@@ -7,6 +7,7 @@ namespace Ethane {
     struct RendererConfig;
     class GraphicsContext;
     class TargetImage;
+    class Image2D;
     class RenderTarget;
     class VertexBuffer;
     class IndexBuffer;
@@ -48,6 +49,7 @@ namespace Ethane {
         virtual void DrawMesh(Ref<Pipeline> pipeline, Mesh* mesh, Material* material, const glm::mat4& transform) = 0;
         
         virtual void TransitionLayout(TargetImage* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer) = 0;
+        virtual void TransitionLayout(Image2D* targetImage, ImageLayout oldLayout, ImageLayout newLayout, AccessMask srcAccessMask, PipelineStage srcStage, AccessMask dstAccessMask, PipelineStage dstStage, Ref<RenderCommandBuffer> renderCmdBuffer) = 0;
         virtual void BeginCompute(Ref<ComputePipeline> computePipeline, Ref<Material> material, uint32_t worker_x, uint32_t worker_y, uint32_t worker_z, Ref<RenderCommandBuffer> renderCmdBuffer) = 0;
         
         virtual TargetImage* GetSwapchainTarget() const = 0;

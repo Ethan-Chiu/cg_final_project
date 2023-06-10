@@ -25,12 +25,18 @@ namespace Ethane {
         bool OnKeyPressed(KeyPressedEvent& e);
         
     private:
+        Line CalcScreenLine(uint32_t index, glm::vec3 start, glm::vec3 end);
+        void CleanLines();
+        
+    private:
         Ref<Scene> m_ActiveScene;
         Ref<SceneRenderer> m_ViewportRenderer;
         
         uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
         
         Ref<Mesh> m_Mesh;
+        Ref<Mesh> m_Cone;
+        Ref<Mesh> m_Torus;
         Ref<Material> m_Mat;
         
         RTScene m_RTScene;
@@ -55,7 +61,17 @@ namespace Ethane {
         
         uint32_t m_Frame = 0;
         Ref<RenderCommandBuffer> m_RTCommandBuffer;
-//        std::vector
+        std::vector<Ref<Image2D>> m_RTImages;
+        uint32_t m_RTImageIndex = 0;
+        uint32_t m_InterpolateFrameCount = 5;
+        std::vector<glm::vec3> m_CameraPositions;
+        
+        Ref<ComputePipeline> m_DenoisePipeline = nullptr;
+        Ref<Material> m_DenoiseMat = nullptr;
+        
+        uint8_t m_CurrentMode = 1;
+        float m_Ratio = 0;
+        float m_Inc = 0.005;
         
         bool m_NeedResize = false;
         

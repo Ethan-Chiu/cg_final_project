@@ -103,7 +103,6 @@ namespace Ethane {
 		globalData.AmbientColor = glm::vec4(0.8, 0.8, 0.8, 1);
 		globalData.ViewPosition = cameraPosition;
 
-        ubo.currentSample++;
         ubo.camPos = sceneCamera.GetPosition();
         
         Renderer::SetGlobalUniformBuffer(0, (void*)&(ubo), sizeof(UBO));

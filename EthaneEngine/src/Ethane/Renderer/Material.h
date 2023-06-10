@@ -29,6 +29,7 @@ namespace Ethane {
         virtual uint32_t GetFlags() const = 0;
 
         virtual bool SetImage(const std::string& name, const TargetImage* image) = 0;
+        virtual bool SetImage(const std::string& name, const Image2D* image, ImageLayout layout) = 0;
         virtual bool SetImage(const std::string& name, const Texture2D* image) = 0;
         
         virtual bool SetData(const std::string& name, const StorageBuffer* buffer) = 0;

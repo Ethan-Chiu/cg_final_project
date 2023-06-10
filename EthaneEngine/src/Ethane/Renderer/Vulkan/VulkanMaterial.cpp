@@ -145,6 +145,11 @@ namespace Ethane {
                 wds.dstArrayElement = 0;
                 wds.pBufferInfo = &(resource.CacheBufferInfo);
             }
+            else if (resource.CacheImageInfos.size() == 1)
+            {
+                wds.dstArrayElement = 0;
+                wds.pImageInfo = &(resource.CacheImageInfos[0]);
+            }
             writeDescriptors.emplace_back(wds).dstSet = m_DescriptorSets[frameIndex][resource.Set];
 		}
 		vkUpdateDescriptorSets(device, static_cast<uint32_t>(writeDescriptors.size()), writeDescriptors.data(), 0, nullptr);
@@ -167,6 +172,26 @@ namespace Ethane {
                 for (uint32_t img = 0; img < imageCount; ++img) {
                     resource.CacheImageInfos[img] = vulkanTargetImage->GetDescriptorImageInfo(img);
                 }
+                break;
+            }
+        }
+        ETH_CORE_ASSERT(found, "resource not found");
+        return found;
+    }
+
+    bool VulkanMaterial::SetImage(const std::string& name, const Image2D* image, ImageLayout layout)
+    {
+        bool found = false;
+        for(auto& resource: m_ResourceBindings)
+        {
+            if(resource.Name == name){
+                found = true;
+                uint32_t imageCount = VulkanContext::GetSwapchain()->GetImageCount();
+                const VulkanImage2D* vulkanImage = dynamic_cast<const VulkanImage2D*>(image);
+                resource.CacheImageInfos.clear();
+                resource.CacheImageInfos.resize(1);
+                resource.CacheImageInfos[0].imageView = vulkanImage->GetImageInfo().ImageView;
+                resource.CacheImageInfos[0].imageLayout = ImageUtils::VulkanImageLayout(layout);
                 break;
             }
         }

@@ -16,7 +16,7 @@ layout(binding = 0) uniform UniformBufferObject {
 
 layout(set = 1, binding = 1, rgba8) uniform image2D targetTexture;
 
-//layout(set = 1, binding = 2, rgba8) uniform image2D accumulationTex;
+layout(set = 1, binding = 2, rgba8) uniform image2D accumulationTex;
 
 layout(std430, set = 1, binding = 3) readonly buffer TriangleBufferObject {
     triangle[] triangles;
@@ -55,9 +55,9 @@ struct hit_record {
     // integer to decrease branches.
     int backFaceInt;
     // PDF of scattering in given direction due to material properties.
-    float scatterPdf;
+//    float scatterPdf;
     // PDF of sampling in given direction.
-    float samplePdf;
+//    float samplePdf;
 
 };
 
@@ -145,8 +145,8 @@ bool scatter(ray r_in, inout hit_record rec, inout vec3 albedo, inout ray scatte
 
     scattered = ray(rec.p, finalSample);
 
-    rec.samplePdf = 0.5 * materialSamplePdf + 0.5 *lightSamplePdf;
-    rec.scatterPdf = materialSamplePdf;
+//    rec.samplePdf = 0.5 * materialSamplePdf + 0.5 *lightSamplePdf;
+//    rec.scatterPdf = materialSamplePdf;
 
     return materials[rec.materialIndex].materialType == LIGHT_MATERIAL;
 }
@@ -198,7 +198,7 @@ vec2 intersectAABB(ray r, vec3 boxMin, vec3 boxMax) {
 }
 
 
-#define MAX_STACK_DEPTH 16
+#define MAX_STACK_DEPTH 32
 bool hit_bvh(ray r, inout hit_record rec) {
     float t_min = 0.001;
     float t_max = 10000;
@@ -210,9 +210,6 @@ bool hit_bvh(ray r, inout hit_record rec) {
     int nodeStack[MAX_STACK_DEPTH];
     int stackIndex = 0;
 
-    // Traversing a flattened bvh using a stack.
-    // nodeStack[stackIndex] contains an index of AABB in bhv[]
-    // bvh[nodeStack[stackIndex]] is an index of a triangle in triangles.
     nodeStack[stackIndex] = 0;
     stackIndex++;
 
@@ -249,7 +246,7 @@ bool hit_bvh(ray r, inout hit_record rec) {
     return hit_anything;
 }
 
-#define NUM_BOUNCES 3
+#define NUM_BOUNCES 4
 vec3 ray_color(ray r) {
     vec3 unit_direction = normalize(r.dir);
     hit_record rec;
@@ -267,7 +264,7 @@ vec3 ray_color(ray r) {
             }
         } else {
             float t = 0.5*(unit_direction.y + 1.0);
-            final_color *= (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(1.0, 0.1, 1.0);
+            final_color *= (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.2, 0.4, 0.8);
             break;
         }
     }
@@ -290,9 +287,12 @@ void main()
     vec3 horizontal = vec3( viewport_width, 0,  0);
     vec3 vertical = vec3(0, -viewport_height, 0);
 
-    vec3 origin = ubo.camPos.xyz * vec3(1, 1, 1);
+    vec3 origin = ubo.camPos.xyz;
     vec3 lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0, 0, focal_length);
 
+    //cam.x + t(-w/2 + x*w/sx) = a
+    //cam.y + t(h/2 - y*h/sy) = b
+    //cam.z - t               = c
     vec2 uv = (gl_GlobalInvocationID.xy);
     
     vec3 pixel_color = vec3(0);
@@ -301,9 +301,9 @@ void main()
         pixel_color += ray_color(r);
     }
 
-//    vec4 currentColor = imageLoad(accumulationTex, ivec2(gl_GlobalInvocationID.xy)).rgba * min(ubo.currentSample, 1.0);
-//
-//    vec4 to_write = (vec4(pixel_color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
-
-    imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), vec4(pixel_color/2, 1));
+    pixel_color /= 2;
+    
+    vec4 currentColor = imageLoad(accumulationTex, ivec2(gl_GlobalInvocationID.xy)).rgba * min(ubo.currentSample, 1.0);
+    vec4 to_write = (vec4(pixel_color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
+    imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), to_write);
 }
